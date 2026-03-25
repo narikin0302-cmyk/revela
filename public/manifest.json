@@ -1,0 +1,12 @@
+{
+  "name": "revela - 本当の自分を知る",
+  "short_name": "revela",
+  "description": "MBTI×キャラクターコード×星座×タロット。あなただけの占い。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080520",
+  "theme_color": "#d4af37",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

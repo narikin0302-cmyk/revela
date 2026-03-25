@@ -1,0 +1,725 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #EDEDED;
+  --gold: #d4af37;
+  --gold-light: #f0d060;
+  --rose: #e8a0bf;
+  --rose-dark: #c97da8;
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-rose: var(--rose);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0a0a0a;
+  color: #EDEDED;
+  font-family: 'Noto Serif JP', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Gold gradient text utility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #d4af37 0%, #f0d060 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Rose gradient text */
+.text-rose-gradient {
+  background: linear-gradient(135deg, #e8a0bf 0%, #f5c6db 50%, #c97da8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glowing card */
+.card-glow {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+.card-glow:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Gold button — kept for quiz flow */
+.btn-gold {
+  background: linear-gradient(135deg, #c9962a 0%, #d4af37 30%, #f0d060 55%, #f472b6 100%);
+  color: #08052a;
+  font-weight: 700;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 24px rgba(212, 175, 55, 0.45), 0 0 40px rgba(244, 114, 182, 0.15);
+}
+
+/* Shine sweep animation */
+@keyframes btnShine {
+  0% { left: -120%; }
+  100% { left: 120%; }
+}
+
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -120%;
+  width: 60%;
+  height: 120%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  transition: none;
+}
+
+.btn-gold:hover::before {
+  animation: btnShine 0.55s ease forwards;
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 35px rgba(212, 175, 55, 0.55), 0 0 50px rgba(244, 114, 182, 0.2);
+}
+
+.btn-gold:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Primary outline button — for main CTAs */
+.btn-outline-primary {
+  background: transparent;
+  color: #EDEDED;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.25s ease, border-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-outline-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #EDEDED;
+  transform: translateY(101%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline-primary:hover::after {
+  transform: translateY(0);
+}
+
+.btn-outline-primary:hover {
+  color: #0a0a0a;
+  border-color: #EDEDED;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(237, 237, 237, 0.15);
+}
+
+.btn-outline-primary:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-outline-primary > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Outlined gold button (nav) */
+.btn-outline-gold {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-outline-gold:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-outline-gold:active {
+  transform: scale(0.97);
+}
+
+/* Progress bar */
+.progress-bar {
+  background: linear-gradient(90deg, #d4af37, #f472b6);
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Option button */
+.option-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #EDEDED;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.option-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateX(4px);
+}
+
+.option-btn.selected {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.06);
+}
+
+/* Gold pulse ripple for selected answer */
+@keyframes goldPulseRipple {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.option-btn.selected.pulse-animate {
+  animation: goldPulseRipple 0.5s ease-out;
+}
+
+/* Step flash shimmer */
+@keyframes stepFlash {
+  0% { opacity: 0; }
+  20% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+.step-flash {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  z-index: 90;
+  animation: stepFlash 0.6s ease forwards;
+}
+
+/* Horizontal slide transitions */
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutToLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-40px); }
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Divider */
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+/* Fade in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.08); }
+  50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.15); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* Result chip pop-in */
+@keyframes chipPopIn {
+  0% { opacity: 0; transform: scale(0.6); }
+  70% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.chip-pop {
+  opacity: 0;
+  animation: chipPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Gate animations */
+@keyframes gateLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@keyframes gateRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes centerBurst {
+  0% { opacity: 0; transform: translateX(-50%) scaleX(0.1); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) scaleX(6); }
+}
+
+@keyframes crackAppear {
+  0%   { opacity: 0; width: 0; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes gateShudder {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-3px); }
+  30%  { transform: translateX(3px); }
+  45%  { transform: translateX(-2px); }
+  60%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes lightFlood {
+  0%   { opacity: 0; }
+  20%  { opacity: 0.15; }
+  100% { opacity: 0; }
+}
+
+@keyframes resultsReveal {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Decorative orb */
+.orb {
+  border-radius: 50%;
+  filter: blur(60px);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Result type badge */
+.type-badge {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+}
+
+/* Result section labels inside dangerouslySetInnerHTML */
+.result-section-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+
+/* Mark / highlighter */
+mark {
+  background: linear-gradient(transparent 60%, rgba(255, 255, 255, 0.15) 60%);
+  color: inherit;
+  padding: 0 2px;
+}
+
+/* ============================================================
+   Tarot card animations
+   ============================================================ */
+
+/* Gentle floating for unselected cards */
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0px) rotate(var(--card-tilt, 0deg)); }
+  50%       { transform: translateY(-10px) rotate(var(--card-tilt, 0deg)); }
+}
+
+/* Golden burst after reveal */
+@keyframes goldBurst {
+  0%   { opacity: 0; transform: scale(0.5); }
+  30%  { opacity: 1; transform: scale(1.4); }
+  100% { opacity: 0; transform: scale(2); }
+}
+
+/* Sparkle twinkle */
+@keyframes sparklePop {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50%       { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+/* Floating sparkles drift upward */
+@keyframes sparkleDrift {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  20%  { opacity: 1; }
+  80%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-80px) scale(1.2) rotate(360deg); }
+}
+
+.sparkle-drift {
+  animation: sparkleDrift 3s ease-in-out infinite;
+}
+
+/* Screen edge glow after card flip */
+@keyframes edgeGoldGlow {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.tarot-edge-glow {
+  animation: edgeGoldGlow 1.5s ease forwards;
+}
+
+/* Fade-in-up for result text lines */
+@keyframes lineReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-line-reveal {
+  animation: lineReveal 0.55s ease forwards;
+  opacity: 0;
+}
+
+.tarot-card-float {
+  animation: cardFloat 3s ease-in-out infinite;
+}
+
+.tarot-gold-burst {
+  animation: goldBurst 0.8s ease-out forwards;
+}
+
+.tarot-sparkle {
+  animation: sparklePop 1.2s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ============================================================
+   Page entry animation — applied to main content
+   ============================================================ */
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main > * {
+  animation: pageEnter 0.5s ease forwards;
+}
+
+/* ============================================================
+   Scroll-triggered reveal utility
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for reveal groups */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ============================================================
+   Mobile touch improvements
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-outline-primary {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  button,
+  a[href] {
+    touch-action: manipulation;
+  }
+}
+
+/* Remove iOS tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================================
+   Dream page — subtle gradient override
+   ============================================================ */
+
+.dream-gradient {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(124, 58, 237, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   Flip card utility
+   ============================================================ */
+
+.flip-container {
+  perspective: 800px;
+}
+
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* ============================================================
+   Section headings
+   ============================================================ */
+
+h1, h2, h3 {
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   Cinzel display font utility
+   ============================================================ */
+
+.font-cinzel {
+  font-family: var(--font-cinzel), 'Palatino Linotype', 'Book Antiqua', serif;
+}
+
+/* ============================================================
+   Logo styles
+   ============================================================ */
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-text {
+  font-family: var(--font-cinzel), 'Palatino Linotype', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  color: #EDEDED;
+  -webkit-text-fill-color: #EDEDED;
+  filter: none;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.logo-sub {
+  display: block;
+  font-size: 0.38rem;
+  letter-spacing: 0.4em;
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  margin-top: 2px;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  font-family: var(--font-cinzel), serif;
+}
+
+.logo-container:hover .logo-text {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+/* ============================================================
+   Fusion chip pulse animation (home page)
+   ============================================================ */
+
+@keyframes fusionChipPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.03); }
+}
+
+/* ============================================================
+   Section label
+   ============================================================ */
+
+.section-label {
+  font-family: var(--font-cinzel), 'Palatino Linotype', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.45em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  display: block;
+}
+
+/* ============================================================
+   Decorative section divider
+   ============================================================ */
+
+.divider-ornate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.divider-ornate::before,
+.divider-ornate::after {
+  content: '';
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15));
+}
+
+.divider-ornate::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15), transparent);
+}
+
+/* ============================================================
+   Card premium
+   ============================================================ */
+
+.card-premium {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 30px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+.card-premium:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 0 50px rgba(0, 0, 0, 0.5),
+    0 8px 30px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
+}
+
+/* ============================================================
+   Testimonial quote mark
+   ============================================================ */
+
+.quote-mark {
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: 4rem;
+  line-height: 0;
+  color: rgba(255, 255, 255, 0.08);
+  position: absolute;
+  top: 20px;
+  left: 16px;
+}

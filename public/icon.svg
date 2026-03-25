@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="32" fill="#080520"/>
+  <!-- Crescent moon -->
+  <path d="M120 56 A40 40 0 1 1 120 136 A30 30 0 1 0 120 56Z" fill="#d4af37" opacity="0.25"/>
+  <!-- R monogram -->
+  <text x="96" y="126" font-family="Georgia, serif" font-size="80" font-weight="700" fill="url(#gold)" text-anchor="middle">R</text>
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="50%" stop-color="#f0d060"/>
+      <stop offset="100%" stop-color="#e8a0bf"/>
+    </linearGradient>
+  </defs>
+</svg>
