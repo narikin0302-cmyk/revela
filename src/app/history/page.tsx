@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getHistory, deleteHistoryEntry, type HistoryEntry } from "@/lib/storage";
+import { generateRevelaCode } from "@/lib/revelaCodes";
 import { loveTypeDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
@@ -102,7 +103,21 @@ function HistoryCard({
   onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const router = useRouter();
+
+  const revelCode = entry.mbti && entry.loveType && entry.zodiac && entry.zodiac !== "なし" && entry.tarot
+    ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac, entry.tarot)
+    : null;
+
+  const handleCopyCode = async () => {
+    if (!revelCode) return;
+    try {
+      await navigator.clipboard.writeText(revelCode);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2500);
+    } catch { /* silent */ }
+  };
 
   const resultUrl = entry.mbti && entry.loveType && entry.tarot
     ? `/result?mbti=${entry.mbti}&love=${entry.loveType}&zodiac=${encodeURIComponent(entry.zodiac ?? "なし")}&tarot=${encodeURIComponent(entry.tarot)}&reversed=${entry.isReversed ? "1" : "0"}`
@@ -113,6 +128,24 @@ function HistoryCard({
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs mb-2 tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>{entry.date}</p>
+          {revelCode && (
+            <button
+              onClick={handleCopyCode}
+              className="mb-3 font-bold tracking-widest transition-all"
+              style={{
+                fontFamily: "monospace",
+                fontSize: "15px",
+                color: codeCopied ? "#34d399" : "rgba(255,255,255,0.85)",
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                letterSpacing: "0.1em",
+              }}
+            >
+              {codeCopied ? "✓ コピー済" : revelCode}
+            </button>
+          )}
           <div className="flex flex-wrap gap-2">
             {entry.mbti && <Chip label={entry.mbti} color="rgba(255,255,255,0.6)" />}
             {entry.loveType && <Chip label={entry.loveType} color="#e8a0bf" />}
