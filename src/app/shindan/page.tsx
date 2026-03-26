@@ -34,7 +34,6 @@ import { getRpgClassByCombo, getRpgSynergy } from "@/data/rpgClasses";
 type Step = 0 | 1 | 2 | 3 | 4;
 
 interface FormData {
-  birthYear: string;
   birthMonth: string;
   birthDay: string;
   zodiac: string;
@@ -127,7 +126,7 @@ function AnalyzingScreen({ onComplete }: { onComplete: () => void }) {
     "星の配置を読み解いています...",
     "MBTIパターンを解析中...",
     "キャラクターコードを照合しています...",
-    "タロットの神託を受信中...",
+
     "あなた専用の自己分析を生成しています...",
   ];
 
@@ -789,13 +788,12 @@ function Step1({
   onBack: () => void;
   onSkipZodiac: () => void;
 }) {
-  const [mode, setMode] = useState<ZodiacInputMode>("birthdate");
+  const [mode, setMode] = useState<ZodiacInputMode>("quickselect");
 
-  const years = Array.from({ length: 60 }, (_, i) => 2006 - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  const handleBirthChange = (key: "birthYear" | "birthMonth" | "birthDay", value: string) => {
+  const handleBirthChange = (key: "birthMonth" | "birthDay", value: string) => {
     onChange(key, value);
     const month = key === "birthMonth" ? value : data.birthMonth;
     const day   = key === "birthDay"   ? value : data.birthDay;
@@ -807,13 +805,12 @@ function Step1({
 
   const handleQuickSelect = (zodiacValue: string) => {
     onChange("zodiac", zodiacValue);
-    onChange("birthYear", "");
     onChange("birthMonth", "");
     onChange("birthDay", "");
   };
 
   const canProceed = mode === "birthdate"
-    ? !!(data.birthYear && data.birthMonth && data.birthDay && data.zodiac)
+    ? !!(data.birthMonth && data.birthDay && data.zodiac)
     : !!data.zodiac;
 
   const selectStyle: React.CSSProperties = {
@@ -857,7 +854,7 @@ function Step1({
           <button style={tabStyle(mode === "birthdate")} onClick={() => setMode("birthdate")}>
             📅 生年月日から自動判定
           </button>
-          <button style={tabStyle(mode === "quickselect")} onClick={() => { setMode("quickselect"); onChange("birthYear",""); onChange("birthMonth",""); onChange("birthDay",""); }}>
+          <button style={tabStyle(mode === "quickselect")} onClick={() => { setMode("quickselect"); onChange("birthMonth",""); onChange("birthDay",""); }}>
             ✦ 星座を直接選ぶ
           </button>
         </div>
@@ -867,12 +864,8 @@ function Step1({
         {mode === "birthdate" && (
           <>
             <div>
-              <label className="block text-xs tracking-widest mb-2 opacity-60">生年月日</label>
-              <div className="grid grid-cols-3 gap-2">
-                <select value={data.birthYear} onChange={(e) => handleBirthChange("birthYear", e.target.value)} style={selectStyle}>
-                  <option value="">年</option>
-                  {years.map((y) => <option key={y} value={y} style={{ background: "#1a1730" }}>{y}年</option>)}
-                </select>
+              <label className="block text-xs tracking-widest mb-2 opacity-60">誕生日</label>
+              <div className="grid grid-cols-2 gap-2">
                 <select value={data.birthMonth} onChange={(e) => handleBirthChange("birthMonth", e.target.value)} style={selectStyle}>
                   <option value="">月</option>
                   {months.map((m) => <option key={m} value={m} style={{ background: "#1a1730" }}>{m}月</option>)}
@@ -3877,7 +3870,6 @@ function ResultsPage({
 // ============================================================
 
 const initialForm: FormData = {
-  birthYear: "",
   birthMonth: "",
   birthDay: "",
   zodiac: "",
@@ -3974,7 +3966,6 @@ export default function ShindanPage() {
 
   const handleSkipZodiac = () => {
     handleFormChange("zodiac", "なし");
-    handleFormChange("birthYear", "");
     handleFormChange("birthMonth", "");
     handleFormChange("birthDay", "");
     // Jump straight to MBTI questions
@@ -4062,8 +4053,8 @@ export default function ShindanPage() {
   const handleAnalyzingComplete = () => {
     setShowAnalyzing(false);
     setShowTarot(false);
-    setShowGates(true);
-    setGatesComplete(false);
+    setShowGates(false);
+    setGatesComplete(true);
   };
 
   const handleGatesComplete = () => {
@@ -4102,8 +4093,8 @@ export default function ShindanPage() {
       {/* Analyzing overlay */}
       {showAnalyzing && <AnalyzingScreen onComplete={handleAnalyzingComplete} />}
 
-      {/* Gates reveal overlay */}
-      {showGates && <GatesReveal onComplete={handleGatesComplete} />}
+      {/* Gates reveal overlay (disabled) */}
+      {false && showGates && <GatesReveal onComplete={handleGatesComplete} />}
 
       <div className="relative z-10 max-w-2xl mx-auto">
         <div className="text-center mb-8">
