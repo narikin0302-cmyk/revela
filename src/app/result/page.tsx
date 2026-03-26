@@ -40,6 +40,8 @@ function ResultView() {
   const tarot = params.get("tarot") ?? "";
   const reversed = params.get("reversed") === "1";
 
+  const [codeCopied, setCodeCopied] = useState(false);
+
   if (!mbti || !love || !tarot) {
     return (
       <div className="text-center py-20 px-4">
@@ -48,8 +50,6 @@ function ResultView() {
       </div>
     );
   }
-
-  const [codeCopied, setCodeCopied] = useState(false);
 
   const reading = getResultReading(mbti, love, zodiac, tarot, reversed);
   const mbtiColor = MBTI_COLORS[mbti] ?? { primary: "rgba(255,255,255,0.6)", bg: "rgba(255,255,255,0.08)", label: "" };
