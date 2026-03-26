@@ -367,6 +367,37 @@ export default function CharaPage() {
       {/* 職業RPG */}
       {tab === "rpg" && (() => {
         return (
+          <>
+          {/* Concept intro */}
+          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-6" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Concept of Classes
+            </p>
+            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0" }}>
+              複雑なパラメーターを、<br className="block sm:hidden" />
+              ひとつの「役割」に統合する。
+            </h2>
+            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)" }}>
+              <p>
+                人間の性格や行動原理は、決して一つの枠に収まるものではありません。<br className="hidden md:block" />
+                「論理的だけど、恋愛になると献身的」「自由人に見えて、実は計画的」。<br className="hidden md:block" />
+                そんな矛盾とも思える複雑なパラメーターを視覚的に理解するため、<br className="hidden md:block" />
+                私たちは「RPGのクラス（職業）」というメタファーを採用しました。
+              </p>
+              <p>
+                世界を牽引する力、他者を癒す力、常識を壊す力。<br className="hidden md:block" />
+                あなたが持っている特性を多角的に分析し、<br className="hidden md:block" />
+                最も適した「戦い方（クラス）」と「装備（強み）」を導き出します。
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+                これは単なる性格診断ではなく、あなたが社会というフィールドで<br className="hidden md:block" />
+                自分の特性を最大限に活かすための「取り扱い説明書」です。<br className="hidden md:block" />
+                全16種類のクラスから、あなたの深層に眠る本質を見つけてください。
+              </p>
+            </div>
+            <div className="w-12 h-px mt-12" style={{ background: "rgba(255,255,255,0.15)" }} />
+          </section>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
             {RPG_CLASSES.map((cls) => {
               const myLoveType = myCode ? myCode.split("-")[1] : null;
@@ -400,6 +431,7 @@ export default function CharaPage() {
               );
             })}
           </div>
+          </>
         );
       })()}
 

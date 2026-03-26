@@ -187,6 +187,108 @@ export const loveQuestions: LoveQuestion[] = [
 ];
 
 // ============================================================
+// Question Variant Banks (for randomization)
+// ============================================================
+
+interface QuestionText {
+  question: string;
+  optionA: string;
+  optionB: string;
+}
+
+const mbtiVariantBank: Record<number, QuestionText[]> = {
+  1: [
+    { question: "グループの会話では？", optionA: "話の中心になって盛り上げたい", optionB: "聞き役に回ることが多い" },
+    { question: "充電が切れると感じるのは？", optionA: "人と関わらない時間が続いたとき", optionB: "人に囲まれっぱなしの時間が続いたとき" },
+  ],
+  2: [
+    { question: "知らない人が多いパーティーで", optionA: "積極的に声をかけて回る", optionB: "知り合いを見つけるか、静かに観察する" },
+    { question: "休日の朝に何もない時間ができたら", optionA: "誰かを誘ってどこかへ出かけたい", optionB: "家でひとりのんびり過ごしたい" },
+  ],
+  3: [
+    { question: "物語や映画で惹かれるのは？", optionA: "リアルで現実的なストーリー", optionB: "想像力あふれる世界観" },
+    { question: "本を読むとき重視するのは？", optionA: "実用的・具体的な内容", optionB: "アイデアや視野が広がる内容" },
+  ],
+  4: [
+    { question: "予定が急に変更になったとき", optionA: "困る。事前に決めていたことを大切にしたい", optionB: "むしろ新鮮。予定は変わるものだと思っている" },
+    { question: "部屋の整理整頓は？", optionA: "常に整理された状態を保ちたい", optionB: "必要なときに整理すれば十分" },
+  ],
+  5: [
+    { question: "チームで方針が違うと気づいたとき", optionA: "論理的に問題点を指摘する", optionB: "場の雰囲気も考えながら優しく伝える" },
+    { question: "大切なことを伝えるとき", optionA: "事実や根拠を整理して話す", optionB: "相手の気持ちに寄り添いながら話す" },
+  ],
+  6: [
+    { question: "買い物のスタイルは？", optionA: "必要なものをリスト化して計画的に買う", optionB: "その場の直感で気になったものを買う" },
+    { question: "新しいことを始めるとき", optionA: "まず計画を立ててから動く", optionB: "とりあえず動きながら考える" },
+  ],
+  7: [
+    { question: "物事を判断するときの基準は？", optionA: "論理的に正しいかどうか", optionB: "自分や周りの気持ちに合っているかどうか" },
+    { question: "映画や本で感動するのは？", optionA: "緻密な設定や論理的な展開", optionB: "登場人物の感情や人間関係" },
+  ],
+  8: [
+    { question: "仕事でのアプローチは？", optionA: "過去の成功例をもとに確実に進める", optionB: "新しいやり方を試して改善していく" },
+    { question: "会話の中で面白いと感じるのは？", optionA: "実体験や事実に基づいた話", optionB: "仮説や「もしこうだったら」という話" },
+  ],
+  9: [
+    { question: "SNSでの発信スタイルは？", optionA: "積極的にコメントや投稿をする", optionB: "主に見る側でたまに反応する" },
+    { question: "疲れたとき回復するのは？", optionA: "友達に会って話して元気を取り戻す", optionB: "家でひとりで静かに過ごす" },
+  ],
+  10: [
+    { question: "何かを購入するとき重視するのは？", optionA: "スペックや機能・コスパ", optionB: "デザインや雰囲気・好みに合うか" },
+    { question: "リーダーに必要だと思うのは？", optionA: "正しい判断を下せる知性と決断力", optionB: "メンバーの気持ちを理解できる共感力" },
+  ],
+};
+
+const loveVariantBank: Record<number, QuestionText[]> = {
+  1: [
+    { question: "初対面の人と話すとき", optionA: "自分から積極的に話しかける", optionB: "相手が話しかけてくるのを待つ" },
+    { question: "グループで行き詰まったとき", optionA: "率先して解決策を提案する", optionB: "周囲の様子を見ながらサポートに回る" },
+  ],
+  2: [
+    { question: "嬉しいことがあったとき", optionA: "表情や言葉で自然に表現できる", optionB: "内心は嬉しいが、あまり表に出さない" },
+    { question: "怒りや悲しみを感じたとき", optionA: "感情を表に出してしまうことが多い", optionB: "冷静に整理してから対処する" },
+  ],
+  3: [
+    { question: "大きな買い物をするとき", optionA: "予算と機能を比較してから決める", optionB: "ワクワクしたかどうかで決める" },
+    { question: "仕事の進め方は？", optionA: "リスクを抑えた安全な方法を選ぶ", optionB: "少しリスクがあっても大きな可能性を取る" },
+  ],
+  4: [
+    { question: "SNSで自己表現するのは？", optionA: "自分の意見や日常を積極的に発信する", optionB: "見る専門で、あまり発信しない" },
+    { question: "新しいコミュニティに入るとき", optionA: "最初から自分を開いて積極的に関わる", optionB: "まず観察して、ゆっくり関係を築く" },
+  ],
+  5: [
+    { question: "長い連休の計画は？", optionA: "やること・行き先を決めてから動く", optionB: "その日の気分でどこへでも行く" },
+    { question: "困難な状況を乗り越えるのは？", optionA: "具体的な解決策を探して対処する", optionB: "感情や直感に従って突破する" },
+  ],
+};
+
+function pickVariant(q: QuestionText, bank: QuestionText[] | undefined): QuestionText {
+  if (!bank || bank.length === 0) return q;
+  const all = [q, ...bank];
+  return all[Math.floor(Math.random() * all.length)];
+}
+
+export function getRandomizedMBTIQuestions(): MBTIQuestion[] {
+  return mbtiQuestions.map((q) => {
+    const variant = pickVariant(
+      { question: q.question, optionA: q.optionA, optionB: q.optionB },
+      mbtiVariantBank[q.id]
+    );
+    return { ...q, ...variant };
+  });
+}
+
+export function getRandomizedLoveQuestions(): LoveQuestion[] {
+  return loveQuestions.map((q) => {
+    const variant = pickVariant(
+      { question: q.question, optionA: q.optionA, optionB: q.optionB },
+      loveVariantBank[q.id]
+    );
+    return { ...q, ...variant };
+  });
+}
+
+// ============================================================
 // Zodiac Signs
 // ============================================================
 

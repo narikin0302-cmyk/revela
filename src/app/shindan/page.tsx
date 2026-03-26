@@ -9,8 +9,10 @@ import {
   loveTypeDescriptions,
   trueSelfQuestions,
   getResultReading,
+  getRandomizedMBTIQuestions,
+  getRandomizedLoveQuestions,
 } from "@/data/questions";
-import type { LoveType, ResultReading, StrengthItem, ChallengeItem } from "@/data/questions";
+import type { LoveType, ResultReading, StrengthItem, ChallengeItem, MBTIQuestion, LoveQuestion } from "@/data/questions";
 import {
   calculateMBTI,
   calculateLoveType,
@@ -923,14 +925,16 @@ function Step2({
   onAnswer,
   onNext,
   onBack,
+  questions,
 }: {
   answers: MBTIAnswers;
   onAnswer: (id: number, score: LikertScore) => void;
   onNext: () => void;
   onBack: () => void;
+  questions: MBTIQuestion[];
 }) {
   const answered = Object.keys(answers).length;
-  const total = mbtiQuestions.length;
+  const total = questions.length;
   const canProceed = answered === total;
 
   return (
@@ -941,7 +945,7 @@ function Step2({
       </div>
 
       <div className="space-y-5 max-w-lg mx-auto">
-        {mbtiQuestions.map((q, idx) => {
+        {questions.map((q, idx) => {
           const selected = answers[q.id];
           return (
             <div key={q.id} className="card-glow rounded-2xl p-5">
@@ -1217,14 +1221,16 @@ function Step3({
   onAnswer,
   onNext,
   onBack,
+  questions,
 }: {
   answers: LoveAnswers;
   onAnswer: (id: number, score: LikertScore) => void;
   onNext: () => void;
   onBack: () => void;
+  questions: LoveQuestion[];
 }) {
   const answered = Object.keys(answers).length;
-  const total = loveQuestions.length;
+  const total = questions.length;
   const canProceed = answered === total;
 
   return (
@@ -1234,7 +1240,7 @@ function Step3({
         <span className="text-xs tracking-widest opacity-50">{answered} / {total} 回答済み</span>
       </div>
       <div className="space-y-5 max-w-lg mx-auto">
-        {loveQuestions.map((q, idx) => {
+        {questions.map((q, idx) => {
           const selected = answers[q.id];
           return (
             <div key={q.id} className="card-glow rounded-2xl p-5">
@@ -3820,6 +3826,12 @@ const initialForm: FormData = {
 type SubStep = "normal" | "trueSelf" | "trueSelfSkipped";
 
 export default function ShindanPage() {
+  // Randomized questions (fixed for this session)
+  const [activeQuestions] = useState(() => ({
+    mbti: getRandomizedMBTIQuestions(),
+    love: getRandomizedLoveQuestions(),
+  }));
+
   // Step 0 skip state
   const [knowsMBTI, setKnowsMBTI] = useState<boolean | null>(null);
   const [knownMBTI, setKnownMBTI] = useState<string>("");
@@ -4058,6 +4070,7 @@ export default function ShindanPage() {
             onAnswer={handleMBTIAnswer}
             onNext={handleStep2Next}
             onBack={() => goToStep(1)}
+            questions={activeQuestions.mbti}
           />
         )}
 
@@ -4068,6 +4081,7 @@ export default function ShindanPage() {
             onAnswer={handleLoveAnswer}
             onNext={handleStep3Next}
             onBack={() => goToStep(knowsMBTI && knownMBTI ? 1 : 2)}
+            questions={activeQuestions.love}
           />
         )}
 

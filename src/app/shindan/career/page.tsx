@@ -1241,6 +1241,36 @@ const WORK_QUESTIONS: WorkQuestion[] = [
   },
 ];
 
+// Work question variant bank
+const WORK_QUESTION_VARIANTS: Record<number, { scenario: string; optionA: string; optionB: string }[]> = {
+  1: [
+    { scenario: "チームの方向性が定まらないとき、あなたは？", optionA: "全体像を整理して、道筋を示す", optionB: "まず小さく動いて、反応を見る" },
+    { scenario: "アイデアが浮かんだとき、あなたは？", optionA: "実現可能かを検討してから動く", optionB: "とりあえず試してみる" },
+  ],
+  2: [
+    { scenario: "職場で衝突が起きたとき、あなたは？", optionA: "事実と根拠をもとに正しい方を支持する", optionB: "双方の立場を理解して和解を促す" },
+    { scenario: "重要な決断をするとき、あなたは？", optionA: "データと論理で最善策を選ぶ", optionB: "関わる人全員が納得できる選択をする" },
+  ],
+  3: [
+    { scenario: "想定外のトラブルが発生したとき、あなたは？", optionA: "冷静に状況を整理して対処する", optionB: "全力で動いて一気に解決する" },
+    { scenario: "プレッシャーがかかったとき、あなたは？", optionA: "タスクを分解して着実にこなす", optionB: "スイッチが入って集中力が上がる" },
+  ],
+  4: [
+    { scenario: "将来のキャリアで重視するのは？", optionA: "自分のビジョンを形にする仕事", optionB: "誰かの支えになる・感謝される仕事" },
+    { scenario: "チームに貢献するのは？", optionA: "新しいアイデアや戦略を提案すること", optionB: "メンバーのモチベーションを維持すること" },
+  ],
+};
+
+function getRandomWorkQuestions(): WorkQuestion[] {
+  return WORK_QUESTIONS.map((q) => {
+    const variants = WORK_QUESTION_VARIANTS[q.id];
+    if (!variants || variants.length === 0) return q;
+    const all = [{ scenario: q.scenario, optionA: q.optionA, optionB: q.optionB }, ...variants];
+    const picked = all[Math.floor(Math.random() * all.length)];
+    return { ...q, ...picked };
+  });
+}
+
 // Work style modifiers
 const STYLE_MODIFIERS: Record<WorkStyleKey, { title: string; advice: string }> = {
   structure: {
@@ -1379,6 +1409,7 @@ export default function CareerPage() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [selectedMbti, setSelectedMbti] = useState("");
   const [qIndex, setQIndex] = useState(0);
+  const [activeWorkQuestions] = useState(() => getRandomWorkQuestions());
   const [workScores, setWorkScores] = useState<Record<WorkStyleKey, number>>({
     structure: 0, action: 0, vision: 0, harmony: 0,
   });
@@ -1445,7 +1476,7 @@ export default function CareerPage() {
   const handleAnswer = (key: WorkStyleKey) => {
     const newScores = { ...workScores, [key]: workScores[key] + 1 };
     setWorkScores(newScores);
-    if (qIndex + 1 < WORK_QUESTIONS.length) {
+    if (qIndex + 1 < activeWorkQuestions.length) {
       setQIndex(qIndex + 1);
     } else {
       setPhase("tarot");
@@ -2057,7 +2088,7 @@ export default function CareerPage() {
         {/* ── WORK QUESTIONS ── */}
         {phase === "questions" && (
           <div key={qIndex} className="fade-up">
-            <SectionTitle en={`STEP 02 · ${qIndex + 1}/${WORK_QUESTIONS.length}`} ja="職場スタイル診断" />
+            <SectionTitle en={`STEP 02 · ${qIndex + 1}/${activeWorkQuestions.length}`} ja="職場スタイル診断" />
             <div
               style={{
                 background: "rgba(255,255,255,0.04)",
@@ -2074,13 +2105,13 @@ export default function CareerPage() {
                   marginBottom: 0,
                 }}
               >
-                {WORK_QUESTIONS[qIndex].scenario}
+                {activeWorkQuestions[qIndex].scenario}
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {[
-                { label: WORK_QUESTIONS[qIndex].optionA, key: WORK_QUESTIONS[qIndex].keyA },
-                { label: WORK_QUESTIONS[qIndex].optionB, key: WORK_QUESTIONS[qIndex].keyB },
+                { label: activeWorkQuestions[qIndex].optionA, key: activeWorkQuestions[qIndex].keyA },
+                { label: activeWorkQuestions[qIndex].optionB, key: activeWorkQuestions[qIndex].keyB },
               ].map((opt, i) => (
                 <button
                   key={i}
