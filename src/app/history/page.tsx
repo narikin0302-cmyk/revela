@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getHistory, deleteHistoryEntry, type HistoryEntry } from "@/lib/storage";
+import { generateRevelaCode } from "@/lib/revelaCodes";
 import { loveTypeDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
@@ -102,7 +103,21 @@ function HistoryCard({
   onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const router = useRouter();
+
+  const revelCode = entry.mbti && entry.loveType && entry.zodiac && entry.zodiac !== "なし" && entry.tarot
+    ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac, entry.tarot)
+    : null;
+
+  const handleCopyCode = async () => {
+    if (!revelCode) return;
+    try {
+      await navigator.clipboard.writeText(revelCode);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2500);
+    } catch { /* silent */ }
+  };
 
   const resultUrl = entry.mbti && entry.loveType && entry.tarot
     ? `/result?mbti=${entry.mbti}&love=${entry.loveType}&zodiac=${encodeURIComponent(entry.zodiac ?? "なし")}&tarot=${encodeURIComponent(entry.tarot)}&reversed=${entry.isReversed ? "1" : "0"}`
@@ -118,6 +133,20 @@ function HistoryCard({
             {entry.loveType && <Chip label={entry.loveType} color="#e8a0bf" />}
             {entry.zodiac && <Chip label={entry.zodiac} color="#60a5fa" />}
             {entry.tarot && <Chip label={entry.tarot} color="#34d399" />}
+            {revelCode && (
+              <button
+                onClick={handleCopyCode}
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs tracking-wide transition-all"
+                style={{
+                  background: codeCopied ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.05)",
+                  border: codeCopied ? "1px solid rgba(16,185,129,0.4)" : "1px solid rgba(255,255,255,0.15)",
+                  color: codeCopied ? "#34d399" : "rgba(255,255,255,0.45)",
+                  fontFamily: "monospace",
+                }}
+              >
+                {codeCopied ? "✓" : "⧉"} {revelCode}
+              </button>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
