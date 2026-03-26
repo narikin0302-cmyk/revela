@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getHistory, deleteHistoryEntry, type HistoryEntry } from "@/lib/storage";
 import { loveTypeDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
@@ -101,6 +102,11 @@ function HistoryCard({
   onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const router = useRouter();
+
+  const resultUrl = entry.mbti && entry.loveType && entry.tarot
+    ? `/result?mbti=${entry.mbti}&love=${entry.loveType}&zodiac=${encodeURIComponent(entry.zodiac ?? "なし")}&tarot=${encodeURIComponent(entry.tarot)}&reversed=${entry.isReversed ? "1" : "0"}`
+    : null;
 
   return (
     <div className="card-glow rounded-2xl p-5 transition-all duration-200">
@@ -115,6 +121,19 @@ function HistoryCard({
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
+          {resultUrl && (
+            <button
+              onClick={() => router.push(resultUrl)}
+              className="text-xs px-3 py-1.5 rounded-full transition-all"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "rgba(255,255,255,0.7)",
+              }}
+            >
+              結果を見る
+            </button>
+          )}
           <button
             onClick={() => setExpanded((prev) => !prev)}
             className="text-xs px-3 py-1.5 rounded-full transition-all"
