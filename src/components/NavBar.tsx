@@ -43,13 +43,6 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "ツール",
-    children: [
-      { label: "星座", href: "/uranai/seiza" },
-      { label: "タロット", href: "/uranai/tarot" },
-    ],
-  },
-  {
     label: "診断",
     children: [
       { label: "総合診断", href: "/shindan" },
