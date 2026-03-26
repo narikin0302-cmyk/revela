@@ -166,7 +166,7 @@ export default function CharaPage() {
           {/* Concept intro */}
           <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
             <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of MBTI</p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)" }}>認知の基盤</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)", background: "rgba(251,191,36,0.06)" }}>認知の基盤</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
               世界を認識し、判断を下すための「基本OS」。
             </h2>
@@ -319,7 +319,7 @@ export default function CharaPage() {
           {/* Concept intro */}
           <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
             <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Zodiac</p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#93c5fd", border: "1px solid rgba(147,197,253,0.3)", background: "rgba(147,197,253,0.06)" }}>先天的な属性</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#22d3ee", border: "1px solid rgba(34,211,238,0.3)", background: "rgba(34,211,238,0.06)" }}>先天的な属性</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
               生涯変わることのない、魂の「ベースライン」。
             </h2>
@@ -462,7 +462,7 @@ export default function CharaPage() {
             <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
               Concept of Classes
             </p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#a78bfa", border: "1px solid rgba(167,139,250,0.3)", background: "rgba(167,139,250,0.06)" }}>役割の統合</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#34d399", border: "1px solid rgba(52,211,153,0.3)", background: "rgba(52,211,153,0.06)" }}>役割の統合</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
               複雑なパラメーターを、ひとつの「役割」に統合する。
             </h2>
