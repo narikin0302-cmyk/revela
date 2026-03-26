@@ -35,8 +35,11 @@ function HistoryCard({
       if (entry.mbti) {
         localStorage.setItem("revela_user", JSON.stringify({ mbti: entry.mbti }));
       }
+      if (entry.loveType) {
+        localStorage.setItem("revela_mycode", entry.loveType);
+      }
     } catch { /* ignore */ }
-    router.push("/shindan/career");
+    router.push("/chara?tab=rpg");
   };
 
   return (
