@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getHistory, deleteHistoryEntry, type HistoryEntry } from "@/lib/storage";
-import { generateRevelaCode, parseRevelaCode } from "@/lib/revelaCodes";
 import { loveTypeDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
@@ -103,21 +102,7 @@ function HistoryCard({
   onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [codeCopied, setCodeCopied] = useState(false);
   const router = useRouter();
-
-  const revelCode = entry.mbti && entry.loveType && entry.zodiac && entry.zodiac !== "なし" && entry.tarot
-    ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac, entry.tarot)
-    : null;
-
-  const handleCopyCode = async () => {
-    if (!revelCode) return;
-    try {
-      await navigator.clipboard.writeText(revelCode);
-      setCodeCopied(true);
-      setTimeout(() => setCodeCopied(false), 2500);
-    } catch { /* silent */ }
-  };
 
   const resultUrl = entry.mbti && entry.loveType && entry.tarot
     ? `/result?mbti=${entry.mbti}&love=${entry.loveType}&zodiac=${encodeURIComponent(entry.zodiac ?? "なし")}&tarot=${encodeURIComponent(entry.tarot)}&reversed=${entry.isReversed ? "1" : "0"}`
@@ -128,24 +113,6 @@ function HistoryCard({
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs mb-2 tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>{entry.date}</p>
-          {revelCode && (
-            <button
-              onClick={handleCopyCode}
-              className="mb-3 font-bold tracking-widest transition-all"
-              style={{
-                fontFamily: "monospace",
-                fontSize: "15px",
-                color: codeCopied ? "#34d399" : "rgba(255,255,255,0.85)",
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                letterSpacing: "0.1em",
-              }}
-            >
-              {codeCopied ? "✓ コピー済" : revelCode}
-            </button>
-          )}
           <div className="flex flex-wrap gap-2">
             {entry.mbti && <Chip label={entry.mbti} color="rgba(255,255,255,0.6)" />}
             {entry.loveType && <Chip label={entry.loveType} color="#e8a0bf" />}
@@ -212,50 +179,6 @@ function HistoryCard({
   );
 }
 
-function CodeLookup() {
-  const router = useRouter();
-  const [code, setCode] = useState("");
-  const [error, setError] = useState(false);
-
-  const handleSubmit = () => {
-    const parsed = parseRevelaCode(code.trim());
-    if (!parsed) { setError(true); return; }
-    setError(false);
-    router.push(`/result?mbti=${parsed.mbti}&love=${parsed.loveType}&zodiac=${encodeURIComponent(parsed.zodiac)}&tarot=${encodeURIComponent(parsed.tarot)}&reversed=0`);
-  };
-
-  return (
-    <div className="rounded-2xl p-5 mb-8" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}>
-      <p className="text-xs tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>✦ コードから結果を見る</p>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => { setCode(e.target.value); setError(false); }}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          placeholder="INTP-LCRO-ふた-月"
-          className="flex-1 rounded-xl px-4 py-2.5 text-sm"
-          style={{
-            background: "rgba(255,255,255,0.06)",
-            border: error ? "1px solid rgba(248,113,113,0.5)" : "1px solid rgba(255,255,255,0.15)",
-            color: "#EDEDED",
-            outline: "none",
-            fontFamily: "monospace",
-            letterSpacing: "0.05em",
-          }}
-        />
-        <button
-          onClick={handleSubmit}
-          className="px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest transition-all btn-gold"
-        >
-          見る
-        </button>
-      </div>
-      {error && <p className="text-xs mt-2" style={{ color: "#f87171" }}>コードの形式が正しくありません</p>}
-    </div>
-  );
-}
-
 export default function HistoryPage() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -285,8 +208,6 @@ export default function HistoryPage() {
         <p className="text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>過去の診断結果を振り返ることができます。</p>
         <div className="divider-gold w-20 mx-auto mt-4" />
       </div>
-
-      <CodeLookup />
 
       {entries.length === 0 ? (
         <div className="text-center py-20">
