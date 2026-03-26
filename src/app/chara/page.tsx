@@ -459,9 +459,10 @@ export default function CharaPage() {
           <>
           {/* Concept intro */}
           <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-6" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
               Concept of Classes
             </p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#a78bfa", border: "1px solid rgba(167,139,250,0.3)", background: "rgba(167,139,250,0.06)" }}>役割の統合</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
               複雑なパラメーターを、ひとつの「役割」に統合する。
             </h2>
