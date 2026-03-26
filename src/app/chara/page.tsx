@@ -373,11 +373,10 @@ export default function CharaPage() {
             <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-6" style={{ color: "rgba(255,255,255,0.4)" }}>
               Concept of Classes
             </p>
-            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0" }}>
-              複雑なパラメーターを、<br className="block sm:hidden" />
-              ひとつの「役割」に統合する。
+            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
+              複雑なパラメーターを、ひとつの「役割」に統合する。
             </h2>
-            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
               <p>
                 人間の性格や行動原理は、決して一つの枠に収まるものではありません。<br className="hidden md:block" />
                 「論理的だけど、恋愛になると献身的」「自由人に見えて、実は計画的」。<br className="hidden md:block" />
