@@ -128,25 +128,29 @@ function HistoryCard({
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs mb-2 tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>{entry.date}</p>
+          {revelCode && (
+            <button
+              onClick={handleCopyCode}
+              className="mb-3 font-bold tracking-widest transition-all"
+              style={{
+                fontFamily: "monospace",
+                fontSize: "15px",
+                color: codeCopied ? "#34d399" : "rgba(255,255,255,0.85)",
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                letterSpacing: "0.1em",
+              }}
+            >
+              {codeCopied ? "✓ コピー済" : revelCode}
+            </button>
+          )}
           <div className="flex flex-wrap gap-2">
             {entry.mbti && <Chip label={entry.mbti} color="rgba(255,255,255,0.6)" />}
             {entry.loveType && <Chip label={entry.loveType} color="#e8a0bf" />}
             {entry.zodiac && <Chip label={entry.zodiac} color="#60a5fa" />}
             {entry.tarot && <Chip label={entry.tarot} color="#34d399" />}
-            {revelCode && (
-              <button
-                onClick={handleCopyCode}
-                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs tracking-wide transition-all"
-                style={{
-                  background: codeCopied ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.05)",
-                  border: codeCopied ? "1px solid rgba(16,185,129,0.4)" : "1px solid rgba(255,255,255,0.15)",
-                  color: codeCopied ? "#34d399" : "rgba(255,255,255,0.45)",
-                  fontFamily: "monospace",
-                }}
-              >
-                {codeCopied ? "✓" : "⧉"} {revelCode}
-              </button>
-            )}
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
