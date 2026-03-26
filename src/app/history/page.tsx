@@ -55,19 +55,6 @@ function HistoryCard({
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {entry.mbti && (
-            <button
-              onClick={handleRpgDiagnosis}
-              className="text-xs px-3 py-1.5 rounded-full transition-all"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "rgba(255,255,255,0.5)",
-              }}
-            >
-              ⚔️ RPG診断
-            </button>
-          )}
           <button
             onClick={() => setExpanded((prev) => !prev)}
             className="text-xs px-3 py-1.5 rounded-full transition-all"
