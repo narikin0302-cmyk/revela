@@ -163,6 +163,28 @@ export default function CharaPage() {
       {/* ── MBTI タブ ── */}
       {tab === "mbti" && (
         <>
+          {/* Concept intro */}
+          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of MBTI</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.04)" }}>認知の基盤</p>
+            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
+              世界を認識し、判断を下すための「基本OS」。
+            </h2>
+            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
+              <p>
+                私たちは、世界をありのままに見ているわけではありません。<br className="hidden md:block" />
+                「事実か、直感か」「論理か、感情か」。<br className="hidden md:block" />
+                誰の脳にも、情報を処理するための無意識のフィルターが存在します。
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+                これは能力の優劣を測るものではなく、あなたの脳の「初期設定」です。<br className="hidden md:block" />
+                自分がどんな法則で世界を切り取り、どう動くクセがあるのか。<br className="hidden md:block" />
+                すべての分析の土台となる、思考のアルゴリズムを定義します。
+              </p>
+            </div>
+            <div className="w-12 h-px mt-12" style={{ background: "rgba(255,255,255,0.15)" }} />
+          </section>
+
           {myMbti && (() => {
             const info = mbtiDescriptions[myMbti];
             const color = MBTI_COLORS[myMbti];
@@ -203,6 +225,27 @@ export default function CharaPage() {
       {/* ── キャラクター タブ ── */}
       {tab === "chara" && (
         <>
+          {/* Concept intro */}
+          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Character</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#e8a0bf", border: "1px solid rgba(232,160,191,0.3)", background: "rgba(232,160,191,0.06)" }}>関係性の構築</p>
+            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
+              他者と交わり、関係を構築するための「ペルソナ」。
+            </h2>
+            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
+              <p>
+                ひとりでいる時の顔と、誰かの前にいる時の顔は違います。<br className="hidden md:block" />
+                人は他者と深い関係を築くとき、無意識に自分なりの「立ち回り方」を選択しています。
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+                「尽くしすぎる」「束縛を嫌う」「場を支配する」。<br className="hidden md:block" />
+                内面にある思考のクセが、人間関係においてどう出力されるのか。<br className="hidden md:block" />
+                社会や恋愛という複雑なネットワークにおける、あなたのリアルな立ち位置を分類します。
+              </p>
+            </div>
+            <div className="w-12 h-px mt-12" style={{ background: "rgba(232,160,191,0.3)" }} />
+          </section>
+
           {myCode && (() => {
             const mine = ALL_TYPES.find((t) => t.code === myCode);
             if (!mine) return null;
@@ -273,6 +316,30 @@ export default function CharaPage() {
       {/* ── 星座 タブ ── */}
       {tab === "seiza" && (
         <>
+          {/* Concept intro */}
+          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Zodiac</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#93c5fd", border: "1px solid rgba(147,197,253,0.3)", background: "rgba(147,197,253,0.06)" }}>先天的な属性</p>
+            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
+              生涯変わることのない、魂の「ベースライン」。
+            </h2>
+            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
+              <p>
+                思考や価値観は、経験によって変化していきます。<br className="hidden md:block" />
+                しかし、生まれた瞬間の季節や環境という「起点」だけは、一生変わることがありません。
+              </p>
+              <p>
+                ここでの星座は、単なる運命論や占いではありません。<br className="hidden md:block" />
+                人間の根源的なエネルギーを4つのエレメント（火・土・風・水）に分類し、<br className="hidden md:block" />
+                基本ステータスに付与される「パッシブスキル」として再定義したものです。
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+                どんなパラメーターの持ち主でも、根底には必ずこの属性が流れています。
+              </p>
+            </div>
+            <div className="w-12 h-px mt-12" style={{ background: "rgba(147,197,253,0.3)" }} />
+          </section>
+
           {myZodiac && (() => {
             const mine = zodiacSigns.find((z) => z.name === myZodiac);
             if (!mine) return null;
@@ -325,6 +392,28 @@ export default function CharaPage() {
       {/* ── タロット タブ ── */}
       {tab === "tarot" && (
         <>
+          {/* Concept intro */}
+          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Tarot</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#c084fc", border: "1px solid rgba(192,132,252,0.3)", background: "rgba(192,132,252,0.06)" }}>現在の状況と指針</p>
+            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
+              偶然が導き出す、現在の「バイオリズムと最適解」。
+            </h2>
+            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
+              <p>
+                人間の本質がどれほど固定されていても、心と状況は日々変動します。<br className="hidden md:block" />
+                「今は攻めるべきか、守るべきか」。<br className="hidden md:block" />
+                固定のパラメーターだけでは対応できない「今の波」を測るため、<br className="hidden md:block" />
+                システムに乱数（ランダム要素）を組み込みました。
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+                これは神秘的な予言ではありません。<br className="hidden md:block" />
+                今の心理状態を客観視し、目の前の課題を突破するための思考のフレームワークです。
+              </p>
+            </div>
+            <div className="w-12 h-px mt-12" style={{ background: "rgba(192,132,252,0.3)" }} />
+          </section>
+
           {myTarot && (() => {
             const mine = tarotCards.find((c) => c.name === myTarot);
             if (!mine) return null;
