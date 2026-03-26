@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import {
   getResultReading,
@@ -11,6 +11,7 @@ import {
 import type { LoveType } from "@/data/questions";
 import { zodiacInfo } from "@/lib/calculate";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
+import { generateRevelaCode } from "@/lib/revelaCodes";
 
 const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string }> = {
   INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", label: "分析家" },
@@ -48,12 +49,24 @@ function ResultView() {
     );
   }
 
+  const [codeCopied, setCodeCopied] = useState(false);
+
   const reading = getResultReading(mbti, love, zodiac, tarot, reversed);
   const mbtiColor = MBTI_COLORS[mbti] ?? { primary: "rgba(255,255,255,0.6)", bg: "rgba(255,255,255,0.08)", label: "" };
   const loveInfo = loveTypeDescriptions[love];
   const mbtiInfo = mbtiDescriptions[mbti];
   const zodiacData = zodiac !== "なし" ? zodiacInfo[zodiac] : null;
   const rpg = getRpgClassByCombo(mbti, love);
+
+  const revelCode = zodiac !== "なし" ? generateRevelaCode(mbti, love, zodiac, tarot) : null;
+  const handleCopyCode = async () => {
+    if (!revelCode) return;
+    try {
+      await navigator.clipboard.writeText(revelCode);
+      setCodeCopied(true);
+      setTimeout(() => setCodeCopied(false), 2500);
+    } catch { /* silent */ }
+  };
 
   const chips = [
     { label: "MBTI", value: mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg },
@@ -195,6 +208,36 @@ function ResultView() {
         <p style={sectionLabel}>アドバイス</p>
         <p className="text-sm leading-relaxed italic" style={{ color: "rgba(255,255,255,0.8)" }}>「{reading.advice}」</p>
       </div>
+
+      {/* Revela Code */}
+      {revelCode && (
+        <div className="rounded-2xl p-5 mb-4 text-center" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(232,160,191,0.05))", border: "1px solid rgba(255,255,255,0.15)" }}>
+          <p className="text-xs tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>あなたのrevelaコード</p>
+          <div className="flex items-center justify-center gap-3">
+            <div
+              className="px-5 py-2.5 rounded-xl text-sm font-bold tracking-widest"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.3)", color: "rgba(255,255,255,0.85)", fontFamily: "monospace" }}
+            >
+              {revelCode}
+            </div>
+            <button
+              onClick={handleCopyCode}
+              className="px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest transition-all duration-200"
+              style={{
+                background: codeCopied ? "linear-gradient(135deg,#059669,#10b981)" : "rgba(255,255,255,0.08)",
+                color: codeCopied ? "#fff" : "rgba(255,255,255,0.7)",
+                border: codeCopied ? "none" : "1px solid rgba(255,255,255,0.2)",
+                minWidth: "72px",
+              }}
+            >
+              {codeCopied ? "✓ コピー済" : "コピー"}
+            </button>
+          </div>
+          <p className="text-xs mt-3" style={{ color: "rgba(255,255,255,0.3)" }}>友達と相性診断できます →{" "}
+            <Link href="/shindan/aisei" className="underline opacity-60">相性診断</Link>
+          </p>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex gap-3 mt-8">
