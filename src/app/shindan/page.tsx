@@ -543,6 +543,10 @@ interface Step0Props {
   knowsLove: boolean | null;
   setKnowsLove: (v: boolean | null) => void;
   onNext: () => void;
+  mbtiCount: 5 | 10 | 15;
+  onMbtiCountChange: (n: 5 | 10 | 15) => void;
+  loveCount: 5 | 10 | 15;
+  onLoveCountChange: (n: 5 | 10 | 15) => void;
 }
 
 function Step0({
@@ -551,6 +555,8 @@ function Step0({
   knownLove, setKnownLove,
   knowsLove, setKnowsLove,
   onNext,
+  mbtiCount, onMbtiCountChange,
+  loveCount, onLoveCountChange,
 }: Step0Props) {
   const btnBase: React.CSSProperties = {
     padding: "10px 20px",
@@ -599,6 +605,34 @@ function Step0({
             いいえ、診断する
           </button>
         </div>
+
+        {knowsMBTI === false && (
+          <div className="animate-fade-in mt-1 mb-2">
+            <p className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>質問数を選んでください</p>
+            <div className="flex gap-2 flex-wrap mb-1">
+              {([5, 10, 15] as const).map((n) => (
+                <button
+                  key={n}
+                  onClick={() => onMbtiCountChange(n)}
+                  style={{
+                    padding: "6px 14px",
+                    borderRadius: "9999px",
+                    fontSize: "12px",
+                    fontWeight: mbtiCount === n ? 700 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    background: mbtiCount === n ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.04)",
+                    color: mbtiCount === n ? "#EDEDED" : "rgba(255,255,255,0.45)",
+                    border: mbtiCount === n ? "1px solid rgba(255,255,255,0.4)" : "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  {n}問{n === 5 ? "（速攻）" : n === 10 ? "（標準）" : "（詳細）"}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>※ 多いほど正確に診断できます</p>
+          </div>
+        )}
 
         {knowsMBTI === true && (
           <div className="animate-fade-in">
@@ -658,6 +692,34 @@ function Step0({
             いいえ、診断する
           </button>
         </div>
+
+        {knowsLove === false && (
+          <div className="animate-fade-in mt-1 mb-2">
+            <p className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>質問数を選んでください</p>
+            <div className="flex gap-2 flex-wrap mb-1">
+              {([5, 10, 15] as const).map((n) => (
+                <button
+                  key={n}
+                  onClick={() => onLoveCountChange(n)}
+                  style={{
+                    padding: "6px 14px",
+                    borderRadius: "9999px",
+                    fontSize: "12px",
+                    fontWeight: loveCount === n ? 700 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    background: loveCount === n ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.04)",
+                    color: loveCount === n ? "#EDEDED" : "rgba(255,255,255,0.45)",
+                    border: loveCount === n ? "1px solid rgba(255,255,255,0.4)" : "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  {n}問{n === 5 ? "（速攻）" : n === 10 ? "（標準）" : "（詳細）"}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>※ 多いほど正確に診断できます</p>
+          </div>
+        )}
 
         {knowsLove === true && (
           <div className="animate-fade-in space-y-2">
@@ -3826,11 +3888,27 @@ const initialForm: FormData = {
 type SubStep = "normal" | "trueSelf" | "trueSelfSkipped";
 
 export default function ShindanPage() {
-  // Randomized questions (fixed for this session)
-  const [activeQuestions] = useState(() => ({
-    mbti: getRandomizedMBTIQuestions(),
-    love: getRandomizedLoveQuestions(),
+  // Question count selector
+  const [mbtiCount, setMbtiCount] = useState<5 | 10 | 15>(10);
+  const [loveCount, setLoveCount] = useState<5 | 10 | 15>(5);
+
+  // Randomized questions — regenerate when count changes
+  const [activeQuestions, setActiveQuestions] = useState(() => ({
+    mbti: getRandomizedMBTIQuestions(10),
+    love: getRandomizedLoveQuestions(5),
   }));
+
+  const handleMbtiCountChange = (count: 5 | 10 | 15) => {
+    setMbtiCount(count);
+    setFormData((prev) => ({ ...prev, mbtiAnswers: {} }));
+    setActiveQuestions((prev) => ({ ...prev, mbti: getRandomizedMBTIQuestions(count) }));
+  };
+
+  const handleLoveCountChange = (count: 5 | 10 | 15) => {
+    setLoveCount(count);
+    setFormData((prev) => ({ ...prev, loveAnswers: {} }));
+    setActiveQuestions((prev) => ({ ...prev, love: getRandomizedLoveQuestions(count) }));
+  };
 
   // Step 0 skip state
   const [knowsMBTI, setKnowsMBTI] = useState<boolean | null>(null);
@@ -3917,7 +3995,7 @@ export default function ShindanPage() {
   };
 
   const handleStep2Next = () => {
-    const mbti = calculateMBTI(formData.mbtiAnswers);
+    const mbti = calculateMBTI(formData.mbtiAnswers, activeQuestions.mbti);
     setMbtiResult(mbti);
     setMbtiFromDiagnosis(true);
     if (knowsLove === true && knownLove) {
@@ -3931,7 +4009,7 @@ export default function ShindanPage() {
   };
 
   const handleStep3Next = () => {
-    const love = knowsLove && knownLove ? (knownLove as LoveType) : calculateLoveType(formData.loveAnswers);
+    const love = knowsLove && knownLove ? (knownLove as LoveType) : calculateLoveType(formData.loveAnswers, activeQuestions.love);
     setLoveResult(love);
     setShowTarot(true);
     setSubStep("normal");
@@ -4049,6 +4127,10 @@ export default function ShindanPage() {
             knowsLove={knowsLove}
             setKnowsLove={setKnowsLove}
             onNext={handleStep0Next}
+            mbtiCount={mbtiCount}
+            onMbtiCountChange={handleMbtiCountChange}
+            loveCount={loveCount}
+            onLoveCountChange={handleLoveCountChange}
           />
         )}
 

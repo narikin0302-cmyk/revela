@@ -187,105 +187,106 @@ export const loveQuestions: LoveQuestion[] = [
 ];
 
 // ============================================================
-// Question Variant Banks (for randomization)
+// MBTI Question Pool (20 questions — 5 per dimension)
 // ============================================================
 
-interface QuestionText {
-  question: string;
-  optionA: string;
-  optionB: string;
+export const mbtiQuestionPool: MBTIQuestion[] = [
+  // ── EI (5 questions) ──
+  { id: 1,  question: "週末の理想的な過ごし方は？", optionA: "友人や大勢の人たちと賑やかに過ごしたい", optionB: "一人か少人数でゆっくりと過ごしたい", dimension: "EI", aValue: "E", bValue: "I" },
+  { id: 2,  question: "初めて会った人と話すとき、あなたは…", optionA: "自分からどんどん話しかける方だ", optionB: "相手が話しかけてくるのを待つ方だ", dimension: "EI", aValue: "E", bValue: "I" },
+  { id: 9,  question: "エネルギーが満ちてくるのはどんなとき？", optionA: "人と交流して刺激を受けたとき", optionB: "一人で静かに思考を深めたとき", dimension: "EI", aValue: "E", bValue: "I" },
+  { id: 11, question: "グループの会話では？", optionA: "話の中心になって盛り上げたい", optionB: "聞き役に回ることが多い", dimension: "EI", aValue: "E", bValue: "I" },
+  { id: 12, question: "疲れたとき回復するのは？", optionA: "友達に会って話して元気を取り戻す", optionB: "家でひとりで静かに過ごす", dimension: "EI", aValue: "E", bValue: "I" },
+  // ── SN (5 questions) ──
+  { id: 3,  question: "何か新しいことを学ぶとき、重視するのは？", optionA: "具体的な事実やデータ、実際に使えること", optionB: "全体像や可能性、未来への応用", dimension: "SN", aValue: "S", bValue: "N" },
+  { id: 8,  question: "ひらめきやアイデアを得るのはどんなとき？", optionA: "過去の経験や実績を振り返ったとき", optionB: "「もし〇〇だったら」と想像を広げたとき", dimension: "SN", aValue: "S", bValue: "N" },
+  { id: 13, question: "物語や映画で惹かれるのは？", optionA: "リアルで現実的なストーリー", optionB: "想像力あふれる世界観", dimension: "SN", aValue: "S", bValue: "N" },
+  { id: 14, question: "仕事の説明を受けるとき、欲しいのは？", optionA: "具体的な手順やマニュアル", optionB: "目的と背景・全体像の説明", dimension: "SN", aValue: "S", bValue: "N" },
+  { id: 15, question: "「理想」と聞いてイメージするのは？", optionA: "現実的に達成できる具体的な目標", optionB: "まだ存在しない何か新しいもの", dimension: "SN", aValue: "S", bValue: "N" },
+  // ── TF (5 questions) ──
+  { id: 5,  question: "友人が悩みを打ち明けてきたとき、まず何をする？", optionA: "解決策や具体的なアドバイスを考える", optionB: "気持ちに寄り添い、話をじっくり聞く", dimension: "TF", aValue: "T", bValue: "F" },
+  { id: 7,  question: "あなたにとって「信頼できる人」とは？", optionA: "約束を守り、一貫性がある論理的な人", optionB: "感情を理解してくれる、温かみのある人", dimension: "TF", aValue: "T", bValue: "F" },
+  { id: 10, question: "何かを決断するとき、最終的に頼るのは？", optionA: "客観的な事実や論理的な根拠", optionB: "自分の価値観や直感、感情", dimension: "TF", aValue: "T", bValue: "F" },
+  { id: 16, question: "物事を判断するときの基準は？", optionA: "論理的に正しいかどうか", optionB: "自分や周りの気持ちに合っているかどうか", dimension: "TF", aValue: "T", bValue: "F" },
+  { id: 17, question: "映画や本で感動するのは？", optionA: "緻密な設定や論理的な展開", optionB: "登場人物の感情や人間関係", dimension: "TF", aValue: "T", bValue: "F" },
+  // ── JP (5 questions) ──
+  { id: 4,  question: "旅行の計画を立てるとき、あなたは…", optionA: "細かいスケジュールを事前にしっかり立てたい", optionB: "その場の流れに任せてフレキシブルに動きたい", dimension: "JP", aValue: "J", bValue: "P" },
+  { id: 6,  question: "仕事やプロジェクトを進めるスタイルは？", optionA: "期限より前に計画的に終わらせる", optionB: "締め切り直前に集中して仕上げる", dimension: "JP", aValue: "J", bValue: "P" },
+  { id: 18, question: "買い物のスタイルは？", optionA: "必要なものをリスト化して計画的に買う", optionB: "その場の直感で気になったものを買う", dimension: "JP", aValue: "J", bValue: "P" },
+  { id: 19, question: "TODOリストについて", optionA: "常に作成してタスクを管理している", optionB: "頭の中や気分で動く方が好き", dimension: "JP", aValue: "J", bValue: "P" },
+  { id: 20, question: "複数のタスクがあるとき", optionA: "優先順位をつけて順番に片付ける", optionB: "気が向いたものから取り組む", dimension: "JP", aValue: "J", bValue: "P" },
+];
+
+// ============================================================
+// Love Question Pool (16 questions — 4 per axis)
+// ============================================================
+
+export const loveQuestionPool: LoveQuestion[] = [
+  // ── Axis 1: L vs F (4 questions) ──
+  { id: 1,  question: "ストレスの多いグループプロジェクトに取り組むとき、あなたは？", optionA: "自分から方向性を提示して積極的に引っ張る", optionB: "周囲の様子を見ながら最適なタイミングで動く", axis: "1", aValue: "L", bValue: "F" },
+  { id: 6,  question: "初対面の人と話すとき", optionA: "自分から積極的に話しかける", optionB: "相手が話しかけてくるのを待つ", axis: "1", aValue: "L", bValue: "F" },
+  { id: 7,  question: "グループで意見を言うとき", optionA: "自分の考えを積極的に発言する", optionB: "求められたときに話す", axis: "1", aValue: "L", bValue: "F" },
+  { id: 8,  question: "何か問題が起きたとき", optionA: "すぐ動いて自分で解決しようとする", optionB: "状況を整理してから動く", axis: "1", aValue: "L", bValue: "F" },
+  // ── Axis 2: C vs A (4 questions) ──
+  { id: 2,  question: "大きな目標を達成したとき、最初に感じることは？", optionA: "冷静に次のステップを考え始める", optionB: "感情があふれ出て、誰かと喜びを分かち合いたくなる", axis: "2", aValue: "C", bValue: "A" },
+  { id: 9,  question: "嬉しいことがあったとき", optionA: "内心は嬉しいが、あまり表に出さない", optionB: "表情や言葉で自然に感情を表現できる", axis: "2", aValue: "C", bValue: "A" },
+  { id: 10, question: "映画を見て泣いたことは？", optionA: "ほとんどない", optionB: "よくある", axis: "2", aValue: "C", bValue: "A" },
+  { id: 11, question: "怒りや悲しみを感じたとき", optionA: "冷静に整理してから対処する", optionB: "感情がすぐ顔や言葉に出てしまう", axis: "2", aValue: "C", bValue: "A" },
+  // ── Axis 3: R vs P (4 questions) ──
+  { id: 3,  question: "グループで決断が必要なとき、あなたは…", optionA: "データや実績をもとに現実的な選択肢を示す", optionB: "みんながワクワクできる大胆なアイデアを提案する", axis: "3", aValue: "R", bValue: "P" },
+  { id: 5,  question: "長くて過酷な一日の終わりに、あなたの回復法は？", optionA: "体を動かすか、具体的な作業で頭を切り替える", optionB: "音楽・本・空想など、感覚の世界に浸る", axis: "3", aValue: "R", bValue: "P" },
+  { id: 12, question: "大きな買い物をするとき", optionA: "予算と機能を比較してから決める", optionB: "ワクワクしたかどうかで決める", axis: "3", aValue: "R", bValue: "P" },
+  { id: 13, question: "リスクについて", optionA: "できるだけ避けたい", optionB: "チャレンジのための必要コスト", axis: "3", aValue: "R", bValue: "P" },
+  // ── Axis 4: O vs E (4 questions) ──
+  { id: 4,  question: "まったく新しい環境に飛び込んだとき、あなたは？", optionA: "積極的に話しかけて、すぐに自分のネットワークを広げる", optionB: "まず観察して、自分のペースで少しずつ馴染んでいく", axis: "4", aValue: "O", bValue: "E" },
+  { id: 14, question: "SNSで自己表現するのは？", optionA: "自分の意見や日常を積極的に発信する", optionB: "見る専門で、あまり発信しない", axis: "4", aValue: "O", bValue: "E" },
+  { id: 15, question: "自分の悩みや本音を話すのは？", optionA: "気が許せれば誰にでも話せる", optionB: "ごく限られた人にしか話せない", axis: "4", aValue: "O", bValue: "E" },
+  { id: 16, question: "プライベートを職場の人に話すのは？", optionA: "特に問題ない", optionB: "できるだけ話したくない", axis: "4", aValue: "O", bValue: "E" },
+];
+
+// ============================================================
+// Randomized Question Selectors
+// ============================================================
+
+function shuffle<T>(arr: T[]): T[] {
+  return [...arr].sort(() => Math.random() - 0.5);
 }
 
-const mbtiVariantBank: Record<number, QuestionText[]> = {
-  1: [
-    { question: "グループの会話では？", optionA: "話の中心になって盛り上げたい", optionB: "聞き役に回ることが多い" },
-    { question: "充電が切れると感じるのは？", optionA: "人と関わらない時間が続いたとき", optionB: "人に囲まれっぱなしの時間が続いたとき" },
-  ],
-  2: [
-    { question: "知らない人が多いパーティーで", optionA: "積極的に声をかけて回る", optionB: "知り合いを見つけるか、静かに観察する" },
-    { question: "休日の朝に何もない時間ができたら", optionA: "誰かを誘ってどこかへ出かけたい", optionB: "家でひとりのんびり過ごしたい" },
-  ],
-  3: [
-    { question: "物語や映画で惹かれるのは？", optionA: "リアルで現実的なストーリー", optionB: "想像力あふれる世界観" },
-    { question: "本を読むとき重視するのは？", optionA: "実用的・具体的な内容", optionB: "アイデアや視野が広がる内容" },
-  ],
-  4: [
-    { question: "予定が急に変更になったとき", optionA: "困る。事前に決めていたことを大切にしたい", optionB: "むしろ新鮮。予定は変わるものだと思っている" },
-    { question: "部屋の整理整頓は？", optionA: "常に整理された状態を保ちたい", optionB: "必要なときに整理すれば十分" },
-  ],
-  5: [
-    { question: "チームで方針が違うと気づいたとき", optionA: "論理的に問題点を指摘する", optionB: "場の雰囲気も考えながら優しく伝える" },
-    { question: "大切なことを伝えるとき", optionA: "事実や根拠を整理して話す", optionB: "相手の気持ちに寄り添いながら話す" },
-  ],
-  6: [
-    { question: "買い物のスタイルは？", optionA: "必要なものをリスト化して計画的に買う", optionB: "その場の直感で気になったものを買う" },
-    { question: "新しいことを始めるとき", optionA: "まず計画を立ててから動く", optionB: "とりあえず動きながら考える" },
-  ],
-  7: [
-    { question: "物事を判断するときの基準は？", optionA: "論理的に正しいかどうか", optionB: "自分や周りの気持ちに合っているかどうか" },
-    { question: "映画や本で感動するのは？", optionA: "緻密な設定や論理的な展開", optionB: "登場人物の感情や人間関係" },
-  ],
-  8: [
-    { question: "仕事でのアプローチは？", optionA: "過去の成功例をもとに確実に進める", optionB: "新しいやり方を試して改善していく" },
-    { question: "会話の中で面白いと感じるのは？", optionA: "実体験や事実に基づいた話", optionB: "仮説や「もしこうだったら」という話" },
-  ],
-  9: [
-    { question: "SNSでの発信スタイルは？", optionA: "積極的にコメントや投稿をする", optionB: "主に見る側でたまに反応する" },
-    { question: "疲れたとき回復するのは？", optionA: "友達に会って話して元気を取り戻す", optionB: "家でひとりで静かに過ごす" },
-  ],
-  10: [
-    { question: "何かを購入するとき重視するのは？", optionA: "スペックや機能・コスパ", optionB: "デザインや雰囲気・好みに合うか" },
-    { question: "リーダーに必要だと思うのは？", optionA: "正しい判断を下せる知性と決断力", optionB: "メンバーの気持ちを理解できる共感力" },
-  ],
-};
+export function getRandomizedMBTIQuestions(count: number = 10): MBTIQuestion[] {
+  const byDim: Record<MBTIDimension, MBTIQuestion[]> = { EI: [], SN: [], TF: [], JP: [] };
+  mbtiQuestionPool.forEach((q) => byDim[q.dimension].push(q));
 
-const loveVariantBank: Record<number, QuestionText[]> = {
-  1: [
-    { question: "初対面の人と話すとき", optionA: "自分から積極的に話しかける", optionB: "相手が話しかけてくるのを待つ" },
-    { question: "グループで行き詰まったとき", optionA: "率先して解決策を提案する", optionB: "周囲の様子を見ながらサポートに回る" },
-  ],
-  2: [
-    { question: "嬉しいことがあったとき", optionA: "表情や言葉で自然に表現できる", optionB: "内心は嬉しいが、あまり表に出さない" },
-    { question: "怒りや悲しみを感じたとき", optionA: "感情を表に出してしまうことが多い", optionB: "冷静に整理してから対処する" },
-  ],
-  3: [
-    { question: "大きな買い物をするとき", optionA: "予算と機能を比較してから決める", optionB: "ワクワクしたかどうかで決める" },
-    { question: "仕事の進め方は？", optionA: "リスクを抑えた安全な方法を選ぶ", optionB: "少しリスクがあっても大きな可能性を取る" },
-  ],
-  4: [
-    { question: "SNSで自己表現するのは？", optionA: "自分の意見や日常を積極的に発信する", optionB: "見る専門で、あまり発信しない" },
-    { question: "新しいコミュニティに入るとき", optionA: "最初から自分を開いて積極的に関わる", optionB: "まず観察して、ゆっくり関係を築く" },
-  ],
-  5: [
-    { question: "長い連休の計画は？", optionA: "やること・行き先を決めてから動く", optionB: "その日の気分でどこへでも行く" },
-    { question: "困難な状況を乗り越えるのは？", optionA: "具体的な解決策を探して対処する", optionB: "感情や直感に従って突破する" },
-  ],
-};
+  const dims: MBTIDimension[] = ["EI", "SN", "TF", "JP"];
+  const perDim = Math.floor(count / 4);
+  const extras = count % 4;
+  const extraDims = shuffle(dims).slice(0, extras);
 
-function pickVariant(q: QuestionText, bank: QuestionText[] | undefined): QuestionText {
-  if (!bank || bank.length === 0) return q;
-  const all = [q, ...bank];
-  return all[Math.floor(Math.random() * all.length)];
-}
-
-export function getRandomizedMBTIQuestions(): MBTIQuestion[] {
-  return mbtiQuestions.map((q) => {
-    const variant = pickVariant(
-      { question: q.question, optionA: q.optionA, optionB: q.optionB },
-      mbtiVariantBank[q.id]
-    );
-    return { ...q, ...variant };
+  const result: MBTIQuestion[] = [];
+  dims.forEach((dim) => {
+    const needed = perDim + (extraDims.includes(dim) ? 1 : 0);
+    result.push(...shuffle(byDim[dim]).slice(0, needed));
   });
+
+  return shuffle(result);
 }
 
-export function getRandomizedLoveQuestions(): LoveQuestion[] {
-  return loveQuestions.map((q) => {
-    const variant = pickVariant(
-      { question: q.question, optionA: q.optionA, optionB: q.optionB },
-      loveVariantBank[q.id]
-    );
-    return { ...q, ...variant };
+export function getRandomizedLoveQuestions(count: number = 5): LoveQuestion[] {
+  type LoveAxis = "1" | "2" | "3" | "4";
+  const byAxis: Record<LoveAxis, LoveQuestion[]> = { "1": [], "2": [], "3": [], "4": [] };
+  loveQuestionPool.forEach((q) => byAxis[q.axis].push(q));
+
+  const axes: LoveAxis[] = ["1", "2", "3", "4"];
+  const perAxis = Math.floor(count / 4);
+  const extras = count % 4;
+  const extraAxes = shuffle(axes).slice(0, extras);
+
+  const result: LoveQuestion[] = [];
+  axes.forEach((axis) => {
+    const needed = perAxis + (extraAxes.includes(axis) ? 1 : 0);
+    result.push(...shuffle(byAxis[axis]).slice(0, needed));
   });
+
+  return shuffle(result);
 }
 
 // ============================================================

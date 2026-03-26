@@ -1,4 +1,4 @@
-import type { LoveType } from "@/data/questions";
+import type { LoveType, MBTIQuestion, LoveQuestion } from "@/data/questions";
 import { mbtiQuestions, loveQuestions } from "@/data/questions";
 
 // ============================================================
@@ -19,7 +19,7 @@ export interface MBTIAnswers {
   [questionId: number]: LikertScore;
 }
 
-export function calculateMBTI(answers: MBTIAnswers): string {
+export function calculateMBTI(answers: MBTIAnswers, questions: MBTIQuestion[] = mbtiQuestions): string {
   const scores: Record<string, number> = {
     E: 0, I: 0,
     S: 0, N: 0,
@@ -27,7 +27,7 @@ export function calculateMBTI(answers: MBTIAnswers): string {
     J: 0, P: 0,
   };
 
-  mbtiQuestions.forEach((q) => {
+  questions.forEach((q) => {
     const answer = answers[q.id] as LikertScore | undefined;
     if (!answer) return;
     const [aScore, bScore] = LIKERT_WEIGHTS[answer];
@@ -51,10 +51,10 @@ export interface MBTIDimensionScore {
   winner: string;
 }
 
-export function getMBTIScores(answers: MBTIAnswers): MBTIDimensionScore[] {
+export function getMBTIScores(answers: MBTIAnswers, questions: MBTIQuestion[] = mbtiQuestions): MBTIDimensionScore[] {
   const scores: Record<string, number> = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
 
-  mbtiQuestions.forEach((q) => {
+  questions.forEach((q) => {
     const answer = answers[q.id] as LikertScore | undefined;
     if (!answer) return;
     const [aScore, bScore] = LIKERT_WEIGHTS[answer];
@@ -82,13 +82,13 @@ export interface LoveAnswers {
   [questionId: number]: LikertScore;
 }
 
-export function calculateLoveType(answers: LoveAnswers): LoveType {
+export function calculateLoveType(answers: LoveAnswers, questions: LoveQuestion[] = loveQuestions): LoveType {
   const axis1: Record<string, number> = { L: 0, F: 0 };
   const axis2: Record<string, number> = { C: 0, A: 0 };
   const axis3: Record<string, number> = { R: 0, P: 0 };
   const axis4: Record<string, number> = { O: 0, E: 0 };
 
-  loveQuestions.forEach((q) => {
+  questions.forEach((q) => {
     const answer = answers[q.id] as LikertScore | undefined;
     if (!answer) return;
     const [aScore, bScore] = LIKERT_WEIGHTS[answer];
