@@ -44,7 +44,7 @@ const menuItems = [
     href: "/shindan",
     isMain: true,
   },
-  { icon: "⚔️", title: "職場キャラ診断", desc: "あなたの職場タイプを診断", href: "/shindan/career", isMain: false },
+
   { icon: "💞", title: "相性診断", desc: "MBTIタイプの相性", href: "/shindan/aisei", isMain: false },
 ];
 
