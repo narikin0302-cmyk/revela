@@ -112,7 +112,7 @@ export default function HomePage() {
             className="text-sm sm:text-base leading-relaxed mb-2 font-light max-w-sm mx-auto"
             style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}
           >
-            4つの診断軸が交わるとき、<br />あなたの輪郭が浮かび上がる。
+            5つの診断軸が交わるとき、<br />あなたの輪郭が浮かび上がる。
           </p>
           <p
             className="font-cinzel text-xs tracking-[0.3em] mb-10"
