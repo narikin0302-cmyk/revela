@@ -10,11 +10,10 @@ interface BottomNavItem {
 }
 
 const NAV_ITEMS: BottomNavItem[] = [
+  { label: "総合診断", href: "/shindan", icon: "📊" },
+  { label: "相性診断", href: "/shindan/aisei", icon: "💞" },
   { label: "ホーム", href: "/", icon: "🏠" },
-  { label: "診断", href: "/shindan", icon: "📊" },
   { label: "マイページ", href: "/me", icon: "◈" },
-  { label: "タロット", href: "/uranai/tarot", icon: "🃏" },
-  { label: "星座", href: "/uranai/seiza", icon: "⭐" },
 ];
 
 export default function BottomNav() {

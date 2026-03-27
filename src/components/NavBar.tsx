@@ -323,7 +323,7 @@ export default function NavBar() {
                       {item.label.toUpperCase()}
                     </p>
                     <div className="space-y-2 pl-2">
-                      {item.children.map((child) => (
+                      {item.children.filter((c) => c.href !== "/shindan" && c.href !== "/shindan/aisei").map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
