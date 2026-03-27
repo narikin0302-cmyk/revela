@@ -1800,7 +1800,7 @@ function TarotSelection({
         </div>
       )}
 
-      <div style={{ position: "relative", height: "260px", marginBottom: "16px" }}>
+      <div style={{ position: "relative", height: "300px", marginBottom: "16px" }}>
         {sparkles.map((s, i) => (
           <Sparkle key={i} x={s.x} y={s.y} delay={s.d} />
         ))}
@@ -1832,10 +1832,11 @@ function TarotSelection({
           </>
         )}
 
+        {/* Row 1: first 4 cards */}
         <div
           style={{
             position: "absolute",
-            bottom: "0",
+            top: "20px",
             left: "50%",
             transform: "translateX(-50%)",
             width: "100%",
@@ -1845,12 +1846,92 @@ function TarotSelection({
             gap: "0px",
           }}
         >
-          {shuffledCards.map((card, idx) => {
+          {shuffledCards.slice(0, 4).map((card, rowIdx) => {
+            const idx = rowIdx;
             const isSelected = selected === idx;
             const isOther = selected !== null && selected !== idx;
             const isHovered = hovered === idx && phase === "selecting";
 
-            const fanX = (idx - 3) * 18;
+            const fanX = (rowIdx - 1.5) * 20;
+            const floatDelay = idx * 0.18;
+
+            let cardTransform = `translateX(${fanX}px) rotate(${card.tilt}deg)`;
+            if (isShuffling && scatterOffsets[idx]) {
+              const s = scatterOffsets[idx];
+              cardTransform = `translateX(${s.x}px) translateY(${s.y}px) rotate(${s.r}deg)`;
+            } else if (isHovered) {
+              cardTransform = `translateX(${fanX}px) rotate(${card.tilt * 0.5}deg) translateY(-20px)`;
+            }
+            if (isSelected && phase === "flipping") {
+              cardTransform = `translateX(0px) rotate(0deg) translateY(-30px) rotateY(${showFront ? "0deg" : "90deg"})`;
+            }
+            if (isSelected && phase === "revealed") {
+              cardTransform = `translateX(0px) rotate(0deg) translateY(-40px) rotateY(0deg)`;
+            }
+
+            return (
+              <div
+                key={card.id}
+                className={phase === "selecting" && !isSelected ? "tarot-card-float" : ""}
+                onClick={() => handleCardClick(idx)}
+                onMouseEnter={() => setHovered(idx)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  width: "72px",
+                  height: "115px",
+                  position: "relative",
+                  flexShrink: 0,
+                  cursor: phase === "selecting" && !isShuffling ? "pointer" : "default",
+                  transition: isShuffling
+                    ? "transform 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.38s ease"
+                    : phase === "selecting"
+                    ? "transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease"
+                    : "transform 0.5s ease, box-shadow 0.4s ease, opacity 0.4s ease",
+                  transform: cardTransform,
+                  animationDelay: `${floatDelay}s`,
+                  opacity: isOther && phase === "revealed" ? 0 : isOther ? 0.3 : 1,
+                  transformStyle: "preserve-3d",
+                  zIndex: isSelected ? 10 : isHovered ? 5 : 1,
+                  filter: isHovered
+                    ? "drop-shadow(0 0 12px rgba(255,255,255,0.8))"
+                    : isSelected && phase === "revealed"
+                      ? "drop-shadow(0 0 20px rgba(255,255,255,0.9)) drop-shadow(0 0 40px rgba(255,255,255,0.4))"
+                      : "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                }}
+              >
+                {isSelected && showFront ? (
+                  <CardFrontSVG card={card} isReversed={cardIsReversed} />
+                ) : (
+                  <CardBackSVG />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Row 2: last 3 cards */}
+        <div
+          style={{
+            position: "absolute",
+            top: "160px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            gap: "0px",
+          }}
+        >
+          {shuffledCards.slice(4).map((card, rowIdx) => {
+            const idx = rowIdx + 4;
+            const isSelected = selected === idx;
+            const isOther = selected !== null && selected !== idx;
+            const isHovered = hovered === idx && phase === "selecting";
+
+            const fanX = (rowIdx - 1) * 20;
             const floatDelay = idx * 0.18;
 
             let cardTransform = `translateX(${fanX}px) rotate(${card.tilt}deg)`;

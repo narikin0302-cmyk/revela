@@ -244,7 +244,7 @@ function ResultView() {
         <Link href="/history" className="flex-1 text-center py-3 rounded-full text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)" }}>
           ← 履歴
         </Link>
-        <Link href="/shindan" className="flex-1 text-center py-3 rounded-full text-sm font-medium btn-gold">
+        <Link href="/shindan" className="flex-1 text-center py-3 rounded-full text-sm btn-outline-primary">
           再診断する
         </Link>
       </div>

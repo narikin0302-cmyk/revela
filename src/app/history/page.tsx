@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { getHistory, deleteHistoryEntry, type HistoryEntry } from "@/lib/storage";
 import { generateRevelaCode } from "@/lib/revelaCodes";
 import { loveTypeDescriptions } from "@/data/questions";
@@ -104,7 +103,6 @@ function HistoryCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
-  const router = useRouter();
 
   const revelCode = entry.mbti && entry.loveType && entry.zodiac && entry.zodiac !== "なし" && entry.tarot
     ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac, entry.tarot)
@@ -154,29 +152,16 @@ function HistoryCard({
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          {resultUrl && (
-            <button
-              onClick={() => router.push(resultUrl)}
-              className="text-xs px-3 py-1.5 rounded-full transition-all"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "rgba(255,255,255,0.7)",
-              }}
-            >
-              結果を見る
-            </button>
-          )}
           <button
             onClick={() => setExpanded((prev) => !prev)}
             className="text-xs px-3 py-1.5 rounded-full transition-all"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "rgba(255,255,255,0.6)",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.7)",
             }}
           >
-            {expanded ? "閉じる" : "詳細"}
+            {expanded ? "閉じる" : "結果を見る"}
           </button>
           <button
             onClick={() => onDelete(entry.id)}
@@ -205,6 +190,19 @@ function HistoryCard({
               }}
               dangerouslySetInnerHTML={{ __html: entry.description }}
             />
+          )}
+          {resultUrl && (
+            <Link
+              href={resultUrl}
+              className="mt-3 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs tracking-wider transition-all"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "rgba(255,255,255,0.5)",
+              }}
+            >
+              全画面で見る →
+            </Link>
           )}
         </div>
       )}
