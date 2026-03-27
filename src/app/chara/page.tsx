@@ -120,6 +120,32 @@ export default function CharaPage() {
 
   const mbtiList = Object.entries(mbtiDescriptions);
 
+  const MBTI_DETAILS: Record<string, { description: string; traits: string[] }> = {
+    INTJ: { description: "戦略的思考と長期ビジョンを持つ稀有な存在。独自の理論を構築し、高い基準で物事を実行します。感情より論理を優先し、目標達成への意志が強い。", traits: ["長期的戦略思考", "高い自立心", "完璧主義的傾向", "鋭い洞察力"] },
+    INTP: { description: "知的好奇心旺盛で、あらゆる問いに論理的な答えを求めます。既存の理論を疑い、独自のフレームワークで世界を理解しようとする革新的な思索者。", traits: ["深い分析力", "理論への情熱", "柔軟な思考", "客観的視点"] },
+    ENTJ: { description: "生まれながらのリーダー。目標達成のために人々を組織し、効率的に動かす力を持ちます。大きなビジョンを描き、それを現実にする実行力と決断力が際立つ。", traits: ["強いリーダーシップ", "戦略的計画力", "高い意欲", "率直なコミュニケーション"] },
+    ENTP: { description: "知的な議論と挑戦を愛する革新者。あらゆる視点から問題を検討し、創造的な解決策を見出します。常識を疑い、新しいアイデアで周囲を刺激します。", traits: ["革新的思考", "機知に富む", "議論好き", "多角的視点"] },
+    INFJ: { description: "深い洞察力と強い使命感を持つ稀少タイプ。人の本質を見通し、社会の変革に静かに貢献します。理想主義と現実的な実行力を兼ね備えた真のビジョナリー。", traits: ["深い共感力", "明確な使命感", "直感的洞察", "献身的"] },
+    INFP: { description: "豊かな内面世界と強い価値観を持つ詩人的な魂。表面的な成功より意味のある仕事を求め、独創的な視点で人の心に届くものを生み出します。", traits: ["深い創造力", "強い価値観", "共感と誠実さ", "独自の世界観"] },
+    ENFJ: { description: "天性のカリスマとリーダーシップで人々を鼓舞します。他者の可能性を最大限引き出すことを喜びとし、チームの調和を保ちながら共通のビジョンへ導く。", traits: ["カリスマ的リーダー", "強い共感力", "人材育成の才能", "説得力"] },
+    ENFP: { description: "情熱とアイデアの泉。常に新しい可能性を見出し、人々を巻き込んで夢を形にします。どんな状況でも熱意と明るさで周囲に活力を与えるチームの太陽。", traits: ["無尽蔵の発想力", "感染する情熱", "柔軟な適応力", "豊かな感受性"] },
+    ISTJ: { description: "信頼性と責任感の体現者。ルールと手順を重視し、約束を必ず守ります。組織の根幹として安定した成果を出し続ける「静かな功労者」です。", traits: ["高い信頼性", "几帳面な実行力", "責任感", "実証的思考"] },
+    ISFJ: { description: "細やかな気配りと強い責任感で周囲を支える守護者。人の痛みに敏感で、縁の下の力持ちとして組織やコミュニティの安定を守ります。", traits: ["献身的なサポート", "優れた記憶力", "細やかな配慮", "強い義務感"] },
+    ESTJ: { description: "秩序と伝統を重んじ、実行力で組織を率いるリーダー。明確なルールと効率的な手順で目標を達成し、チームに方向性と安定感をもたらします。", traits: ["組織的な管理力", "強い実行力", "明確な判断基準", "責任感"] },
+    ESFJ: { description: "社交的で思いやり深く、周囲の調和を大切にする存在。他者のニーズを敏感に察知し、コミュニティや組織のつながりを育む天性の協調者。", traits: ["優れた社交性", "強い協調精神", "細やかな気遣い", "実践的サポート"] },
+    ISTP: { description: "冷静な判断力と卓越した技術力を持つ実践者。理論より行動、話すより手を動かすことで結果を出します。危機的状況でも揺るがない「現場のエース」。", traits: ["卓越した技術力", "冷静な危機対応", "論理的な問題解決", "独立した思考"] },
+    ISFP: { description: "感性豊かで美しいものに強く惹かれるアーティスト気質。自分のペースで深い仕事をし、静かに独自の価値を生み出します。自由と真正性を何より重んじる。", traits: ["豊かな美的センス", "高い感受性", "柔軟な適応力", "真正な自己表現"] },
+    ESTP: { description: "行動と結果の人。考えるより先に動き、現場でチャンスをつかみます。リスクを恐れずスピード感ある判断で周囲を引っ張る「修羅場のスター」です。", traits: ["圧倒的な行動力", "度胸と決断力", "現場対応力", "説得力と魅力"] },
+    ESFP: { description: "いるだけで場が明るくなる存在。人を楽しませることに全力を注ぎ、瞬間瞬間を最高のものにします。柔軟で社交的なエンターテインメントの申し子。", traits: ["天性の明るさ", "高い社交性", "優れた即興力", "豊かな共感力"] },
+  };
+
+  const MBTI_GROUPS = [
+    { label: "分析家", color: "#7c3aed", types: ["INTJ", "INTP", "ENTJ", "ENTP"] },
+    { label: "外交家", color: "#059669", types: ["INFJ", "INFP", "ENFJ", "ENFP"] },
+    { label: "番人",   color: "#1d4ed8", types: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"] },
+    { label: "探検家", color: "#d97706", types: ["ISTP", "ISFP", "ESTP", "ESFP"] },
+  ];
+
   return (
     <div className="relative min-h-screen px-4 py-12 max-w-5xl mx-auto">
       <div className="orb w-80 h-80 opacity-10" style={{ background: "radial-gradient(circle, #e8a0bf, transparent)", top: "5%", right: "-5%" }} />
@@ -202,23 +228,41 @@ export default function CharaPage() {
               </div>
             );
           })()}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-            {mbtiList.map(([type, info]) => {
-              const color = MBTI_COLORS[type] ?? { primary: "rgba(255,255,255,0.5)", bg: "rgba(255,255,255,0.1)", group: "" };
-              const isMe = myMbti === type;
-              return (
-                <div key={type} className="rounded-2xl p-4 animate-fade-in" style={{ border: isMe ? `1px solid ${color.primary}99` : "1px solid rgba(255,255,255,0.08)", background: isMe ? color.bg : "rgba(255,255,255,0.02)" }}>
-                  {isMe && <p className="text-xs tracking-widest mb-1.5" style={{ color: color.primary }}>✦ あなた</p>}
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <span className="text-lg font-bold font-mono" style={{ color: color.primary }}>{type}</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: color.bg, color: color.primary, border: `1px solid ${color.primary}44` }}>{color.group}</span>
-                  </div>
-                  <p className="text-sm font-medium mb-1" style={{ color: "#e8e8e8" }}>{info.title}</p>
-                  <p className="text-xs opacity-50 leading-relaxed">{info.keywords}</p>
-                </div>
-              );
-            })}
-          </div>
+          {MBTI_GROUPS.map((grp) => (
+            <div key={grp.label} className="mb-12">
+              {/* Group header */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${grp.color}50)` }} />
+                <span className="text-xs px-4 py-1 rounded-full" style={{ color: grp.color, border: `1px solid ${grp.color}40`, letterSpacing: "0.3em" }}>{grp.label}</span>
+                <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${grp.color}50, transparent)` }} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {grp.types.map((type) => {
+                  const info = mbtiDescriptions[type];
+                  const color = MBTI_COLORS[type] ?? { primary: "rgba(255,255,255,0.5)", bg: "rgba(255,255,255,0.1)", group: "" };
+                  const detail = MBTI_DETAILS[type];
+                  const isMe = myMbti === type;
+                  return (
+                    <div key={type} className="rounded-2xl p-5 animate-fade-in" style={{ background: isMe ? color.bg : `rgba(255,255,255,0.02)`, border: isMe ? `1px solid ${color.primary}99` : `1px solid ${color.primary}40` }}>
+                      {isMe && <p className="text-xs tracking-widest mb-2" style={{ color: color.primary }}>✦ あなた</p>}
+                      <p className="text-xl font-bold font-mono mb-0.5" style={{ color: color.primary }}>{type}</p>
+                      <p className="text-xs mb-3" style={{ fontFamily: "var(--font-noto-serif-jp), serif", opacity: 0.7 }}>{info?.title}</p>
+                      <div className="h-px mb-3" style={{ background: `linear-gradient(90deg, ${color.primary}40, transparent)` }} />
+                      <p className="text-xs leading-relaxed mb-4" style={{ opacity: 0.8, fontFamily: "var(--font-noto-serif-jp), serif" }}>{detail?.description}</p>
+                      <div className="flex flex-col gap-1.5">
+                        {detail?.traits.map((trait) => (
+                          <div key={trait} className="flex items-center gap-1.5 text-xs" style={{ opacity: 0.85 }}>
+                            <span style={{ color: color.primary, fontSize: 8 }}>✦</span>
+                            <span>{trait}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </>
       )}
 
