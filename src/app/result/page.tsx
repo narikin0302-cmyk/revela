@@ -12,6 +12,26 @@ import type { LoveType } from "@/data/questions";
 import { zodiacInfo } from "@/lib/calculate";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
 import { generateRevelaCode } from "@/lib/revelaCodes";
+import { getMbtiCharaName } from "@/data/charaNames";
+
+const MBTI_ADJ: Record<string, string> = {
+  ENFP: "自由奔放な",  ENFJ: "カリスマ的な",  ENTP: "革新的な",   ENTJ: "指導力あふれる",
+  INFP: "繊細な",      INFJ: "洞察力あふれる", INTP: "論理的な",   INTJ: "戦略的な",
+  ESFP: "陽気な",      ESFJ: "思いやりあふれる", ESTP: "行動的な", ESTJ: "実直な",
+  ISFP: "芸術的な",    ISFJ: "献身的な",       ISTP: "冷静沈着な", ISTJ: "誠実な",
+};
+const YGO_ATK: Record<string, number> = {
+  LCRO: 2800, LCRE: 2400, LCPO: 3000, LCPE: 2600,
+  LARO: 2500, LARE: 2700, LAPO: 2300, LAPE: 2900,
+  FCRO: 2200, FCRE: 1900, FCPO: 2100, FCPE: 2000,
+  FARO: 1800, FARE: 1700, FAPO: 2000, FAPE: 1600,
+};
+const YGO_DEF: Record<string, number> = {
+  LCRO: 1500, LCRE: 2000, LCPO: 1200, LCPE: 1800,
+  LARO: 2200, LARE: 1900, LAPO: 2400, LAPE: 2000,
+  FCRO: 2600, FCRE: 2800, FCPO: 2400, FCPE: 2500,
+  FARO: 3000, FARE: 2800, FAPO: 2600, FAPE: 3200,
+};
 
 const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string }> = {
   INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", label: "分析家" },
@@ -91,12 +111,77 @@ function ResultView() {
     textTransform: "uppercase",
   };
 
+  // Yu-Gi-Oh card data
+  const atk = YGO_ATK[love] ?? 2000;
+  const def = YGO_DEF[love] ?? 1500;
+  const stars = Math.max(4, Math.min(9, Math.round(atk / 350)));
+  const grp = love.charAt(0);
+  const sec = love.charAt(1);
+  const catchphrase = getMbtiCharaName(mbti, love) ?? `${MBTI_ADJ[mbti] ?? ""}${loveInfo?.nickname ?? ""}`;
+  const rpgName = rpg?.name ?? "冒険者";
+  const rpgEmoji = rpg?.emoji ?? "⚔️";
+  const zodiacElem = zodiacData?.element ?? null;
+  const ELEM_STYLE: Record<string, { bg: string; color: string; symbol: string }> = {
+    火: { bg: "linear-gradient(135deg, #ff6030, #cc2200)", color: "#fff", symbol: "🔥" },
+    土: { bg: "linear-gradient(135deg, #a08040, #604010)", color: "#f0e0b0", symbol: "🌍" },
+    風: { bg: "linear-gradient(135deg, #60d0a0, #208060)", color: "#fff", symbol: "💨" },
+    水: { bg: "linear-gradient(135deg, #4090e0, #1040a0)", color: "#fff", symbol: "💧" },
+  };
+  const elemSt = zodiacElem ? ELEM_STYLE[zodiacElem] : { bg: "linear-gradient(135deg, #888,#444)", color: "#fff", symbol: "✦" };
+  const attrDisplay = zodiacElem ? `${elemSt.symbol} ${zodiac}` : "？";
+  const typeKey = `${grp}${sec}`;
+  const TYPE_STYLE: Record<string, { frameOuter: string; frameInner: string; nameBg: string; nameColor: string; artBg: string; artAccent: string; cardBg: string }> = {
+    LC: { frameOuter: "#d4af37", frameInner: "#8b6914", nameBg: "linear-gradient(90deg, #1a1000, #2d1f00, #1a1000)", nameColor: "#f0d060", artBg: "linear-gradient(160deg, #0d0800 0%, #1c1400 50%, #0a0600 100%)", artAccent: "#d4af37", cardBg: "linear-gradient(175deg, #1c1200 0%, #0e0900 100%)" },
+    LA: { frameOuter: "#e8834a", frameInner: "#8b3a00", nameBg: "linear-gradient(90deg, #1a0600, #2d1000, #1a0600)", nameColor: "#ffb070", artBg: "linear-gradient(160deg, #100500 0%, #1e0a00 50%, #0d0300 100%)", artAccent: "#e8834a", cardBg: "linear-gradient(175deg, #1a0800 0%, #0d0300 100%)" },
+    FC: { frameOuter: "#8ab4d4", frameInner: "#2a4a6a", nameBg: "linear-gradient(90deg, #030810, #091428, #030810)", nameColor: "#a8d4f0", artBg: "linear-gradient(160deg, #030810 0%, #050f1e 50%, #020608 100%)", artAccent: "#6ab0e8", cardBg: "linear-gradient(175deg, #04080f 0%, #020508 100%)" },
+    FA: { frameOuter: "#9b59b6", frameInner: "#4a1060", nameBg: "linear-gradient(90deg, #0d001a, #1a0030, #0d001a)", nameColor: "#c87ef8", artBg: "linear-gradient(160deg, #080010 0%, #120020 50%, #050008 100%)", artAccent: "#9b59b6", cardBg: "linear-gradient(175deg, #0d001a 0%, #060008 100%)" },
+  };
+  const ts = TYPE_STYLE[typeKey] ?? TYPE_STYLE.LC;
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 animate-fade-in">
       {/* Back */}
       <Link href="/history" className="inline-flex items-center gap-1.5 text-xs mb-8 opacity-40 hover:opacity-70 transition-opacity" style={{ color: "rgba(255,255,255,0.6)" }}>
         ← 履歴に戻る
       </Link>
+
+      {/* 遊戯王風カード */}
+      <div className="flex justify-center mb-8">
+        <div style={{ width: 260, position: "relative", borderRadius: 10, background: ts.cardBg, boxShadow: `0 16px 60px rgba(0,0,0,0.85), 0 0 30px ${ts.frameOuter}44, inset 0 0 0 3px ${ts.frameOuter}, inset 0 0 0 5px ${ts.frameInner}, inset 0 0 0 7px ${ts.frameOuter}88`, padding: 8 }}>
+          <div style={{ background: ts.nameBg, border: `1px solid ${ts.frameOuter}88`, borderRadius: 4, padding: "5px 8px", marginBottom: 5, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
+            <span style={{ fontSize: 13, fontWeight: 900, color: ts.nameColor, letterSpacing: "0.02em", lineHeight: 1.2, flex: 1 }}>{catchphrase}</span>
+            <div style={{ borderRadius: 6, background: elemSt.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 8px ${ts.frameOuter}88`, fontSize: 8, fontWeight: 700, color: elemSt.color, padding: "2px 5px", whiteSpace: "nowrap" }}>{attrDisplay}</div>
+          </div>
+          <div style={{ textAlign: "right", marginBottom: 5, paddingRight: 2 }}>
+            {Array.from({ length: stars }).map((_, i) => <span key={i} style={{ color: ts.frameOuter, fontSize: 14, textShadow: `0 0 6px ${ts.frameOuter}` }}>★</span>)}
+          </div>
+          <div style={{ width: "100%", aspectRatio: "1/1", borderRadius: 4, border: `2px solid ${ts.frameOuter}66`, background: ts.artBg, marginBottom: 6, position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.18 }} viewBox="0 0 244 244">
+              <circle cx="122" cy="122" r="90" stroke={ts.artAccent} strokeWidth="1" fill="none" />
+              <circle cx="122" cy="122" r="60" stroke={ts.artAccent} strokeWidth="0.7" fill="none" />
+              <circle cx="122" cy="122" r="30" stroke={ts.artAccent} strokeWidth="0.5" fill="none" />
+              {[0,45,90,135,180,225,270,315].map((deg) => { const r2 = (deg * Math.PI) / 180; return <line key={deg} x1="122" y1="122" x2={122 + 90 * Math.cos(r2)} y2={122 + 90 * Math.sin(r2)} stroke={ts.artAccent} strokeWidth="0.5" />; })}
+              <polygon points="122,32 202,172 42,172" stroke={ts.artAccent} strokeWidth="1" fill="none" />
+              <polygon points="122,212 42,72 202,72" stroke={ts.artAccent} strokeWidth="0.7" fill="none" />
+            </svg>
+            <span style={{ fontSize: 72, position: "relative", zIndex: 1, filter: `drop-shadow(0 0 16px ${ts.artAccent})` }}>{rpgEmoji}</span>
+            <div style={{ position: "absolute", bottom: 6, right: 6, background: `${ts.artAccent}22`, border: `1px solid ${ts.artAccent}66`, borderRadius: 3, padding: "2px 6px", fontSize: 9, color: ts.artAccent, fontFamily: "monospace", fontWeight: 700, letterSpacing: "0.1em" }}>{mbti} × {love}</div>
+          </div>
+          <div style={{ fontSize: 9, color: `${ts.nameColor}cc`, marginBottom: 4, paddingLeft: 2, fontWeight: 600, letterSpacing: "0.05em" }}>{`【${zodiac !== "なし" ? zodiac : "星座不明"}／${rpgName}】`}</div>
+          <div style={{ background: `${ts.artAccent}0a`, border: `1px solid ${ts.frameOuter}44`, borderRadius: 4, padding: "6px 7px", marginBottom: 8, fontSize: 9, color: "rgba(255,255,255,0.75)", lineHeight: 1.65, minHeight: 52 }}>
+            {loveInfo?.subtitle}。{loveInfo?.motto}
+            {rpg && <span style={{ display: "block", marginTop: 4, opacity: 0.7, borderTop: `1px solid ${ts.frameOuter}33`, paddingTop: 4 }}>{rpgEmoji}【{rpgName}】{rpg.tagline}</span>}
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, borderTop: `1px solid ${ts.frameOuter}44`, paddingTop: 6 }}>
+            {[{ label: "ATK", val: atk }, { label: "DEF", val: def }].map(({ label, val }) => (
+              <div key={label} style={{ textAlign: "right" }}>
+                <span style={{ fontSize: 9, color: `${ts.nameColor}99`, letterSpacing: "0.1em" }}>{label}/</span>
+                <span style={{ fontSize: 13, fontWeight: 900, color: ts.nameColor, fontFamily: "monospace", letterSpacing: "0.05em" }}>{String(val).padStart(4, "\u2007")}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* 5 chips */}
       <div className="grid grid-cols-2 gap-3 mb-6">
