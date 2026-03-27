@@ -44,8 +44,6 @@ const menuItems = [
     href: "/shindan",
     isMain: true,
   },
-  { icon: "⭐", title: "星座", desc: "12星座の今週の傾向", href: "/uranai/seiza", isMain: false },
-  { icon: "🃏", title: "タロット", desc: "3枚引きスプレッド", href: "/uranai/tarot", isMain: false },
   { icon: "⚔️", title: "職場キャラ診断", desc: "あなたの職場タイプを診断", href: "/shindan/career", isMain: false },
   { icon: "💞", title: "相性診断", desc: "MBTIタイプの相性", href: "/shindan/aisei", isMain: false },
 ];
