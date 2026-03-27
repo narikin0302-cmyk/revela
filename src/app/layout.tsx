@@ -103,12 +103,6 @@ export default function RootLayout({
                   "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
               }}
             />
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mb-6 text-xs">
-              <a href="/mbti" className="opacity-30 hover:opacity-60 transition-opacity" style={{ color: "rgba(255,255,255,0.7)" }}>MBTI×ラブタイプ診断</a>
-              <a href="/uranai/tarot" className="opacity-30 hover:opacity-60 transition-opacity" style={{ color: "rgba(255,255,255,0.7)" }}>タロット</a>
-              <a href="/uranai/seiza" className="opacity-30 hover:opacity-60 transition-opacity" style={{ color: "rgba(255,255,255,0.7)" }}>星座</a>
-              <a href="/chara" className="opacity-30 hover:opacity-60 transition-opacity" style={{ color: "rgba(255,255,255,0.7)" }}>RPG診断</a>
-            </div>
             <p
               className="font-cinzel text-xs tracking-widest opacity-25"
               style={{ color: "rgba(255,255,255,0.6)" }}
