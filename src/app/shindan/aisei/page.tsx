@@ -71,26 +71,34 @@ function MBTISelector({
       >
         {label}
       </p>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {MBTI_GRID.flat().map((type) => {
           const isSelected = selected === type;
           return (
             <button
               key={type}
               onClick={() => onSelect(type)}
-              className="rounded-xl py-2 px-1 transition-all duration-200 hover:scale-105 flex flex-col items-center gap-0.5"
               style={{
-                background: isSelected
-                  ? "rgba(255,255,255,0.12)"
-                  : "rgba(255,255,255,0.04)",
-                border: isSelected
-                  ? "none"
-                  : "1px solid rgba(255,255,255,0.2)",
-                boxShadow: isSelected ? "0 0 15px rgba(255,255,255,0.4)" : "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                width: "100%",
+                padding: "8px 10px",
+                borderRadius: "10px",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                textAlign: "left",
+                background: isSelected ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)",
+                border: isSelected ? "1px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                boxShadow: isSelected ? "0 0 12px rgba(255,255,255,0.2)" : "none",
               }}
             >
-              <span className="text-xs font-bold tracking-wider" style={{ color: "#EDEDED" }}>{type}</span>
-              <span style={{ fontSize: "9px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.02em" }}>{MBTI_NAMES[type]}</span>
+              <span>
+                <span style={{ display: "block", fontSize: "11px", fontWeight: 700, color: isSelected ? "#EDEDED" : "rgba(255,255,255,0.55)" }}>
+                  {type}
+                </span>
+                <span style={{ display: "block", fontSize: "10px", opacity: 0.5 }}>{MBTI_NAMES[type]}</span>
+              </span>
             </button>
           );
         })}

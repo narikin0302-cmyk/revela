@@ -636,7 +636,7 @@ function Step0({
         {knowsMBTI === true && (
           <div className="animate-fade-in">
             <label className="block text-xs tracking-widest mb-2 opacity-60">MBTIタイプを選択</label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {ALL_MBTI_TYPES.map((type) => {
                 const isSelected = knownMBTI === type;
                 const colors = getMbtiColor(type);
@@ -645,32 +645,32 @@ function Step0({
                     key={type}
                     onClick={() => setKnownMBTI(isSelected ? "" : type)}
                     style={{
-                      padding: "8px 4px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      width: "100%",
+                      padding: "8px 10px",
                       borderRadius: "10px",
-                      fontSize: "12px",
-                      fontWeight: 700,
-                      letterSpacing: "0.05em",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
-                      background: isSelected ? colors.bg : "rgba(255,255,255,0.05)",
-                      color: isSelected ? colors.primary : "#EDEDED",
-                      border: isSelected
-                        ? `1px solid ${colors.primary}`
-                        : "1px solid rgba(255,255,255,0.2)",
+                      textAlign: "left",
+                      background: isSelected ? colors.bg : "rgba(255,255,255,0.04)",
+                      border: isSelected ? `1px solid ${colors.primary}` : "1px solid rgba(255,255,255,0.1)",
                       boxShadow: isSelected ? `0 0 8px ${colors.bg}` : "none",
                     }}
                   >
-                    {type}
+                    <span>
+                      <span style={{ display: "block", fontSize: "11px", fontWeight: 700, color: isSelected ? colors.primary : "rgba(255,255,255,0.55)" }}>
+                        {type}
+                      </span>
+                      <span style={{ display: "block", fontSize: "10px", opacity: 0.5 }}>
+                        {mbtiDescriptions[type]?.title ?? ""}
+                      </span>
+                    </span>
                   </button>
                 );
               })}
             </div>
-            {knownMBTI && (
-              <p className="text-xs mt-3 opacity-60 text-center">
-                選択中: <span style={{ color: getMbtiColor(knownMBTI).primary }}>{knownMBTI}</span>
-                {mbtiDescriptions[knownMBTI] && ` — ${mbtiDescriptions[knownMBTI].title}`}
-              </p>
-            )}
           </div>
         )}
       </div>
