@@ -198,25 +198,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== DAILY MESSAGE ==================== */}
-      <section className="relative px-4 py-12 max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <p className="font-cinzel section-label mb-3">
-            TODAY&apos;S WORD
-          </p>
-          <h2
-            className="text-2xl sm:text-3xl font-light"
-            style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}
-          >
-            今日の一言
-          </h2>
-          <div className="divider-ornate mt-6">
-            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>◆</span>
-          </div>
-        </div>
-        <DailyMessage />
-      </section>
-
       {/* ==================== HOW IT WORKS (3 STEPS) ==================== */}
       <section className="relative px-4 py-16 max-w-2xl mx-auto">
         <div className="text-center mb-12">
