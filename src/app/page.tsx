@@ -278,45 +278,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== TESTIMONIALS ==================== */}
-      <section className="relative px-4 py-16 max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="font-cinzel section-label mb-3">
-            VOICES
-          </p>
-          <h2
-            className="text-2xl sm:text-3xl font-light"
-            style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}
-          >
-            使った人の声
-          </h2>
-          <div className="divider-ornate mt-6">
-            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>◆</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {testimonials.map((t, i) => (
-            <div key={i} className="card-glow rounded-2xl p-6 relative overflow-hidden">
-              <span className="quote-mark" aria-hidden="true">&ldquo;</span>
-              <p className="text-xs sm:text-sm leading-relaxed mb-5 relative z-10"
-                style={{ color: "rgba(255,255,255,0.65)" }}>
-                {t.text}
-              </p>
-              <div
-                className="font-cinzel text-xs tracking-[0.12em] pt-3"
-                style={{
-                  color: "rgba(255,255,255,0.3)",
-                  borderTop: "1px solid rgba(255,255,255,0.07)",
-                }}
-              >
-                {t.type}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ==================== OTHER MENU ==================== */}
       <section className="relative px-4 py-16 max-w-4xl mx-auto">
         <div className="text-center mb-6">
