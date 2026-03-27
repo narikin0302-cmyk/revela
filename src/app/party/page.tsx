@@ -18,7 +18,7 @@ export default function PartyPage() {
       if (!res.ok) throw new Error(data.error);
       // ホストトークンをlocalStorageに保存
       localStorage.setItem(`party_host_${data.id}`, data.host_token);
-      router.push(`/party/${data.id}`);
+      router.push(`/party/${data.id}/join`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "エラーが発生しました");
       setLoading(false);
