@@ -45,27 +45,27 @@ interface FormData {
 // MBTI Colors (Change 2)
 // ============================================================
 
-const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string }> = {
+const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string; emoji: string }> = {
   // Analysts (NT) — Purple
-  INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", label: "建築家" },
-  INTP: { primary: "#8b5cf6", bg: "rgba(139,92,246,0.15)", label: "論理学者" },
-  ENTJ: { primary: "#6d28d9", bg: "rgba(109,40,217,0.15)", label: "指揮官" },
-  ENTP: { primary: "#a78bfa", bg: "rgba(167,139,250,0.15)", label: "討論者" },
+  INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", label: "建築家", emoji: "♟️" },
+  INTP: { primary: "#8b5cf6", bg: "rgba(139,92,246,0.15)", label: "論理学者", emoji: "🔬" },
+  ENTJ: { primary: "#6d28d9", bg: "rgba(109,40,217,0.15)", label: "指揮官", emoji: "👑" },
+  ENTP: { primary: "#a78bfa", bg: "rgba(167,139,250,0.15)", label: "討論者", emoji: "💬" },
   // Diplomats (NF) — Green
-  INFJ: { primary: "#059669", bg: "rgba(5,150,105,0.15)", label: "提唱者" },
-  INFP: { primary: "#10b981", bg: "rgba(16,185,129,0.15)", label: "仲介者" },
-  ENFJ: { primary: "#047857", bg: "rgba(4,120,87,0.15)", label: "主人公" },
-  ENFP: { primary: "#34d399", bg: "rgba(52,211,153,0.15)", label: "広報運動家" },
+  INFJ: { primary: "#059669", bg: "rgba(5,150,105,0.15)", label: "提唱者", emoji: "🔮" },
+  INFP: { primary: "#10b981", bg: "rgba(16,185,129,0.15)", label: "仲介者", emoji: "🌸" },
+  ENFJ: { primary: "#047857", bg: "rgba(4,120,87,0.15)", label: "主人公", emoji: "🌟" },
+  ENFP: { primary: "#34d399", bg: "rgba(52,211,153,0.15)", label: "広報運動家", emoji: "✨" },
   // Sentinels (SJ) — Blue
-  ISTJ: { primary: "#1d4ed8", bg: "rgba(29,78,216,0.15)", label: "管理者" },
-  ISFJ: { primary: "#2563eb", bg: "rgba(37,99,235,0.15)", label: "擁護者" },
-  ESTJ: { primary: "#1e40af", bg: "rgba(30,64,175,0.15)", label: "幹部" },
-  ESFJ: { primary: "#3b82f6", bg: "rgba(59,130,246,0.15)", label: "領事" },
+  ISTJ: { primary: "#1d4ed8", bg: "rgba(29,78,216,0.15)", label: "管理者", emoji: "📋" },
+  ISFJ: { primary: "#2563eb", bg: "rgba(37,99,235,0.15)", label: "擁護者", emoji: "🛡️" },
+  ESTJ: { primary: "#1e40af", bg: "rgba(30,64,175,0.15)", label: "幹部", emoji: "🏛️" },
+  ESFJ: { primary: "#3b82f6", bg: "rgba(59,130,246,0.15)", label: "領事", emoji: "🤝" },
   // Explorers (SP) — Yellow/Orange
-  ISTP: { primary: "#92400e", bg: "rgba(146,64,14,0.15)", label: "巨匠" },
-  ISFP: { primary: "#d97706", bg: "rgba(217,119,6,0.15)", label: "冒険家" },
-  ESTP: { primary: "#b45309", bg: "rgba(180,83,9,0.15)", label: "起業家" },
-  ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", label: "エンターテイナー" },
+  ISTP: { primary: "#92400e", bg: "rgba(146,64,14,0.15)", label: "巨匠", emoji: "🔧" },
+  ISFP: { primary: "#d97706", bg: "rgba(217,119,6,0.15)", label: "冒険家", emoji: "🎨" },
+  ESTP: { primary: "#b45309", bg: "rgba(180,83,9,0.15)", label: "起業家", emoji: "⚡" },
+  ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", label: "エンターテイナー", emoji: "🎉" },
 };
 
 function getMbtiColor(type: string): { primary: string; bg: string; label: string } {
@@ -659,11 +659,12 @@ function Step0({
                       boxShadow: isSelected ? `0 0 8px ${colors.bg}` : "none",
                     }}
                   >
+                    <span style={{ fontSize: "14px" }}>{colors.emoji}</span>
                     <span>
                       <span style={{ display: "block", fontSize: "11px", fontWeight: 700, color: isSelected ? colors.primary : "rgba(255,255,255,0.55)" }}>
                         {type}
                       </span>
-                      <span style={{ display: "block", fontSize: "10px", opacity: 0.5 }}>
+                      <span style={{ display: "block", fontSize: "10px", color: isSelected ? colors.primary : "rgba(255,255,255,0.45)" }}>
                         {mbtiDescriptions[type]?.title ?? ""}
                       </span>
                     </span>
@@ -761,7 +762,7 @@ function Step0({
 
       <button
         onClick={onNext}
-        className="btn-gold w-full py-4 rounded-full text-sm tracking-widest font-bold"
+        className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold"
       >
         次へ進む →
       </button>
@@ -943,7 +944,7 @@ function Step1({
           <button
             onClick={onNext}
             disabled={!canProceed}
-            className="btn-gold flex-[2] py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            className="btn-outline-primary flex-[2] py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
           >
             星座を確定する →
           </button>
@@ -1043,7 +1044,7 @@ function Step2({
         <button
           onClick={onNext}
           disabled={!canProceed}
-          className="btn-gold flex-[2] py-3.5 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          className="btn-outline-primary flex-[2] py-3.5 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
         >
           {canProceed ? "MBTI結果を見る →" : `残り${total - answered}問`}
         </button>
@@ -1182,7 +1183,7 @@ function TrueSelfStep({
             <button
               onClick={handleCheck}
               disabled={!canCheck}
-              className="btn-gold flex-1 py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+              className="btn-outline-primary flex-1 py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
             >
               {canCheck ? "あなたのタイプを確認する ✦" : `残り${total - answered}問`}
             </button>
@@ -1257,7 +1258,7 @@ function TrueSelfStep({
           <button
             onClick={handleContinue}
             disabled={!result.confirmed && !chosenType}
-            className="btn-gold w-full py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
           >
             この結果で進む →
           </button>
@@ -1338,7 +1339,7 @@ function Step3({
         <button
           onClick={onNext}
           disabled={!canProceed}
-          className="btn-gold flex-[2] py-3.5 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          className="btn-outline-primary flex-[2] py-3.5 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
         >
           {canProceed ? "キャラコードを確定する ✦" : `残り${total - answered}問`}
         </button>
@@ -3858,7 +3859,7 @@ function ResultsPage({
         {/* Share card button */}
         <button
           onClick={() => setShowShareCard(true)}
-          className="btn-gold w-full py-4 rounded-full text-sm tracking-widest font-bold"
+          className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold"
         >
           ✦ シェアカードを見る
         </button>

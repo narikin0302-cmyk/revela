@@ -70,25 +70,26 @@ body {
 
 /* Primary action button — quiz flow */
 .btn-gold {
-  background: rgba(237, 237, 237, 0.92);
-  color: #0a0a0a;
+  background: linear-gradient(135deg, #f5c842 0%, #a855f7 100%);
+  color: #1a0030;
   font-weight: 700;
   border: none;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 4px 20px rgba(237, 237, 237, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
 }
 
 .btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(237, 237, 237, 0.2);
-  background: #EDEDED;
+  box-shadow: 0 8px 28px rgba(168, 85, 247, 0.5);
+  filter: brightness(1.08);
 }
 
 .btn-gold:active {
   transform: translateY(1px) scale(0.98);
   box-shadow: none;
+  filter: brightness(0.95);
 }
 
 /* Primary outline button — for main CTAs */

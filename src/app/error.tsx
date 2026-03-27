@@ -18,7 +18,7 @@ export default function Error({
       <p className="opacity-60 text-sm mt-2 mb-6">予期しないエラーが発生しました</p>
       <button
         onClick={reset}
-        className="btn-gold px-6 py-3 rounded-full text-sm"
+        className="btn-outline-primary px-6 py-3 rounded-full text-sm"
       >
         もう一度試す
       </button>

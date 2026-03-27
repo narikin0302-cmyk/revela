@@ -661,7 +661,7 @@ export default function AiseiPage() {
             <button
               onClick={handleCodeSubmit}
               disabled={!myCodeInput.trim() || !friendCodeInput.trim()}
-              className="btn-gold w-full py-4 rounded-full text-sm tracking-widest font-bold mt-5 disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+              className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold mt-5 disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
             >
               相性診断する ✦
             </button>
@@ -715,7 +715,7 @@ export default function AiseiPage() {
                 <button
                   onClick={handleMbtiNext}
                   disabled={!personA}
-                  className="btn-gold px-10 py-3 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="btn-outline-primary px-10 py-3 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   次へ →
                 </button>
@@ -747,7 +747,7 @@ export default function AiseiPage() {
                 <button
                   onClick={handleMbtiNext}
                   disabled={!personB}
-                  className="btn-gold px-10 py-3 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="btn-outline-primary px-10 py-3 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   診断する →
                 </button>
