@@ -40,27 +40,10 @@ const RANK_LABELS: Record<string, string> = {
   D: "挑戦的な関係",
 };
 
-const MAX_MEMBERS = 99;
 const MAX_MATRIX = 15;
 
-type Mode = "group" | "code" | "mbti";
+type Mode = "code" | "mbti";
 
-// ── Pair result type ──────────────────────────────────────────
-
-interface PairResult {
-  idxA: number;
-  idxB: number;
-  labelA: string;
-  labelB: string;
-  score: number;
-}
-
-// ── Group member label ────────────────────────────────────────
-
-function memberLabel(index: number): string {
-  if (index === 0) return "あなた";
-  return `メンバー${index + 1}`;
-}
 
 // ── Sub-components ───────────────────────────────────────────
 
@@ -459,251 +442,10 @@ function MbtiCompatibilityResult({
   );
 }
 
-// ── Group results ─────────────────────────────────────────────
-
-function GroupCompatibilityResult({
-  allMembers,
-  onReset,
-}: {
-  allMembers: ParsedCode[];
-  onReset: () => void;
-}) {
-  const n = allMembers.length;
-
-  // Calculate all pairs
-  const pairs: PairResult[] = [];
-  for (let i = 0; i < n; i++) {
-    for (let j = i + 1; j < n; j++) {
-      const result = calculateFullCompatibility(allMembers[i], allMembers[j]);
-      pairs.push({
-        idxA: i,
-        idxB: j,
-        labelA: memberLabel(i),
-        labelB: memberLabel(j),
-        score: result.total,
-      });
-    }
-  }
-
-  // Sort descending by score
-  const ranked = [...pairs].sort((a, b) => b.score - a.score);
-
-  // Average score
-  const avg = pairs.length > 0
-    ? Math.round(pairs.reduce((s, p) => s + p.score, 0) / pairs.length)
-    : 0;
-
-  // Best match for "あなた" (index 0)
-  const myPairs = ranked.filter((p) => p.idxA === 0 || p.idxB === 0);
-  const bestForMe = myPairs[0];
-
-  // Matrix display limit
-  const matrixN = Math.min(n, MAX_MATRIX);
-  const showMatrixNote = n > MAX_MATRIX;
-
-  // Build score map for matrix
-  const scoreMap = new Map<string, number>();
-  for (const p of pairs) {
-    scoreMap.set(`${p.idxA}_${p.idxB}`, p.score);
-    scoreMap.set(`${p.idxB}_${p.idxA}`, p.score);
-  }
-
-  // MBTI intro/extrovert count
-  const introCount = allMembers.filter((m) => m.mbti[0] === "I").length;
-  const extroCount = n - introCount;
-  const introBar = Math.round((introCount / n) * 5);
-  const extroBar = Math.round((extroCount / n) * 5);
-
-  // Top 10 pairs for large groups
-  const displayedPairs = ranked.slice(0, Math.min(ranked.length, 10));
-
-  const inputStyle: React.CSSProperties = {
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.3)",
-    color: "#EDEDED",
-    borderRadius: "12px",
-    padding: "10px 14px",
-    fontSize: "13px",
-    outline: "none",
-    fontFamily: "monospace",
-    letterSpacing: "0.08em",
-  };
-
-  return (
-    <div className="animate-fade-in space-y-6">
-      {/* Header */}
-      <div className="text-center">
-        <p className="text-xs tracking-[0.3em] opacity-50 mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-        <p className="text-sm font-medium tracking-widest" style={{ color: "rgba(255,255,255,0.55)" }}>グループ相性ランキング</p>
-        <p className="text-xs tracking-[0.3em] opacity-50 mt-1" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-      </div>
-
-      {/* Ranking list */}
-      <div className="card-glow rounded-2xl p-5 space-y-3">
-        {displayedPairs.map((p, i) => {
-          const filled = Math.round(p.score / 20);
-          return (
-            <div key={i} className="flex items-center gap-3">
-              <span className="text-base w-8 flex-shrink-0">{rankMedal(i)}</span>
-              <span className="text-sm flex-1" style={{ color: "#EDEDED" }}>
-                {p.labelA} × {p.labelB}
-              </span>
-              <div className="flex gap-0.5">
-                {[1,2,3,4,5].map((h) => (
-                  <svg key={h} width="14" height="14" viewBox="0 0 24 24"
-                    fill={h <= filled ? "#e8a0bf" : "none"} stroke="#e8a0bf" strokeWidth="1.5"
-                    opacity={h <= filled ? 1 : 0.25}>
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-sm font-bold w-10 text-right" style={{ color: "rgba(255,255,255,0.55)" }}>{p.score}%</span>
-            </div>
-          );
-        })}
-        {ranked.length > 10 && (
-          <p className="text-xs opacity-40 text-center pt-1">上位10ペアを表示 (全{ranked.length}ペア)</p>
-        )}
-      </div>
-
-      {/* Group average */}
-      <div
-        className="rounded-2xl p-5 text-center"
-        style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(232,160,191,0.08))", border: "1px solid rgba(255,255,255,0.3)" }}
-      >
-        <p className="text-xs tracking-widest mb-2 opacity-60" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-        <p className="text-sm tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.55)" }}>グループ平均相性</p>
-        <div
-          className="text-5xl font-light mb-1"
-          style={{
-            color: "#EDEDED",
-            fontFamily: "var(--font-noto-serif-jp), serif",
-          }}
-        >
-          {avg}<span className="text-2xl">%</span>
-        </div>
-        {avg >= 80 && <span className="text-lg">🎉</span>}
-        <p className="text-xs tracking-widest mt-2 opacity-60" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-      </div>
-
-      {/* Best match for あなた */}
-      {bestForMe && (
-        <div className="card-glow rounded-2xl p-5">
-          <p className="text-xs tracking-widest mb-1 opacity-60" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-          <p className="text-sm tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.55)" }}>あなたと最も相性がいい人</p>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🏆</span>
-            <div>
-              <p className="font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
-                {bestForMe.idxA === 0 ? bestForMe.labelB : bestForMe.labelA}
-                <span className="ml-2 text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>{bestForMe.score}%</span>
-              </p>
-              <p className="text-xs opacity-60 mt-0.5">
-                {(() => {
-                  const other = allMembers[bestForMe.idxA === 0 ? bestForMe.idxB : bestForMe.idxA];
-                  return `${other.mbti}との組み合わせ — ${other.zodiac}座`;
-                })()}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Compatibility matrix (3+ people) */}
-      {n >= 3 && (
-        <div className="card-glow rounded-2xl p-5">
-          <p className="text-xs tracking-widest mb-3 opacity-70" style={{ color: "rgba(255,255,255,0.55)" }}>✦ 相性マトリックス</p>
-          {showMatrixNote && (
-            <p className="text-xs opacity-40 mb-3">上位{MAX_MATRIX}人を表示</p>
-          )}
-          <div className="overflow-x-auto">
-            <table style={{ borderCollapse: "separate", borderSpacing: "3px", fontSize: "11px" }}>
-              <thead>
-                <tr>
-                  <th style={{ width: "48px" }} />
-                  {Array.from({ length: matrixN }, (_, j) => (
-                    <th key={j} style={{ width: "44px", padding: "2px", textAlign: "center", color: "rgba(255,255,255,0.55)", opacity: 0.7, fontWeight: 600 }}>
-                      {j === 0 ? "あなた" : `M${j + 1}`}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {Array.from({ length: matrixN }, (_, i) => (
-                  <tr key={i}>
-                    <td style={{ padding: "2px 4px", color: "rgba(255,255,255,0.55)", opacity: 0.7, fontWeight: 600, whiteSpace: "nowrap" }}>
-                      {i === 0 ? "あなた" : `M${i + 1}`}
-                    </td>
-                    {Array.from({ length: matrixN }, (_, j) => {
-                      if (i === j) {
-                        return (
-                          <td key={j} style={{ textAlign: "center", padding: "3px", borderRadius: "4px", background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.2)" }}>
-                            ─
-                          </td>
-                        );
-                      }
-                      const key = i < j ? `${i}_${j}` : `${j}_${i}`;
-                      const score = scoreMap.get(key) ?? 0;
-                      return (
-                        <td key={j} style={{ textAlign: "center", padding: "3px", borderRadius: "4px", ...scoreCellStyle(score) }}>
-                          {score}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* MBTI balance analysis */}
-      <div className="card-glow rounded-2xl p-5">
-        <p className="text-xs tracking-widest mb-4 opacity-70" style={{ color: "rgba(255,255,255,0.55)" }}>✦ タイプ別分析</p>
-        <p className="text-xs mb-3 opacity-60">グループのMBTIバランス:</p>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="text-xs opacity-60 w-20 flex-shrink-0">内向型 (I)</span>
-            <div className="flex gap-1">
-              {[1,2,3,4,5].map((b) => (
-                <div key={b} style={{ width: "16px", height: "8px", borderRadius: "2px", background: b <= introBar ? "#93c5fd" : "rgba(255,255,255,0.08)" }} />
-              ))}
-            </div>
-            <span className="text-xs opacity-60">{introCount}人</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs opacity-60 w-20 flex-shrink-0">外向型 (E)</span>
-            <div className="flex gap-1">
-              {[1,2,3,4,5].map((b) => (
-                <div key={b} style={{ width: "16px", height: "8px", borderRadius: "2px", background: b <= extroBar ? "#f9a8d4" : "rgba(255,255,255,0.08)" }} />
-              ))}
-            </div>
-            <span className="text-xs opacity-60">{extroCount}人</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="text-center pt-2">
-        <button onClick={onReset} className="btn-outline-gold px-8 py-3 rounded-full text-sm tracking-widest">
-          もう一度診断する
-        </button>
-      </div>
-    </div>
-  );
-}
-
 // ── Main page ────────────────────────────────────────────────
 
 export default function AiseiPage() {
-  const [mode, setMode] = useState<Mode>("group");
-
-  // Group mode state
-  const [myCode, setMyCode]           = useState<string>("");
-  const [inputCode, setInputCode]     = useState<string>("");
-  const [members, setMembers]         = useState<ParsedCode[]>([]);
-  const [groupError, setGroupError]   = useState<string | null>(null);
-  const [groupResult, setGroupResult] = useState<ParsedCode[] | null>(null);
+  const [mode, setMode] = useState<Mode>("code");
 
   // Code mode state (2-person)
   const [myCodeInput, setMyCodeInput]         = useState("");
@@ -721,53 +463,11 @@ export default function AiseiPage() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("revela_mycode");
-      if (saved) {
-        setMyCode(saved);
-        setMyCodeInput(saved);
-      }
+      if (saved) setMyCodeInput(saved);
     } catch {
       // ignore
     }
   }, []);
-
-  // ── Group mode handlers ──
-  const handleAddMember = () => {
-    setGroupError(null);
-    const parsed = parseRevelaCode(inputCode.trim());
-    if (!parsed) {
-      setGroupError("コードの形式が正しくありません（例: INFJ-LCRO-かに-星）");
-      return;
-    }
-    if (members.length + 1 >= MAX_MEMBERS) {
-      setGroupError(`最大${MAX_MEMBERS}人までです`);
-      return;
-    }
-    setMembers((prev) => [...prev, parsed]);
-    setInputCode("");
-  };
-
-  const handleRemoveMember = (index: number) => {
-    setMembers((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleGroupSubmit = () => {
-    setGroupError(null);
-    const selfParsed = parseRevelaCode(myCode.trim());
-    if (!selfParsed) {
-      setGroupError("あなたのコードの形式が正しくありません（例: ENFP-FCRO-うお-月）");
-      return;
-    }
-    if (members.length === 0) {
-      setGroupError("メンバーを1人以上追加してください");
-      return;
-    }
-    setGroupResult([selfParsed, ...members]);
-  };
-
-  const resetGroup = () => {
-    setGroupResult(null);
-    setGroupError(null);
-  };
 
   // ── 2-person code mode handlers ──
   const handleCodeSubmit = () => {
@@ -820,7 +520,7 @@ export default function AiseiPage() {
     transition: "border-color 0.2s ease",
   };
 
-  const isResultShowing = !!groupResult || !!parsedA || showMbtiResult;
+  const isResultShowing = !!parsedA || showMbtiResult;
 
   return (
     <div className="relative min-h-screen px-4 py-12 max-w-2xl mx-auto">
@@ -847,13 +547,38 @@ export default function AiseiPage() {
         <div className="divider-gold w-20 mx-auto mt-4" />
       </div>
 
+      {/* ── パーティーバナー ── */}
+      {!isResultShowing && (
+        <a
+          href="/party"
+          className="flex items-center gap-4 w-full rounded-2xl p-4 mb-6 transition-all duration-200 hover:opacity-80"
+          style={{
+            background: "linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05))",
+            border: "1px solid rgba(212,175,55,0.3)",
+          }}
+        >
+          <div className="text-2xl shrink-0">⚔️</div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold tracking-widest mb-0.5" style={{ color: "#d4af37" }}>
+              PARTY FORMATION
+            </p>
+            <p className="text-sm font-bold" style={{ color: "#EDEDED" }}>
+              3人以上でパーティー診断
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
+              小隊・パーティー・討伐隊・巨大ギルド（最大99人）
+            </p>
+          </div>
+          <span className="text-xs shrink-0" style={{ color: "rgba(212,175,55,0.6)" }}>→</span>
+        </a>
+      )}
+
       {/* ── MODE TABS ── */}
       {!isResultShowing && (
         <div className="flex gap-2 mb-8">
-          {(["group", "code", "mbti"] as Mode[]).map((m) => {
+          {(["code", "mbti"] as Mode[]).map((m) => {
             const labels: Record<Mode, string> = {
-              group: "グループ相性診断",
-              code: "2人で診断",
+              code: "revelaコードで診断",
               mbti: "MBTIで診断",
             };
             return (
@@ -875,127 +600,7 @@ export default function AiseiPage() {
           })}
         </div>
       )}
-
-      {/* ── GROUP MODE INPUT ── */}
-      {mode === "group" && !groupResult && (
-        <div className="animate-fade-in">
-          <div className="card-glow rounded-2xl p-6 mb-6">
-            <div className="text-center mb-5">
-              <p className="text-xs tracking-[0.3em] opacity-50 mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-              <p className="text-sm font-medium tracking-widest" style={{ color: "rgba(255,255,255,0.55)" }}>グループ相性診断</p>
-              <p className="text-xs tracking-[0.3em] opacity-50 mt-1" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━━</p>
-            </div>
-
-            {/* My code */}
-            <div className="mb-5">
-              <label className="block text-xs tracking-widest mb-2 opacity-60">あなたのコード</label>
-              <input
-                type="text"
-                placeholder="例: ENFP-FCRO-うお-月"
-                value={myCode}
-                onChange={(e) => setMyCode(e.target.value)}
-                style={inputStyle}
-              />
-            </div>
-
-            {/* Add member */}
-            <div className="mb-5">
-              <label className="block text-xs tracking-widest mb-2 opacity-60">友達のコードを追加</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="例: INFJ-LCRO-かに-星"
-                  value={inputCode}
-                  onChange={(e) => setInputCode(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") handleAddMember(); }}
-                  style={{ ...inputStyle, flex: 1, width: undefined }}
-                />
-                <button
-                  onClick={handleAddMember}
-                  disabled={!inputCode.trim() || members.length >= MAX_MEMBERS - 1}
-                  className="px-4 py-2 rounded-xl text-sm font-bold tracking-wider transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))",
-                    border: "1px solid rgba(255,255,255,0.5)",
-                    color: "rgba(255,255,255,0.55)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  追加 +
-                </button>
-              </div>
-            </div>
-
-            {/* Member list */}
-            {members.length > 0 && (
-              <div className="mb-5">
-                <p className="text-xs tracking-widest mb-3 opacity-60">追加されたメンバー:</p>
-                <div className="space-y-2">
-                  {/* あなた row */}
-                  {myCode.trim() && parseRevelaCode(myCode.trim()) && (
-                    <div
-                      className="flex items-center gap-3 px-3 py-2 rounded-xl"
-                      style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.2)" }}
-                    >
-                      <span className="text-sm">👤</span>
-                      <span className="text-xs font-bold w-16 flex-shrink-0" style={{ color: "rgba(255,255,255,0.55)" }}>あなた</span>
-                      <span className="text-xs opacity-60 flex-1 font-mono">{myCode.trim()}</span>
-                    </div>
-                  )}
-                  {members.map((m, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 px-3 py-2 rounded-xl"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    >
-                      <span className="text-sm">👤</span>
-                      <span className="text-xs font-bold w-16 flex-shrink-0" style={{ color: "#EDEDED" }}>メンバー{i + 2}</span>
-                      <span className="text-xs opacity-60 flex-1 font-mono">{m.mbti}-{m.loveType}-{m.zodiac}-{m.tarot}</span>
-                      <button
-                        onClick={() => handleRemoveMember(i)}
-                        className="text-xs opacity-50 hover:opacity-90 transition-opacity px-1"
-                        style={{ color: "#f87171" }}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs opacity-40 mt-3 text-right">
-                  メンバー数: {members.length + 1}人 / 最大{MAX_MEMBERS}人
-                </p>
-              </div>
-            )}
-
-            {groupError && (
-              <div
-                className="mb-4 px-4 py-3 rounded-xl text-xs leading-relaxed"
-                style={{ background: "rgba(248,113,113,0.1)", border: "1px solid rgba(248,113,113,0.3)", color: "#f87171" }}
-              >
-                {groupError}
-              </div>
-            )}
-
-            <button
-              onClick={handleGroupSubmit}
-              disabled={!myCode.trim() || members.length === 0}
-              className="btn-gold w-full py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-            >
-              グループ相性診断する ✦
-            </button>
-          </div>
-
-          <p className="text-xs opacity-40 text-center leading-relaxed">
-            revelaコードはrevela診断の結果ページで確認できます。<br />
-            形式: MBTI-キャラコード-星座-タロット
-          </p>
-        </div>
-      )}
-
       {/* Group result */}
-      {mode === "group" && groupResult && (
-        <GroupCompatibilityResult allMembers={groupResult} onReset={resetGroup} />
-      )}
 
       {/* ── 2-PERSON CODE MODE ── */}
       {mode === "code" && !parsedA && (
