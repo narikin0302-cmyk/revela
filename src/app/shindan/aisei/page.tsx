@@ -7,6 +7,13 @@ import {
   calculateFullCompatibility,
   type ParsedCode,
 } from "@/lib/revelaCodes";
+import { getRpgClassByCombo } from "@/data/rpgClasses";
+import {
+  getSynergyPatternId,
+  getSynergyDescription,
+  SYNERGY_PATTERNS,
+  CLASS_ROLES,
+} from "@/data/rpgSynergy";
 
 // ── Constants ────────────────────────────────────────────────
 
@@ -283,6 +290,61 @@ function CodeCompatibilityResult({
           ))}
         </ul>
       </div>
+
+      {/* RPG Party Synergy */}
+      {(() => {
+        const rpgA = getRpgClassByCombo(codeA.mbti, codeA.loveType);
+        const rpgB = getRpgClassByCombo(codeB.mbti, codeB.loveType);
+        if (!rpgA || !rpgB) return null;
+        const patternId = getSynergyPatternId(rpgA.name, rpgB.name);
+        const pattern = SYNERGY_PATTERNS[patternId];
+        const roleA = CLASS_ROLES[rpgA.name];
+        const roleB = CLASS_ROLES[rpgB.name];
+        const roleLabel: Record<string, string> = { LEADER: "前衛", SUPPORT: "後衛", BRAIN: "頭脳", TRICKSTER: "自由" };
+        const desc = getSynergyDescription(pattern, rpgA.name, rpgB.name);
+
+        return (
+          <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${pattern.color}33` }}>
+            <p className="text-xs tracking-widest mb-4" style={{ color: pattern.color, opacity: 0.9 }}>
+              ⚔ PARTY SYNERGY
+            </p>
+
+            {/* 2クラス並べる */}
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="text-center flex-1">
+                <div className="text-2xl mb-1">{rpgA.emoji}</div>
+                <p className="text-sm font-bold" style={{ color: rpgA.color }}>{rpgA.name}</p>
+                <p className="text-xs mt-0.5 px-2 py-0.5 rounded-full inline-block" style={{ color: "rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  {roleA ? roleLabel[roleA] : ""}
+                </p>
+              </div>
+              <div className="text-lg" style={{ color: "rgba(255,255,255,0.25)" }}>×</div>
+              <div className="text-center flex-1">
+                <div className="text-2xl mb-1">{rpgB.emoji}</div>
+                <p className="text-sm font-bold" style={{ color: rpgB.color }}>{rpgB.name}</p>
+                <p className="text-xs mt-0.5 px-2 py-0.5 rounded-full inline-block" style={{ color: "rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  {roleB ? roleLabel[roleB] : ""}
+                </p>
+              </div>
+            </div>
+
+            {/* ランク＋パターン名 */}
+            <div className="text-center mb-3">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold" style={{ background: `${pattern.color}18`, border: `1px solid ${pattern.color}55`, color: pattern.color }}>
+                Tactical Synergy {pattern.rank} — {pattern.name}
+              </span>
+            </div>
+
+            {/* タイトル */}
+            <p className="text-base font-bold text-center mb-3 leading-snug" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0" }}>
+              「{pattern.title}」
+            </p>
+
+            {/* 説明文 */}
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>{desc}</p>
+          </div>
+        );
+      })()}
 
       <div className="text-center pt-2">
         <button onClick={onReset} className="btn-outline-gold px-8 py-3 rounded-full text-sm tracking-widest">
