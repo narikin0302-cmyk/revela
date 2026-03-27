@@ -6,6 +6,7 @@ export interface ParsedCode {
   mbti: string;
   loveType: string;
   zodiac: string;
+  tarot?: string;
 }
 
 // ── Zodiac short-form mappings ────────────────────────────────
@@ -41,12 +42,12 @@ export function generateRevelaCode(
 
 // ── parseRevelaCode ──────────────────────────────────────────
 export function parseRevelaCode(code: string): ParsedCode | null {
-  // Expected format: MBTI-LOVETYPE-ZODIACSHORT
-  // e.g. ENFP-FCRO-うお
+  // Expected format: MBTI-LOVETYPE-ZODIACSHORT[-TAROT]
+  // e.g. ENFP-FCRO-うお or ENFP-FCRO-うお-星
   const parts = code.trim().split("-");
-  if (parts.length !== 3) return null;
+  if (parts.length < 3) return null;
 
-  const [mbtiRaw, loveTypeRaw, zodiacShortRaw] = parts;
+  const [mbtiRaw, loveTypeRaw, zodiacShortRaw, tarotRaw] = parts;
 
   const mbti = mbtiRaw.toUpperCase();
   if (!/^[A-Z]{4}$/.test(mbti)) return null;
@@ -56,7 +57,7 @@ export function parseRevelaCode(code: string): ParsedCode | null {
 
   const zodiac = SHORT_ZODIAC_MAP[zodiacShortRaw] ?? zodiacShortRaw;
 
-  return { mbti, loveType, zodiac };
+  return { mbti, loveType, zodiac, tarot: tarotRaw };
 }
 
 // ============================================================
