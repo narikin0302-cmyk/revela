@@ -24,6 +24,13 @@ const MBTI_GRID: MBTIType[][] = [
   ["ISTP", "ISFP", "ESTP", "ESFP"],
 ];
 
+const MBTI_NAMES: Record<MBTIType, string> = {
+  INTJ: "建築家", INTP: "論理学者", ENTJ: "指揮官",  ENTP: "討論者",
+  INFJ: "提唱者", INFP: "仲介者",   ENFJ: "主人公",  ENFP: "広報運動家",
+  ISTJ: "管理者", ISFJ: "擁護者",   ESTJ: "幹部",    ESFJ: "領事",
+  ISTP: "巨匠",   ISFP: "冒険家",   ESTP: "起業家",  ESFP: "エンタメ人",
+};
+
 const RANK_COLORS: Record<string, string> = {
   S: "#EDEDED",
   A: "#60a5fa",
@@ -71,19 +78,19 @@ function MBTISelector({
             <button
               key={type}
               onClick={() => onSelect(type)}
-              className="rounded-xl py-2 px-1 text-xs font-bold tracking-wider transition-all duration-200 hover:scale-105"
+              className="rounded-xl py-2 px-1 transition-all duration-200 hover:scale-105 flex flex-col items-center gap-0.5"
               style={{
                 background: isSelected
                   ? "rgba(255,255,255,0.12)"
                   : "rgba(255,255,255,0.04)",
-                color: isSelected ? "#EDEDED" : "#EDEDED",
                 border: isSelected
                   ? "none"
                   : "1px solid rgba(255,255,255,0.2)",
                 boxShadow: isSelected ? "0 0 15px rgba(255,255,255,0.4)" : "none",
               }}
             >
-              {type}
+              <span className="text-xs font-bold tracking-wider" style={{ color: "#EDEDED" }}>{type}</span>
+              <span style={{ fontSize: "9px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.02em" }}>{MBTI_NAMES[type]}</span>
             </button>
           );
         })}
