@@ -105,7 +105,7 @@ function HistoryCard({
   const [codeCopied, setCodeCopied] = useState(false);
 
   const revelCode = entry.mbti && entry.loveType && entry.zodiac && entry.zodiac !== "なし" && entry.tarot
-    ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac, entry.tarot)
+    ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac)
     : null;
 
   const handleCopyCode = async () => {

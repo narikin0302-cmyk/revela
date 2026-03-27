@@ -2905,7 +2905,7 @@ function ResultsPage({
     try {
       localStorage.setItem("revela_user", JSON.stringify({ mbti: finalMBTI }));
       if (data.zodiac && data.zodiac !== "なし") {
-        const code = generateRevelaCode(finalMBTI, loveType, data.zodiac, tarotCard.name);
+        const code = generateRevelaCode(finalMBTI, loveType, data.zodiac);
         localStorage.setItem("revela_mycode", code);
       }
     } catch {
@@ -3742,7 +3742,7 @@ function ResultsPage({
         const finalMBTI = trueSelfMbti ?? mbtiType;
         const canGenerateCode = data.zodiac && data.zodiac !== "なし";
         if (!canGenerateCode) return null;
-        const revelCode = generateRevelaCode(finalMBTI, loveType, data.zodiac, tarotCard.name);
+        const revelCode = generateRevelaCode(finalMBTI, loveType, data.zodiac);
         const handleCopyCode = async () => {
           try {
             await navigator.clipboard.writeText(revelCode);

@@ -78,7 +78,7 @@ function ResultView() {
   const zodiacData = zodiac !== "なし" ? zodiacInfo[zodiac] : null;
   const rpg = getRpgClassByCombo(mbti, love);
 
-  const revelCode = zodiac !== "なし" ? generateRevelaCode(mbti, love, zodiac, tarot) : null;
+  const revelCode = zodiac !== "なし" ? generateRevelaCode(mbti, love, zodiac) : null;
   const handleCopyCode = async () => {
     if (!revelCode) return;
     try {

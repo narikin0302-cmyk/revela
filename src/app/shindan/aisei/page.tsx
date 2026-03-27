@@ -167,7 +167,7 @@ function CodeCompatibilityResult({
   onReset: () => void;
 }) {
   const result = calculateFullCompatibility(codeA, codeB);
-  const { total, mbtiScore, charaScore, zodiacScore, tarotScore, comment, strengths, cautions } = result;
+  const { total, mbtiScore, charaScore, zodiacScore, comment, strengths, cautions } = result;
 
   const rank =
     total >= 90 ? "S" : total >= 80 ? "A" : total >= 65 ? "B" : total >= 50 ? "C" : "D";
@@ -236,7 +236,6 @@ function CodeCompatibilityResult({
         <ScoreBar label="MBTI相性"   score={mbtiScore}   color="rgba(255,255,255,0.55)" />
         <ScoreBar label="キャラ相性" score={charaScore}  color="#e8a0bf" />
         <ScoreBar label="星座相性"   score={zodiacScore} color="#93c5fd" />
-        <ScoreBar label="タロット"   score={tarotScore}  color="#c084fc" />
       </div>
 
       <div className="card-glow rounded-2xl p-5">
