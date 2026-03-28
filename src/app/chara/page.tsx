@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { RPG_CLASSES, getRpgClassByCombo } from "@/data/rpgClasses";
+import { CLASS_ROLES } from "@/data/rpgSynergy";
 import Link from "next/link";
 import { loveTypeDescriptions, mbtiDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
@@ -531,39 +532,64 @@ export default function CharaPage() {
             <div className="w-12 h-px mt-12" style={{ background: "rgba(255,255,255,0.15)" }} />
           </section>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            {RPG_CLASSES.map((cls) => {
-              const myLoveType = myCode ? myCode.split("-")[1] : null;
-              const myRpgClass = myMbti && myLoveType ? getRpgClassByCombo(myMbti, myLoveType) : null;
-              const isMyClass = !!myRpgClass && myRpgClass.name === cls.name;
-              return (
-                <div key={cls.name} className="rounded-2xl p-5" style={{ background: `${cls.color}0d`, border: `1px solid ${isMyClass ? cls.color : `${cls.color}33`}`, boxShadow: isMyClass ? `0 0 16px ${cls.color}30` : undefined }}>
-                  {isMyClass && (
-                    <p className="text-xs mb-2 font-bold" style={{ color: cls.color }}>✦ あなたのクラス</p>
-                  )}
-                  <div className="flex items-start gap-3 mb-3">
-                    <span className="text-3xl flex-shrink-0">{cls.emoji}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-base font-bold" style={{ color: cls.color }}>{cls.name}</span>
-                        <span className="text-xs opacity-40">{cls.nameEn}</span>
+          {(() => {
+            const myLoveType = myCode ? myCode.split("-")[1] : null;
+            const myRpgClass = myMbti && myLoveType ? getRpgClassByCombo(myMbti, myLoveType) : null;
+            const ROLE_GROUPS = [
+              { key: "LEADER",    label: "前衛",  sub: "LEADER",    color: "#f87171" },
+              { key: "SUPPORT",   label: "後衛",  sub: "SUPPORT",   color: "#34d399" },
+              { key: "BRAIN",     label: "頭脳",  sub: "BRAIN",     color: "#818cf8" },
+              { key: "TRICKSTER", label: "自由",  sub: "TRICKSTER", color: "#c084fc" },
+            ];
+            return (
+              <div className="mb-10 space-y-10">
+                {ROLE_GROUPS.map((group) => {
+                  const classes = RPG_CLASSES.filter((cls) => CLASS_ROLES[cls.name] === group.key);
+                  return (
+                    <div key={group.key}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-1 h-6 rounded-full flex-shrink-0" style={{ background: group.color }} />
+                        <span className="text-sm font-bold tracking-widest" style={{ color: group.color }}>{group.label}</span>
+                        <span className="text-xs opacity-30 tracking-widest">{group.sub}</span>
+                        <div className="flex-1 h-px" style={{ background: `${group.color}22` }} />
                       </div>
-                      <p className="text-xs opacity-50 mb-1">{cls.tagline}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {classes.map((cls) => {
+                          const isMyClass = !!myRpgClass && myRpgClass.name === cls.name;
+                          return (
+                            <div key={cls.name} className="rounded-2xl p-5" style={{ background: `${cls.color}0d`, border: `1px solid ${isMyClass ? cls.color : `${cls.color}33`}`, boxShadow: isMyClass ? `0 0 16px ${cls.color}30` : undefined }}>
+                              {isMyClass && (
+                                <p className="text-xs mb-2 font-bold" style={{ color: cls.color }}>✦ あなたのクラス</p>
+                              )}
+                              <div className="flex items-start gap-3 mb-3">
+                                <span className="text-3xl flex-shrink-0">{cls.emoji}</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                                    <span className="text-base font-bold" style={{ color: cls.color }}>{cls.name}</span>
+                                    <span className="text-xs opacity-40">{cls.nameEn}</span>
+                                  </div>
+                                  <p className="text-xs opacity-50 mb-1">{cls.tagline}</p>
+                                </div>
+                              </div>
+                              <p className="text-xs leading-relaxed opacity-65 mb-3">{cls.desc}</p>
+                              <div className="flex flex-wrap gap-1.5 mb-3">
+                                {cls.strengths.map((s) => (
+                                  <span key={s} className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${cls.color}15`, border: `1px solid ${cls.color}30`, color: cls.color }}>{s}</span>
+                                ))}
+                              </div>
+                              <div className="text-xs opacity-50">
+                                {cls.career.map((c, i) => <span key={i}>{i > 0 && " · "}{c}</span>)}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-xs leading-relaxed opacity-65 mb-3">{cls.desc}</p>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {cls.strengths.map((s) => (
-                      <span key={s} className="text-xs px-2 py-0.5 rounded-full" style={{ background: `${cls.color}15`, border: `1px solid ${cls.color}30`, color: cls.color }}>{s}</span>
-                    ))}
-                  </div>
-                  <div className="text-xs opacity-50">
-                    {cls.career.map((c, i) => <span key={i}>{i > 0 && " · "}{c}</span>)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
           </>
         );
       })()}

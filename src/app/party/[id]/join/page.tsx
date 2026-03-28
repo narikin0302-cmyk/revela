@@ -95,30 +95,44 @@ export default function JoinPage() {
             <span>自分のクラスがわからない方はこちらで診断</span>
           </a>
 
-          <div className="grid grid-cols-2 gap-2">
-            {RPG_CLASSES.map((cls) => {
-              const role = CLASS_ROLES[cls.name];
-              const isSelected = selectedClass === cls.name;
+          <div className="space-y-4">
+            {([
+              { key: "LEADER",    label: "前衛",  color: "#f87171" },
+              { key: "SUPPORT",   label: "後衛",  color: "#34d399" },
+              { key: "BRAIN",     label: "頭脳",  color: "#818cf8" },
+              { key: "TRICKSTER", label: "自由",  color: "#c084fc" },
+            ] as const).map((group) => {
+              const classes = RPG_CLASSES.filter((cls) => CLASS_ROLES[cls.name] === group.key);
               return (
-                <button
-                  key={cls.id}
-                  onClick={() => setSelectedClass(cls.name)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-left transition-all duration-200"
-                  style={{
-                    background: isSelected ? `${cls.color}22` : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${isSelected ? cls.color : "rgba(255,255,255,0.08)"}`,
-                  }}
-                >
-                  <span className="text-lg">{cls.emoji}</span>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold truncate" style={{ color: isSelected ? cls.color : "#EDEDED" }}>
-                      {cls.name}
-                    </p>
-                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
-                      {ROLE_LABELS[role] ?? ""}
-                    </p>
+                <div key={group.key}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-0.5 h-4 rounded-full" style={{ background: group.color }} />
+                    <span className="text-xs font-bold tracking-widest" style={{ color: group.color }}>{group.label}</span>
                   </div>
-                </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    {classes.map((cls) => {
+                      const isSelected = selectedClass === cls.name;
+                      return (
+                        <button
+                          key={cls.id}
+                          onClick={() => setSelectedClass(cls.name)}
+                          className="flex items-center gap-2 px-3 py-3 rounded-xl text-left transition-all duration-200"
+                          style={{
+                            background: isSelected ? `${cls.color}22` : "rgba(255,255,255,0.04)",
+                            border: `1px solid ${isSelected ? cls.color : "rgba(255,255,255,0.08)"}`,
+                          }}
+                        >
+                          <span className="text-lg">{cls.emoji}</span>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold truncate" style={{ color: isSelected ? cls.color : "#EDEDED" }}>
+                              {cls.name}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               );
             })}
           </div>
