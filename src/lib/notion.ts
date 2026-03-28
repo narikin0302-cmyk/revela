@@ -19,12 +19,13 @@ export interface NotionArticle {
   description: string;
   date: string;
   tags: string[];
+  order: number;
 }
 
 export async function getPublishedArticles(): Promise<NotionArticle[]> {
   const res = await notion.databases.query({
     database_id: DB_ID,
-    sorts: [{ property: "date", direction: "descending" }],
+    sorts: [{ property: "order", direction: "ascending" }],
   });
 
   return res.results
@@ -54,8 +55,13 @@ export async function getPublishedArticles(): Promise<NotionArticle[]> {
           ? tagsProp.multi_select.map((t) => t.name)
           : [];
 
-      return { id: page.id, slug, title, description, date, tags };
-    });
+      const orderProp = props["order"];
+      const order =
+        orderProp?.type === "number" ? (orderProp.number ?? 9999) : 9999;
+
+      return { id: page.id, slug, title, description, date, tags, order };
+    })
+    .sort((a, b) => a.order - b.order);
 }
 
 export async function getArticleBySlug(slug: string): Promise<NotionArticle | null> {
