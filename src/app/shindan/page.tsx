@@ -23,6 +23,7 @@ import {
 import type { MBTIAnswers, LoveAnswers, TrueSelfAnswers, LikertScore, MBTIDimensionScore } from "@/lib/calculate";
 import { getMBTIScores } from "@/lib/calculate";
 import { saveHistoryEntry } from "@/lib/storage";
+import { trackDiagnosisResult, fetchDiagnosisStats } from "@/lib/supabase";
 import { generateRevelaCode } from "@/lib/revelaCodes";
 import { getMbtiCharaName } from "@/data/charaNames";
 import { getRpgClassByCombo, getRpgSynergy } from "@/data/rpgClasses";
@@ -2867,6 +2868,7 @@ function ResultsPage({
   const [toastVisible, setToastVisible] = useState(false);
   const [resultsVisible, setResultsVisible] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
+  const [statsRank, setStatsRank] = useState<{ mbtiRank: number; total: number } | null>(null);
   const [showShareCard, setShowShareCard] = useState(false);
   const [savingImage, setSavingImage] = useState(false);
   const [imgAttempt, setImgAttempt] = useState(0);
@@ -2889,6 +2891,17 @@ function ResultsPage({
   }, [gatesComplete]);
 
   useEffect(() => {
+    fetchDiagnosisStats().then((stats) => {
+      const finalMBTI = trueSelfMbti ?? mbtiType;
+      const rank = stats.mbtiRanking.findIndex((r) => r.type === finalMBTI) + 1;
+      if (rank > 0 && stats.total > 0) {
+        setStatsRank({ mbtiRank: rank, total: stats.total });
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
     saveHistoryEntry({
@@ -2900,6 +2913,12 @@ function ResultsPage({
       tarot: tarotCard.name,
       isReversed: tarotIsReversed,
       description: reading.description,
+    });
+    trackDiagnosisResult({
+      mbti: trueSelfMbti ?? mbtiType,
+      loveType,
+      zodiac: data.zodiac || undefined,
+      tarot: tarotCard.name,
     });
     // Save revela code to localStorage for the aisei page
     const finalMBTI = trueSelfMbti ?? mbtiType;
@@ -3214,6 +3233,21 @@ function ResultsPage({
         </h2>
         <div className="h-px w-20 mx-auto" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)" }} />
       </div>
+
+      {/* ━━━ 統計バナー ━━━ */}
+      {statsRank && (
+        <div
+          className="mb-6 rounded-2xl px-5 py-4 text-center"
+          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          <p className="text-xs tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>JAPAN STATS</p>
+          <p className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+            あなたの <span style={{ color: displayColors.primary, fontWeight: 700 }}>{trueSelfMbti ?? mbtiType}</span> は
+            {statsRank.total.toLocaleString()}人中{" "}
+            <span style={{ color: "#f5c842", fontWeight: 700, fontSize: "1.1em" }}>第{statsRank.mbtiRank}位</span>
+          </p>
+        </div>
+      )}
 
       {/* ━━━ 遊戯王風キャラクターカード (CSS) ━━━ */}
       {(() => {
