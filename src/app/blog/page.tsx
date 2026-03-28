@@ -40,6 +40,13 @@ const CATEGORY_TAGS = [
   "職業RPG","LEADERロール","SUPPORTロール","BRAINロール","TRICKSTERロール","16タイプ",
 ];
 
+const TREE_SECTIONS = [
+  { key: "MBTI",   label: "MBTIタイプ解説",   emoji: "🧠", desc: "16タイプの特徴・強み・弱み・向いている仕事" },
+  { key: "ラブタイプ", label: "ラブタイプ",   emoji: "💘", desc: "MBTIタイプ別の恋愛傾向・相性" },
+  { key: "職業RPG", label: "職業RPGクラス",   emoji: "⚔️", desc: "4ロールとクラスの詳細解説" },
+  { key: "職場環境", label: "職場環境",        emoji: "🏢", desc: "業種別・チーム陣形の分析" },
+];
+
 interface UserProfile {
   mbti: string | null;
   loveType: string | null;
@@ -62,29 +69,159 @@ function loadUserProfile(): UserProfile {
   }
 }
 
-function TagChip({ tag, active, onToggle, small }: {
-  tag: string; active?: boolean; onToggle: () => void; small?: boolean;
-}) {
-  const color = TAG_COLORS[tag] ?? "#6b7280";
+function ArticleCard({ article, activeFilters }: { article: NotionArticle; activeFilters: string[] }) {
   return (
-    <button
-      onClick={onToggle}
-      style={{
-        padding: small ? "2px 10px" : "5px 14px",
-        borderRadius: 9999,
-        fontSize: small ? 11 : 12,
-        background: active ? `${color}33` : `${color}11`,
-        border: `1px solid ${active ? color : `${color}44`}`,
-        color: active ? color : `${color}aa`,
-        letterSpacing: "0.03em",
-        cursor: "pointer",
-        transition: "all 0.15s ease",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {tag}
-      {active && <span style={{ marginLeft: 6, opacity: 0.7 }}>×</span>}
-    </button>
+    <Link href={`/blog/${article.slug}`} style={{ textDecoration: "none" }}>
+      <article
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 12,
+          padding: "18px 20px",
+          transition: "all 0.2s ease",
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+          (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
+          (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
+        }}
+      >
+        <div style={{ fontSize: 11, color: "rgba(237,237,237,0.3)", marginBottom: 6, letterSpacing: "0.05em" }}>
+          {formatDate(article.date)}
+        </div>
+        <h3 style={{
+          fontFamily: "var(--font-noto-serif-jp), serif",
+          fontSize: "clamp(14px, 2.5vw, 17px)",
+          fontWeight: 700,
+          color: "#EDEDED",
+          marginBottom: 6,
+          lineHeight: 1.5,
+          letterSpacing: "0.02em",
+        }}>
+          {article.title}
+        </h3>
+        <p style={{ fontSize: 12, color: "rgba(237,237,237,0.5)", lineHeight: 1.7, marginBottom: 10 }}>
+          {article.description}
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+          {article.tags.map((tag) => {
+            const color = TAG_COLORS[tag] ?? "#6b7280";
+            const isActive = activeFilters.includes(tag);
+            return (
+              <span key={tag} style={{
+                padding: "2px 8px",
+                borderRadius: 9999,
+                fontSize: 10,
+                background: isActive ? `${color}33` : `${color}18`,
+                border: `1px solid ${isActive ? color : `${color}33`}`,
+                color: color,
+                letterSpacing: "0.03em",
+              }}>
+                {tag}
+              </span>
+            );
+          })}
+        </div>
+      </article>
+    </Link>
+  );
+}
+
+function TreeSection({
+  section, articles, activeFilters, defaultOpen,
+}: {
+  section: typeof TREE_SECTIONS[0];
+  articles: NotionArticle[];
+  activeFilters: string[];
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen ?? false);
+  const filtered = activeFilters.length > 0
+    ? articles.filter((a) => activeFilters.some((f) => a.tags.includes(f)))
+    : articles;
+
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "14px 18px",
+          background: open ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: open ? "12px 12px 0 0" : 12,
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          textAlign: "left",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 18 }}>{section.emoji}</span>
+          <div>
+            <div style={{
+              fontSize: 14,
+              fontWeight: 700,
+              color: "#EDEDED",
+              letterSpacing: "0.05em",
+              fontFamily: "var(--font-noto-serif-jp), serif",
+            }}>
+              {section.label}
+            </div>
+            <div style={{ fontSize: 11, color: "rgba(237,237,237,0.35)", marginTop: 2 }}>
+              {section.desc}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{
+            fontSize: 11,
+            color: "rgba(237,237,237,0.35)",
+            background: "rgba(255,255,255,0.06)",
+            padding: "2px 8px",
+            borderRadius: 9999,
+          }}>
+            {filtered.length}本
+          </span>
+          <span style={{
+            fontSize: 12,
+            color: "rgba(237,237,237,0.4)",
+            transform: open ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.2s ease",
+            display: "inline-block",
+          }}>▼</span>
+        </div>
+      </button>
+
+      {open && (
+        <div style={{
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderTop: "none",
+          borderRadius: "0 0 12px 12px",
+          padding: "12px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          background: "rgba(255,255,255,0.01)",
+        }}>
+          {filtered.length === 0 ? (
+            <p style={{ fontSize: 12, color: "rgba(237,237,237,0.25)", textAlign: "center", padding: "20px 0" }}>
+              該当する記事がありません
+            </p>
+          ) : (
+            filtered.map((a) => (
+              <ArticleCard key={a.slug} article={a} activeFilters={activeFilters} />
+            ))
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -121,18 +258,31 @@ export default function BlogPage() {
     );
   }
 
-  const filtered = articles.filter((article) => {
+  // カテゴリ・検索フィルタリング
+  function getArticlesByCategory(cat: string): NotionArticle[] {
+    return articles.filter((a) => {
+      const matchCat = a.category.includes(cat);
+      const matchSearch =
+        search === "" ||
+        a.title.toLowerCase().includes(search.toLowerCase()) ||
+        a.description.toLowerCase().includes(search.toLowerCase());
+      return matchCat && matchSearch;
+    });
+  }
+
+  const introArticles = articles.filter((a) => {
+    const matchCat = a.category.includes("イントロ");
     const matchSearch =
       search === "" ||
-      article.title.toLowerCase().includes(search.toLowerCase()) ||
-      article.description.toLowerCase().includes(search.toLowerCase());
+      a.title.toLowerCase().includes(search.toLowerCase()) ||
+      a.description.toLowerCase().includes(search.toLowerCase());
     const matchFilter =
       activeFilters.length === 0 ||
-      activeFilters.some((f) => article.tags.includes(f));
-    return matchSearch && matchFilter;
+      activeFilters.some((f) => a.tags.includes(f));
+    return matchCat && matchSearch && matchFilter;
   });
 
-  // Your profile quick tags
+  // Profile quick tabs
   const profileTags: { label: string; tag: string; sub: string }[] = [];
   if (profile.mbti) {
     profileTags.push({ label: profile.mbti, tag: profile.mbti, sub: "MBTI" });
@@ -142,7 +292,6 @@ export default function BlogPage() {
     profileTags.push({ label: profile.rpgRole, tag: profile.rpgRole, sub: "RPG" });
   }
 
-  // All tags available for + dropdown (exclude already active)
   const availableMbti = ALL_MBTI.filter((t) => !activeFilters.includes(t));
   const availableCategories = CATEGORY_TAGS.filter((t) => !activeFilters.includes(t));
 
@@ -168,11 +317,8 @@ export default function BlogPage() {
         </div>
 
         {/* Search bar */}
-        <div style={{ position: "relative", marginBottom: 20 }}>
-          <span style={{
-            position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)",
-            fontSize: 15, color: "rgba(237,237,237,0.3)",
-          }}>🔍</span>
+        <div style={{ position: "relative", marginBottom: 16 }}>
+          <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 15, color: "rgba(237,237,237,0.3)" }}>🔍</span>
           <input
             type="text"
             value={search}
@@ -197,17 +343,15 @@ export default function BlogPage() {
 
         {/* Your profile quick tabs */}
         {profileTags.length > 0 && (
-          <div style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 11, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 8 }}>
-              ✦ あなた向け
-            </p>
+          <div style={{ marginBottom: 14 }}>
+            <p style={{ fontSize: 11, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 8 }}>✦ あなた向け</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {profileTags.map(({ label, tag, sub }) => (
                 <button
                   key={tag}
                   onClick={() => toggleFilter(tag)}
                   style={{
-                    padding: "6px 14px",
+                    padding: "5px 14px",
                     borderRadius: 9999,
                     fontSize: 12,
                     background: activeFilters.includes(tag) ? `${TAG_COLORS[tag] ?? "#6b7280"}33` : "rgba(255,255,255,0.05)",
@@ -230,166 +374,126 @@ export default function BlogPage() {
           </div>
         )}
 
-        {/* Active filters + add button */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 24 }}>
-          {activeFilters
-            .filter((f) => !profileTags.some((p) => p.tag === f))
-            .map((tag) => (
-              <TagChip key={tag} tag={tag} active onToggle={() => toggleFilter(tag)} />
-            ))}
+        {/* Active filters + add */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 32 }}>
+          {activeFilters.filter((f) => !profileTags.some((p) => p.tag === f)).map((tag) => {
+            const color = TAG_COLORS[tag] ?? "#6b7280";
+            return (
+              <button key={tag} onClick={() => toggleFilter(tag)} style={{
+                padding: "4px 12px", borderRadius: 9999, fontSize: 12,
+                background: `${color}33`, border: `1px solid ${color}`,
+                color: color, cursor: "pointer", letterSpacing: "0.03em",
+              }}>
+                {tag} <span style={{ marginLeft: 4, opacity: 0.7 }}>×</span>
+              </button>
+            );
+          })}
 
-          {/* + button */}
           <div ref={dropdownRef} style={{ position: "relative" }}>
             <button
               onClick={() => setShowDropdown((v) => !v)}
               style={{
-                padding: "5px 14px",
-                borderRadius: 9999,
-                fontSize: 12,
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                color: "rgba(237,237,237,0.5)",
-                cursor: "pointer",
-                letterSpacing: "0.05em",
-                transition: "all 0.15s ease",
+                padding: "4px 12px", borderRadius: 9999, fontSize: 12,
+                background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)",
+                color: "rgba(237,237,237,0.5)", cursor: "pointer", letterSpacing: "0.05em",
               }}
             >
               ＋ タグを追加
             </button>
-
             {showDropdown && (
               <div style={{
-                position: "absolute",
-                top: "calc(100% + 8px)",
-                left: 0,
-                zIndex: 100,
-                background: "rgba(12,12,12,0.97)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 14,
-                padding: "16px",
-                width: 280,
-                boxShadow: "0 8px 30px rgba(0,0,0,0.6)",
-                backdropFilter: "blur(20px)",
+                position: "absolute", top: "calc(100% + 8px)", left: 0, zIndex: 100,
+                background: "rgba(12,12,12,0.97)", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 14, padding: "16px", width: 280,
+                boxShadow: "0 8px 30px rgba(0,0,0,0.6)", backdropFilter: "blur(20px)",
               }}>
-                <p style={{ fontSize: 10, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 10 }}>
-                  MBTIタイプ
-                </p>
+                <p style={{ fontSize: 10, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 10 }}>MBTIタイプ</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
-                  {availableMbti.map((tag) => (
-                    <TagChip key={tag} tag={tag} onToggle={() => { toggleFilter(tag); setShowDropdown(false); }} small />
-                  ))}
+                  {availableMbti.map((tag) => {
+                    const color = TAG_COLORS[tag] ?? "#6b7280";
+                    return (
+                      <button key={tag} onClick={() => { toggleFilter(tag); setShowDropdown(false); }} style={{
+                        padding: "2px 10px", borderRadius: 9999, fontSize: 11,
+                        background: `${color}11`, border: `1px solid ${color}44`,
+                        color: `${color}aa`, cursor: "pointer",
+                      }}>{tag}</button>
+                    );
+                  })}
                 </div>
-                <p style={{ fontSize: 10, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 10 }}>
-                  カテゴリ
-                </p>
+                <p style={{ fontSize: 10, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 10 }}>カテゴリ</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {availableCategories.map((tag) => (
-                    <TagChip key={tag} tag={tag} onToggle={() => { toggleFilter(tag); setShowDropdown(false); }} small />
-                  ))}
+                  {availableCategories.map((tag) => {
+                    const color = TAG_COLORS[tag] ?? "#6b7280";
+                    return (
+                      <button key={tag} onClick={() => { toggleFilter(tag); setShowDropdown(false); }} style={{
+                        padding: "2px 10px", borderRadius: 9999, fontSize: 11,
+                        background: `${color}11`, border: `1px solid ${color}44`,
+                        color: `${color}aa`, cursor: "pointer",
+                      }}>{tag}</button>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Clear all */}
           {activeFilters.length > 0 && (
-            <button
-              onClick={() => setActiveFilters([])}
-              style={{
-                fontSize: 11,
-                color: "rgba(237,237,237,0.3)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                letterSpacing: "0.05em",
-                padding: "5px 8px",
-              }}
-            >
-              クリア
-            </button>
+            <button onClick={() => setActiveFilters([])} style={{
+              fontSize: 11, color: "rgba(237,237,237,0.3)",
+              background: "none", border: "none", cursor: "pointer", padding: "4px 8px",
+            }}>クリア</button>
           )}
         </div>
 
-        {/* Results count */}
-        {!loading && (activeFilters.length > 0 || search) && (
-          <p style={{ fontSize: 12, color: "rgba(237,237,237,0.3)", marginBottom: 16, letterSpacing: "0.05em" }}>
-            {filtered.length} 件
-          </p>
-        )}
-
-        {/* Article list */}
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px 0" }}>
             <p style={{ fontSize: 13, color: "rgba(237,237,237,0.3)", letterSpacing: "0.1em" }}>読み込み中...</p>
           </div>
-        ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px 0" }}>
-            <p style={{ fontSize: 13, color: "rgba(237,237,237,0.3)" }}>
-              {articles.length === 0 ? "記事がまだありません" : "該当する記事が見つかりませんでした"}
-            </p>
-          </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {filtered.map((article) => (
-              <Link key={article.slug} href={`/blog/${article.slug}`} style={{ textDecoration: "none" }}>
-                <article
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 14,
-                    padding: "24px",
-                    transition: "all 0.2s ease",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
-                  }}
-                >
-                  <div style={{ fontSize: 12, color: "rgba(237,237,237,0.35)", marginBottom: 10, letterSpacing: "0.05em" }}>
-                    {formatDate(article.date)}
-                  </div>
-                  <h2 style={{
+          <>
+            {/* イントロ（一番上・常時表示） */}
+            {introArticles.length > 0 && (
+              <div style={{ marginBottom: 32 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+                  <span style={{ fontSize: 16 }}>✦</span>
+                  <span style={{
+                    fontSize: 12,
+                    letterSpacing: "0.2em",
+                    color: "rgba(237,237,237,0.4)",
                     fontFamily: "var(--font-noto-serif-jp), serif",
-                    fontSize: "clamp(16px, 3vw, 20px)",
-                    fontWeight: 700,
-                    color: "#EDEDED",
-                    marginBottom: 10,
-                    lineHeight: 1.5,
-                    letterSpacing: "0.02em",
                   }}>
-                    {article.title}
-                  </h2>
-                  <p style={{ fontSize: 13, color: "rgba(237,237,237,0.55)", lineHeight: 1.7, marginBottom: 14 }}>
-                    {article.description}
-                  </p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {article.tags.map((tag) => {
-                      const color = TAG_COLORS[tag] ?? "#6b7280";
-                      const isActive = activeFilters.includes(tag);
-                      return (
-                        <span key={tag} style={{
-                          padding: "3px 10px",
-                          borderRadius: 9999,
-                          fontSize: 11,
-                          background: isActive ? `${color}33` : `${color}22`,
-                          border: `1px solid ${isActive ? color : `${color}44`}`,
-                          color: color,
-                          letterSpacing: "0.03em",
-                        }}>
-                          {tag}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
+                    INTRODUCTION
+                  </span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {introArticles.map((a) => (
+                    <ArticleCard key={a.slug} article={a} activeFilters={activeFilters} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 区切り線 */}
+            {introArticles.length > 0 && (
+              <div style={{
+                width: "100%", height: 1,
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+                marginBottom: 24,
+              }} />
+            )}
+
+            {/* ツリーセクション */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {TREE_SECTIONS.map((section) => (
+                <TreeSection
+                  key={section.key}
+                  section={section}
+                  articles={getArticlesByCategory(section.key)}
+                  activeFilters={activeFilters}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

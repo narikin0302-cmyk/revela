@@ -20,6 +20,7 @@ export interface NotionArticle {
   date: string;
   tags: string[];
   order: number;
+  category: string[];
 }
 
 export async function getPublishedArticles(): Promise<NotionArticle[]> {
@@ -59,7 +60,13 @@ export async function getPublishedArticles(): Promise<NotionArticle[]> {
       const order =
         orderProp?.type === "number" ? (orderProp.number ?? 9999) : 9999;
 
-      return { id: page.id, slug, title, description, date, tags, order };
+      const categoryProp = props["category"];
+      const category =
+        categoryProp?.type === "multi_select"
+          ? categoryProp.multi_select.map((c) => c.name)
+          : [];
+
+      return { id: page.id, slug, title, description, date, tags, order, category };
     })
     .sort((a, b) => a.order - b.order);
 }
