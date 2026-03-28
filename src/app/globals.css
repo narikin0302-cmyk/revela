@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
+  --background: #111116;
   --foreground: #EDEDED;
   --gold: #d4af37;
   --gold-light: #f0d060;
@@ -28,9 +28,11 @@ html {
 }
 
 body {
-  background: #0a0a0a;
+  background: #111116;
   color: #EDEDED;
-  font-family: 'Noto Serif JP', serif;
+  font-family: var(--font-noto-sans-jp), 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
   min-height: 100vh;
   overflow-x: hidden;
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Serif_JP, Cinzel } from "next/font/google";
+import { Noto_Serif_JP, Noto_Sans_JP, Cinzel } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import BottomNav from "@/components/BottomNav";
@@ -9,6 +9,13 @@ const notoSerifJP = Noto_Serif_JP({
   variable: "--font-noto-serif-jp",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
+  display: "swap",
+});
+
+const notoSansJP = Noto_Sans_JP({
+  variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -51,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${notoSerifJP.variable} ${cinzel.variable}`}>
+    <html lang="ja" className={`${notoSerifJP.variable} ${notoSansJP.variable} ${cinzel.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0a0a0a" />
