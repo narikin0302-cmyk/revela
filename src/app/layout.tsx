@@ -116,6 +116,9 @@ export default function RootLayout({
             >
               © 2026 revela
             </p>
+            <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>
+              診断結果はMBTI・キャラクターコード・星座のみ、匿名で統計目的に収集されます。
+            </p>
           </footer>
         </div>
       </body>
