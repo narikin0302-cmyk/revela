@@ -35,11 +35,9 @@ export function generateRevelaCode(
   mbti: string,
   loveType: string,
   zodiac: string,
-  tarot?: string,
 ): string {
   const zodiacShort = ZODIAC_SHORT_MAP[zodiac] ?? zodiac.slice(0, 2);
-  const base = `${mbti}-${loveType}-${zodiacShort}`;
-  return tarot ? `${base}-${tarot}` : base;
+  return `${mbti}-${loveType}-${zodiacShort}`;
 }
 
 // ── parseRevelaCode ──────────────────────────────────────────

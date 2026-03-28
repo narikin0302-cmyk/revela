@@ -3142,7 +3142,7 @@ function ResultsPage({
         // ── revela code (if available) ──
         const finalMBTI2 = trueSelfMbti ?? displayMBTI;
         if (data.zodiac && data.zodiac !== "なし") {
-          const code = generateRevelaCode(finalMBTI2, loveType, data.zodiac, tarotCard.name);
+          const code = generateRevelaCode(finalMBTI2, loveType, data.zodiac);
           ctx.fillStyle = "rgba(255,255,255,0.08)";
           ctx.fillRect(W / 2 - 160, 670, 320, 44);
           ctx.strokeStyle = "rgba(255,255,255,0.3)";
