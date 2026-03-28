@@ -669,7 +669,7 @@ export default function AiseiPage() {
 
           <p className="text-xs opacity-40 text-center leading-relaxed">
             revelaコードはrevela診断の結果ページで確認できます。<br />
-            形式: MBTI-キャラコード-星座-タロット
+            形式: MBTI-キャラコード-星座
           </p>
         </div>
       )}
