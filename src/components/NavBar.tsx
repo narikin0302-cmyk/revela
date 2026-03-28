@@ -63,6 +63,10 @@ const NAV_ITEMS: NavItem[] = [
     label: "履歴",
     href: "/history",
   },
+  {
+    label: "ブログ",
+    href: "/blog",
+  },
 ];
 
 function DropdownMenu({
