@@ -40,15 +40,11 @@ const CATEGORY_TAGS = [
   "職業RPG","LEADERロール","SUPPORTロール","BRAINロール","TRICKSTERロール","16タイプ",
 ];
 
-const QUICK_TAGS = [
-  { label: "職業RPG", tag: "職業RPG" },
-  { label: "チーム分析", tag: "チーム分析" },
-  { label: "MBTI活用", tag: "MBTI活用" },
-  { label: "人間関係", tag: "人間関係" },
-  { label: "仕事・キャリア", tag: "仕事・キャリア" },
-  { label: "恋愛", tag: "恋愛" },
-  { label: "自己分析", tag: "自己分析" },
-];
+// MBTIタイプ個別タグは除外（＋ボタン側に表示）
+const EXCLUDED_FROM_QUICK = new Set([
+  "INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP",
+  "ISTJ","ISFJ","ESTJ","ESFJ","ISTP","ISFP","ESTP","ESFP",
+]);
 
 const TREE_SECTIONS = [
   { key: "MBTI",   label: "MBTIタイプ解説",   emoji: "🧠", desc: "16タイプの特徴・強み・弱み・向いている仕事" },
@@ -305,6 +301,16 @@ export default function BlogPage() {
   const availableMbti = ALL_MBTI.filter((t) => !activeFilters.includes(t));
   const availableCategories = CATEGORY_TAGS.filter((t) => !activeFilters.includes(t));
 
+  // 記事タグから動的にクイックタブを生成（MBTIタイプ個別は除外）
+  const quickTags = Array.from(
+    articles.flatMap((a) => a.tags).reduce((acc, tag) => {
+      if (!EXCLUDED_FROM_QUICK.has(tag)) acc.set(tag, (acc.get(tag) ?? 0) + 1);
+      return acc;
+    }, new Map<string, number>())
+  )
+    .sort((a, b) => b[1] - a[1]) // 使用頻度順
+    .map(([tag]) => tag);
+
   return (
     <div style={{ minHeight: "100vh", background: "transparent", color: "#EDEDED", fontFamily: "var(--font-noto-sans-jp), sans-serif" }}>
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 16px 80px" }}>
@@ -351,33 +357,35 @@ export default function BlogPage() {
           />
         </div>
 
-        {/* Quick category tabs */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
-          {QUICK_TAGS.map(({ label, tag }) => {
-            const color = TAG_COLORS[tag] ?? "#6b7280";
-            const active = activeFilters.includes(tag);
-            return (
-              <button
-                key={tag}
-                onClick={() => toggleFilter(tag)}
-                style={{
-                  padding: "5px 14px",
-                  borderRadius: 9999,
-                  fontSize: 12,
-                  background: active ? `${color}33` : `${color}11`,
-                  border: `1px solid ${active ? color : `${color}44`}`,
-                  color: active ? color : `${color}bb`,
-                  cursor: "pointer",
-                  transition: "all 0.15s ease",
-                  letterSpacing: "0.04em",
-                }}
-              >
-                {label}
-                {active && <span style={{ marginLeft: 5, opacity: 0.6 }}>×</span>}
-              </button>
-            );
-          })}
-        </div>
+        {/* Quick category tabs（記事タグから自動生成） */}
+        {quickTags.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+            {quickTags.map((tag) => {
+              const color = TAG_COLORS[tag] ?? "#6b7280";
+              const active = activeFilters.includes(tag);
+              return (
+                <button
+                  key={tag}
+                  onClick={() => toggleFilter(tag)}
+                  style={{
+                    padding: "5px 14px",
+                    borderRadius: 9999,
+                    fontSize: 12,
+                    background: active ? `${color}33` : `${color}11`,
+                    border: `1px solid ${active ? color : `${color}44`}`,
+                    color: active ? color : `${color}bb`,
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {tag}
+                  {active && <span style={{ marginLeft: 5, opacity: 0.6 }}>×</span>}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Your profile quick tabs */}
         {profileTags.length > 0 && (
