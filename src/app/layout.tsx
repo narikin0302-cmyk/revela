@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/NavBar";
 import BottomNav from "@/components/BottomNav";
 import PageTransition from "@/components/PageTransition";
+import { Analytics } from "@vercel/analytics/next";
 
 const notoSerifJP = Noto_Serif_JP({
   variable: "--font-noto-serif-jp",
@@ -121,6 +122,7 @@ export default function RootLayout({
             </p>
           </footer>
         </div>
+      <Analytics />
       </body>
     </html>
   );
