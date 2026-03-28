@@ -3252,8 +3252,8 @@ function ResultsPage({
         <div className="h-px w-20 mx-auto" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)" }} />
       </div>
 
-      {/* ━━━ 統計バナー ━━━ */}
-      {statsRank && (
+      {/* ━━━ 統計バナー（1000人以上集まったら表示） ━━━ */}
+      {statsRank && statsRank.total >= 1000 && (
         <div
           className="mb-6 rounded-2xl px-5 py-4 text-center"
           style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}
