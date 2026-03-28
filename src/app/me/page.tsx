@@ -187,7 +187,7 @@ export default function MePage() {
           </p>
         )}
         <div style={{ display: "inline-block", padding: "8px 20px", borderRadius: 9999, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.35)", fontFamily: "monospace", fontSize: "clamp(0.85rem,3.5vw,1.1rem)", fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.12em", marginBottom: 8 }}>
-          {code.mbti}-{code.loveType}-{code.zodiac}-{code.tarot}
+          {code.mbti}-{code.loveType}-{code.zodiac}
         </div>
         <div className="divider-gold w-16 mx-auto mt-4" />
       </div>
