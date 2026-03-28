@@ -2869,6 +2869,7 @@ function ResultsPage({
   const [resultsVisible, setResultsVisible] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
   const [statsRank, setStatsRank] = useState<{ mbtiRank: number; total: number } | null>(null);
+  const [rankingToast, setRankingToast] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
   const [savingImage, setSavingImage] = useState(false);
   const [imgAttempt, setImgAttempt] = useState(0);
@@ -2920,6 +2921,10 @@ function ResultsPage({
       zodiac: data.zodiac || undefined,
       tarot: tarotCard.name,
     });
+    setTimeout(() => {
+      setRankingToast(true);
+      setTimeout(() => setRankingToast(false), 4000);
+    }, 1500);
     // Save revela code to localStorage for the aisei page
     const finalMBTI = trueSelfMbti ?? mbtiType;
     try {
@@ -3222,6 +3227,19 @@ function ResultsPage({
           }}
         >
           ✓ コピーしました！
+        </div>
+      )}
+
+      {/* Ranking toast */}
+      {rankingToast && (
+        <div style={{
+          position: "fixed", bottom: 32, left: "50%", transform: "translateX(-50%)",
+          zIndex: 300, background: "rgba(20,20,28,0.95)", color: "rgba(255,255,255,0.6)",
+          padding: "10px 20px", borderRadius: 9999, fontSize: 11,
+          border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "nowrap",
+          animation: "fadeIn 0.3s ease", letterSpacing: "0.05em",
+        }}>
+          診断結果はランキング作成のため匿名で使用されます
         </div>
       )}
 
