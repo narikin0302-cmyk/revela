@@ -194,39 +194,75 @@ export default async function ArticlePage({ params }: Props) {
         >
           <p
             style={{
+              fontSize: 11,
+              letterSpacing: "0.2em",
+              color: "rgba(237,237,237,0.3)",
+              marginBottom: 16,
+            }}
+          >
+            REVELA
+          </p>
+          <p
+            style={{
               fontFamily: "var(--font-noto-serif-jp), serif",
-              fontSize: 16,
+              fontSize: 18,
+              fontWeight: 700,
               marginBottom: 8,
               color: "#EDEDED",
             }}
           >
-            自分のMBTIタイプを確認しよう
+            あなたのチームの陣形を確認しよう
           </p>
           <p
             style={{
               fontSize: 13,
-              color: "rgba(237,237,237,0.5)",
-              marginBottom: 20,
+              color: "rgba(237,237,237,0.45)",
+              lineHeight: 1.8,
+              marginBottom: 24,
             }}
           >
-            無料診断で本当の自分を発見する
+            まずは自分のMBTIとキャラコードを診断。<br />
+            仲間を誘ってパーティーを組めば、チームの陣形がわかる。
           </p>
-          <Link
-            href="/shindan"
-            style={{
-              display: "inline-block",
-              padding: "12px 40px",
-              borderRadius: 9999,
-              background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
-              color: "#fff",
-              fontSize: 14,
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textDecoration: "none",
-            }}
-          >
-            ✦ 診断をはじめる
-          </Link>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
+            <Link
+              href="/party"
+              style={{
+                display: "inline-block",
+                padding: "13px 40px",
+                borderRadius: 9999,
+                background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textDecoration: "none",
+                width: "100%",
+                maxWidth: 320,
+                boxSizing: "border-box",
+              }}
+            >
+              ⚔️ パーティーを結成する
+            </Link>
+            <Link
+              href="/shindan"
+              style={{
+                display: "inline-block",
+                padding: "12px 40px",
+                borderRadius: 9999,
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "rgba(237,237,237,0.7)",
+                fontSize: 13,
+                letterSpacing: "0.08em",
+                textDecoration: "none",
+                width: "100%",
+                maxWidth: 320,
+                boxSizing: "border-box",
+              }}
+            >
+              ✦ まずは診断してみる（無料）
+            </Link>
+          </div>
         </div>
 
         {/* Back link bottom */}
