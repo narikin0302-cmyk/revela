@@ -2919,7 +2919,6 @@ function ResultsPage({
       mbti: trueSelfMbti ?? mbtiType,
       loveType,
       zodiac: data.zodiac || undefined,
-      tarot: tarotCard.name,
     });
     setTimeout(() => {
       setRankingToast(true);
