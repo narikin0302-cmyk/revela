@@ -68,8 +68,8 @@ const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string; 
   ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", label: "エンターテイナー", emoji: "🎉" },
 };
 
-function getMbtiColor(type: string): { primary: string; bg: string; label: string } {
-  return MBTI_COLORS[type] ?? { primary: "rgba(255,255,255,0.6)", bg: "rgba(255,255,255,0.08)", label: "" };
+function getMbtiColor(type: string): { primary: string; bg: string; label: string; emoji: string } {
+  return MBTI_COLORS[type] ?? { primary: "rgba(255,255,255,0.6)", bg: "rgba(255,255,255,0.08)", label: "", emoji: "" };
 }
 
 // ============================================================
