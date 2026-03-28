@@ -21,6 +21,8 @@ const TAG_COLORS: Record<string, string> = {
   "自己分析": "#92400e", "性格分析": "#a78bfa", "ラブタイプ": "#ec4899",
   "職業RPG": "#7c3aed", "LEADERロール": "#6d28d9", "SUPPORTロール": "#2563eb",
   "BRAINロール": "#7c3aed", "TRICKSTERロール": "#a78bfa", "チーム分析": "#047857",
+  "上司": "#dc2626", "職場": "#b45309", "PTA": "#059669", "育児・学校": "#0891b2",
+  "姑": "#db2777", "家族": "#ec4899", "ママ友": "#10b981", "コミュニケーション": "#6d28d9",
 };
 
 const MBTI_TO_RPG_ROLE: Record<string, string> = {
@@ -38,6 +40,7 @@ const ALL_MBTI = [
 const CATEGORY_TAGS = [
   "MBTI解説","MBTI相性","MBTI活用","仕事・キャリア","恋愛","ラブタイプ",
   "職業RPG","LEADERロール","SUPPORTロール","BRAINロール","TRICKSTERロール","16タイプ",
+  "人間関係","上司","職場","PTA","育児・学校","姑","家族","ママ友","コミュニケーション",
 ];
 
 // MBTIタイプ個別タグは除外（＋ボタン側に表示）
@@ -51,6 +54,7 @@ const TREE_SECTIONS = [
   { key: "ラブタイプ", label: "ラブタイプ",   emoji: "💘", desc: "MBTIタイプ別の恋愛傾向・相性" },
   { key: "職業RPG", label: "職業RPGクラス",   emoji: "⚔️", desc: "4ロールとクラスの詳細解説" },
   { key: "職場環境", label: "職場環境",        emoji: "🏢", desc: "業種別・チーム陣形の分析" },
+  { key: "人間関係", label: "人間関係攻略",   emoji: "🤝", desc: "上司・姑・PTA・ママ友…ニッチな人間関係をRPGロールで解剖" },
 ];
 
 interface UserProfile {
