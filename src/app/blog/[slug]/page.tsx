@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { articles, getArticleBySlug } from "../articles";
+import { getPublishedArticles, getArticleBySlug, getArticleContent } from "@/lib/notion";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
+  const articles = await getPublishedArticles();
+  return articles.map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) return {};
 
   return {
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 function formatDate(dateStr: string): string {
+  if (!dateStr) return "";
   const d = new Date(dateStr);
   return d.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" });
 }
@@ -52,11 +54,13 @@ const TAG_COLORS: Record<string, string> = {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
+
+  const content = await getArticleContent(article.id);
 
   return (
     <div
@@ -80,7 +84,6 @@ export default async function ArticlePage({ params }: Props) {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              transition: "color 0.2s ease",
             }}
           >
             ← ブログ一覧に戻る
@@ -160,7 +163,7 @@ export default async function ArticlePage({ params }: Props) {
 
         {/* Article content */}
         <div
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          dangerouslySetInnerHTML={{ __html: content }}
           style={{
             lineHeight: 1.9,
             fontSize: 15,
@@ -277,6 +280,26 @@ export default async function ArticlePage({ params }: Props) {
         .blog-article-content strong {
           color: rgba(237,237,237,0.95);
           font-weight: 600;
+        }
+        .blog-article-content blockquote {
+          border-left: 3px solid rgba(124,58,237,0.6);
+          padding-left: 1em;
+          margin: 1.5em 0;
+          color: rgba(237,237,237,0.6);
+          font-style: italic;
+        }
+        .blog-article-content pre {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 8px;
+          padding: 1em;
+          overflow-x: auto;
+          margin: 1.5em 0;
+        }
+        .blog-article-content hr {
+          border: none;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          margin: 2em 0;
         }
       `}</style>
     </div>

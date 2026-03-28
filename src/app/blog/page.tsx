@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { articles } from "./articles";
+import type { NotionArticle } from "@/lib/notion";
 
 function formatDate(dateStr: string): string {
+  if (!dateStr) return "";
   const d = new Date(dateStr);
   return d.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" });
 }
@@ -25,9 +27,18 @@ const TAG_COLORS: Record<string, string> = {
 };
 
 export default function BlogPage() {
-  const sorted = [...articles].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  const [articles, setArticles] = useState<NotionArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/blog")
+      .then((r) => r.json())
+      .then((data) => {
+        setArticles(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   return (
     <div
@@ -58,90 +69,101 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* Article list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          {sorted.map((article) => (
-            <Link
-              key={article.slug}
-              href={`/blog/${article.slug}`}
-              style={{ textDecoration: "none" }}
-            >
-              <article
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 14,
-                  padding: "24px",
-                  transition: "all 0.2s ease",
-                  cursor: "pointer",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
-                }}
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "60px 0" }}>
+            <p style={{ fontSize: 13, color: "rgba(237,237,237,0.3)", letterSpacing: "0.1em" }}>
+              読み込み中...
+            </p>
+          </div>
+        ) : articles.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0" }}>
+            <p style={{ fontSize: 13, color: "rgba(237,237,237,0.3)" }}>記事がまだありません</p>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {articles.map((article) => (
+              <Link
+                key={article.slug}
+                href={`/blog/${article.slug}`}
+                style={{ textDecoration: "none" }}
               >
-                <div
+                <article
                   style={{
-                    fontSize: 12,
-                    color: "rgba(237,237,237,0.35)",
-                    marginBottom: 10,
-                    letterSpacing: "0.05em",
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 14,
+                    padding: "24px",
+                    transition: "all 0.2s ease",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
                   }}
                 >
-                  {formatDate(article.date)}
-                </div>
-                <h2
-                  style={{
-                    fontFamily: "var(--font-noto-serif-jp), serif",
-                    fontSize: "clamp(16px, 3vw, 20px)",
-                    fontWeight: 700,
-                    color: "#EDEDED",
-                    marginBottom: 10,
-                    lineHeight: 1.5,
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  {article.title}
-                </h2>
-                <p
-                  style={{
-                    fontSize: 13,
-                    color: "rgba(237,237,237,0.55)",
-                    lineHeight: 1.7,
-                    marginBottom: 14,
-                  }}
-                >
-                  {article.description}
-                </p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {article.tags.map((tag) => {
-                    const color = TAG_COLORS[tag] ?? "#6b7280";
-                    return (
-                      <span
-                        key={tag}
-                        style={{
-                          padding: "3px 10px",
-                          borderRadius: 9999,
-                          fontSize: 11,
-                          background: `${color}22`,
-                          border: `1px solid ${color}44`,
-                          color: color,
-                          letterSpacing: "0.03em",
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })}
-                </div>
-              </article>
-            </Link>
-          ))}
-        </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "rgba(237,237,237,0.35)",
+                      marginBottom: 10,
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {formatDate(article.date)}
+                  </div>
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-noto-serif-jp), serif",
+                      fontSize: "clamp(16px, 3vw, 20px)",
+                      fontWeight: 700,
+                      color: "#EDEDED",
+                      marginBottom: 10,
+                      lineHeight: 1.5,
+                      letterSpacing: "0.02em",
+                    }}
+                  >
+                    {article.title}
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: "rgba(237,237,237,0.55)",
+                      lineHeight: 1.7,
+                      marginBottom: 14,
+                    }}
+                  >
+                    {article.description}
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {article.tags.map((tag) => {
+                      const color = TAG_COLORS[tag] ?? "#6b7280";
+                      return (
+                        <span
+                          key={tag}
+                          style={{
+                            padding: "3px 10px",
+                            borderRadius: 9999,
+                            fontSize: 11,
+                            background: `${color}22`,
+                            border: `1px solid ${color}44`,
+                            color: color,
+                            letterSpacing: "0.03em",
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
