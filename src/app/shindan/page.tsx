@@ -85,10 +85,10 @@ const ALL_MBTI_TYPES = [
 ] as const;
 
 const ALL_LOVE_TYPES: LoveType[] = [
-  "LCRO","LCRE","LCPO","LCPE",
-  "LARO","LARE","LAPO","LAPE",
-  "FCRO","FCRE","FCPO","FCPE",
-  "FARO","FARE","FAPO","FAPE",
+  "ALRF","ALRP","ALVF","ALVP",
+  "AERF","AERP","AEVF","AEVP",
+  "SLRF","SLRP","SLVF","SLVP",
+  "SERF","SERP","SEVF","SEVP",
 ];
 
 // ============================================================

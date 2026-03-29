@@ -40,10 +40,22 @@ export function generateRevelaCode(
   return `${mbti}-${loveType}-${zodiacShort}`;
 }
 
+// ── Legacy code migration (pre-rename → new AELV system) ─────
+const LEGACY_LOVE_CODE_MAP: Record<string, string> = {
+  LCRO: "ALRF", LCRE: "ALRP", LCPO: "ALVF", LCPE: "ALVP",
+  LARO: "AERF", LARE: "AERP", LAPO: "AEVF", LAPE: "AEVP",
+  FCRO: "SLRF", FCRE: "SLRP", FCPO: "SLVF", FCPE: "SLVP",
+  FARO: "SERF", FARE: "SERP", FAPO: "SEVF", FAPE: "SEVP",
+};
+
+export function migrateLoveCode(code: string): string {
+  return LEGACY_LOVE_CODE_MAP[code] ?? code;
+}
+
 // ── parseRevelaCode ──────────────────────────────────────────
 export function parseRevelaCode(code: string): ParsedCode | null {
-  // Expected format: MBTI-LOVETYPE-ZODIACSHORT[-TAROT]
-  // e.g. ENFP-FCRO-うお or ENFP-FCRO-うお-星
+  // Expected format: MBTI-WORKTYPE-ZODIACSHORT[-TAROT]
+  // e.g. ENFP-ALVF-うお or ENFP-ALVF-うお-星
   const parts = code.trim().split("-");
   if (parts.length < 3) return null;
 
@@ -52,8 +64,11 @@ export function parseRevelaCode(code: string): ParsedCode | null {
   const mbti = mbtiRaw.toUpperCase();
   if (!/^[A-Z]{4}$/.test(mbti)) return null;
 
-  const loveType = loveTypeRaw.toUpperCase();
-  if (!/^[A-Z]{4}$/.test(loveType)) return null;
+  const rawLoveType = loveTypeRaw.toUpperCase();
+  if (!/^[A-Z]{4}$/.test(rawLoveType)) return null;
+
+  // Migrate legacy codes automatically
+  const loveType = migrateLoveCode(rawLoveType);
 
   const zodiac = SHORT_ZODIAC_MAP[zodiacShortRaw] ?? zodiacShortRaw;
 

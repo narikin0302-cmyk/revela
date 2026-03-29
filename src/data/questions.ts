@@ -116,17 +116,21 @@ export const mbtiQuestions: MBTIQuestion[] = [
 // Axis 4: O (オープン) vs E (内向的)
 // ============================================================
 
-export type LoveAxis1 = "L" | "F";
-export type LoveAxis2 = "C" | "A";
-export type LoveAxis3 = "R" | "P";
-export type LoveAxis4 = "O" | "E";
+// Axis 1: A (Active/主体的) vs S (Support/支援的)
+// Axis 2: L (Logic/合理性) vs E (Emotion/人間関係)
+// Axis 3: R (Real/現実・データ) vs V (Vision/未来・理想)
+// Axis 4: F (Free/自由裁量) vs P (Plan/計画・ルール)
+export type LoveAxis1 = "A" | "S";
+export type LoveAxis2 = "L" | "E";
+export type LoveAxis3 = "R" | "V";
+export type LoveAxis4 = "F" | "P";
 
-// 16 character code types: e.g. "LCRO", "FAPE" etc.
+// 16 character code types: e.g. "ALRF", "SEVP" etc.
 export type LoveType =
-  | "LCRO" | "LCRE" | "LCPO" | "LCPE"
-  | "LARO" | "LARE" | "LAPO" | "LAPE"
-  | "FCRO" | "FCRE" | "FCPO" | "FCPE"
-  | "FARO" | "FARE" | "FAPO" | "FAPE";
+  | "ALRF" | "ALRP" | "ALVF" | "ALVP"
+  | "AERF" | "AERP" | "AEVF" | "AEVP"
+  | "SLRF" | "SLRP" | "SLVF" | "SLVP"
+  | "SERF" | "SERP" | "SEVF" | "SEVP";
 
 export interface LoveQuestion {
   id: number;
@@ -145,8 +149,8 @@ export const loveQuestions: LoveQuestion[] = [
     optionA: "自分から方向性を提示して積極的に引っ張る",
     optionB: "周囲の様子を見ながら最適なタイミングで動く",
     axis: "1",
-    aValue: "L",
-    bValue: "F",
+    aValue: "A",
+    bValue: "S",
   },
   {
     id: 2,
@@ -154,8 +158,8 @@ export const loveQuestions: LoveQuestion[] = [
     optionA: "冷静に次のステップを考え始める",
     optionB: "感情があふれ出て、誰かと喜びを分かち合いたくなる",
     axis: "2",
-    aValue: "C",
-    bValue: "A",
+    aValue: "L",
+    bValue: "E",
   },
   {
     id: 3,
@@ -164,7 +168,7 @@ export const loveQuestions: LoveQuestion[] = [
     optionB: "みんながワクワクできる大胆なアイデアを提案する",
     axis: "3",
     aValue: "R",
-    bValue: "P",
+    bValue: "V",
   },
   {
     id: 4,
@@ -172,8 +176,8 @@ export const loveQuestions: LoveQuestion[] = [
     optionA: "積極的に話しかけて、すぐに自分のネットワークを広げる",
     optionB: "まず観察して、自分のペースで少しずつ馴染んでいく",
     axis: "4",
-    aValue: "O",
-    bValue: "E",
+    aValue: "F",
+    bValue: "P",
   },
   {
     id: 5,
@@ -182,7 +186,7 @@ export const loveQuestions: LoveQuestion[] = [
     optionB: "音楽・本・空想など、感覚の世界に浸る",
     axis: "3",
     aValue: "R",
-    bValue: "P",
+    bValue: "V",
   },
 ];
 
@@ -222,26 +226,26 @@ export const mbtiQuestionPool: MBTIQuestion[] = [
 // ============================================================
 
 export const loveQuestionPool: LoveQuestion[] = [
-  // ── Axis 1: L vs F (4 questions) ──
-  { id: 1,  question: "ストレスの多いグループプロジェクトに取り組むとき、あなたは？", optionA: "自分から方向性を提示して積極的に引っ張る", optionB: "周囲の様子を見ながら最適なタイミングで動く", axis: "1", aValue: "L", bValue: "F" },
-  { id: 6,  question: "初対面の人と話すとき", optionA: "自分から積極的に話しかける", optionB: "相手が話しかけてくるのを待つ", axis: "1", aValue: "L", bValue: "F" },
-  { id: 7,  question: "グループで意見を言うとき", optionA: "自分の考えを積極的に発言する", optionB: "求められたときに話す", axis: "1", aValue: "L", bValue: "F" },
-  { id: 8,  question: "何か問題が起きたとき", optionA: "すぐ動いて自分で解決しようとする", optionB: "状況を整理してから動く", axis: "1", aValue: "L", bValue: "F" },
-  // ── Axis 2: C vs A (4 questions) ──
-  { id: 2,  question: "大きな目標を達成したとき、最初に感じることは？", optionA: "冷静に次のステップを考え始める", optionB: "感情があふれ出て、誰かと喜びを分かち合いたくなる", axis: "2", aValue: "C", bValue: "A" },
-  { id: 9,  question: "嬉しいことがあったとき", optionA: "内心は嬉しいが、あまり表に出さない", optionB: "表情や言葉で自然に感情を表現できる", axis: "2", aValue: "C", bValue: "A" },
-  { id: 10, question: "映画を見て泣いたことは？", optionA: "ほとんどない", optionB: "よくある", axis: "2", aValue: "C", bValue: "A" },
-  { id: 11, question: "怒りや悲しみを感じたとき", optionA: "冷静に整理してから対処する", optionB: "感情がすぐ顔や言葉に出てしまう", axis: "2", aValue: "C", bValue: "A" },
-  // ── Axis 3: R vs P (4 questions) ──
-  { id: 3,  question: "グループで決断が必要なとき、あなたは…", optionA: "データや実績をもとに現実的な選択肢を示す", optionB: "みんながワクワクできる大胆なアイデアを提案する", axis: "3", aValue: "R", bValue: "P" },
-  { id: 5,  question: "長くて過酷な一日の終わりに、あなたの回復法は？", optionA: "体を動かすか、具体的な作業で頭を切り替える", optionB: "音楽・本・空想など、感覚の世界に浸る", axis: "3", aValue: "R", bValue: "P" },
-  { id: 12, question: "大きな買い物をするとき", optionA: "予算と機能を比較してから決める", optionB: "ワクワクしたかどうかで決める", axis: "3", aValue: "R", bValue: "P" },
-  { id: 13, question: "リスクについて", optionA: "できるだけ避けたい", optionB: "チャレンジのための必要コスト", axis: "3", aValue: "R", bValue: "P" },
-  // ── Axis 4: O vs E (4 questions) ──
-  { id: 4,  question: "まったく新しい環境に飛び込んだとき、あなたは？", optionA: "積極的に話しかけて、すぐに自分のネットワークを広げる", optionB: "まず観察して、自分のペースで少しずつ馴染んでいく", axis: "4", aValue: "O", bValue: "E" },
-  { id: 14, question: "SNSで自己表現するのは？", optionA: "自分の意見や日常を積極的に発信する", optionB: "見る専門で、あまり発信しない", axis: "4", aValue: "O", bValue: "E" },
-  { id: 15, question: "自分の悩みや本音を話すのは？", optionA: "気が許せれば誰にでも話せる", optionB: "ごく限られた人にしか話せない", axis: "4", aValue: "O", bValue: "E" },
-  { id: 16, question: "プライベートを職場の人に話すのは？", optionA: "特に問題ない", optionB: "できるだけ話したくない", axis: "4", aValue: "O", bValue: "E" },
+  // ── Axis 1: A (Active) vs S (Support) ──
+  { id: 1,  question: "ストレスの多いグループプロジェクトに取り組むとき、あなたは？", optionA: "自分から方向性を提示して積極的に引っ張る", optionB: "周囲の様子を見ながら最適なタイミングで動く", axis: "1", aValue: "A", bValue: "S" },
+  { id: 6,  question: "初対面の人と話すとき", optionA: "自分から積極的に話しかける", optionB: "相手が話しかけてくるのを待つ", axis: "1", aValue: "A", bValue: "S" },
+  { id: 7,  question: "グループで意見を言うとき", optionA: "自分の考えを積極的に発言する", optionB: "求められたときに話す", axis: "1", aValue: "A", bValue: "S" },
+  { id: 8,  question: "何か問題が起きたとき", optionA: "すぐ動いて自分で解決しようとする", optionB: "状況を整理してから動く", axis: "1", aValue: "A", bValue: "S" },
+  // ── Axis 2: L (Logic) vs E (Emotion) ──
+  { id: 2,  question: "大きな目標を達成したとき、最初に感じることは？", optionA: "冷静に次のステップを考え始める", optionB: "感情があふれ出て、誰かと喜びを分かち合いたくなる", axis: "2", aValue: "L", bValue: "E" },
+  { id: 9,  question: "嬉しいことがあったとき", optionA: "内心は嬉しいが、あまり表に出さない", optionB: "表情や言葉で自然に感情を表現できる", axis: "2", aValue: "L", bValue: "E" },
+  { id: 10, question: "映画を見て泣いたことは？", optionA: "ほとんどない", optionB: "よくある", axis: "2", aValue: "L", bValue: "E" },
+  { id: 11, question: "怒りや悲しみを感じたとき", optionA: "冷静に整理してから対処する", optionB: "感情がすぐ顔や言葉に出てしまう", axis: "2", aValue: "L", bValue: "E" },
+  // ── Axis 3: R (Real) vs V (Vision) ──
+  { id: 3,  question: "グループで決断が必要なとき、あなたは…", optionA: "データや実績をもとに現実的な選択肢を示す", optionB: "みんながワクワクできる大胆なアイデアを提案する", axis: "3", aValue: "R", bValue: "V" },
+  { id: 5,  question: "長くて過酷な一日の終わりに、あなたの回復法は？", optionA: "体を動かすか、具体的な作業で頭を切り替える", optionB: "音楽・本・空想など、感覚の世界に浸る", axis: "3", aValue: "R", bValue: "V" },
+  { id: 12, question: "大きな買い物をするとき", optionA: "予算と機能を比較してから決める", optionB: "ワクワクしたかどうかで決める", axis: "3", aValue: "R", bValue: "V" },
+  { id: 13, question: "リスクについて", optionA: "できるだけ避けたい", optionB: "チャレンジのための必要コスト", axis: "3", aValue: "R", bValue: "V" },
+  // ── Axis 4: F (Free) vs P (Plan) ──
+  { id: 4,  question: "まったく新しい環境に飛び込んだとき、あなたは？", optionA: "積極的に話しかけて、すぐに自分のネットワークを広げる", optionB: "まず観察して、自分のペースで少しずつ馴染んでいく", axis: "4", aValue: "F", bValue: "P" },
+  { id: 14, question: "SNSで自己表現するのは？", optionA: "自分の意見や日常を積極的に発信する", optionB: "見る専門で、あまり発信しない", axis: "4", aValue: "F", bValue: "P" },
+  { id: 15, question: "自分の悩みや本音を話すのは？", optionA: "気が許せれば誰にでも話せる", optionB: "ごく限られた人にしか話せない", axis: "4", aValue: "F", bValue: "P" },
+  { id: 16, question: "プライベートを職場の人に話すのは？", optionA: "特に問題ない", optionB: "できるだけ話したくない", axis: "4", aValue: "F", bValue: "P" },
 ];
 
 // ============================================================
@@ -336,100 +340,100 @@ export const mbtiDescriptions: Record<string, { title: string; keywords: string 
 // ============================================================
 
 export const loveTypeDescriptions: Record<LoveType, { subtitle: string; emoji: string; nickname: string; motto: string }> = {
-  "LCRO": {
+  "ALRF": {
     subtitle: "自分のペースで世界を掌握するタイプ",
     emoji: "😼",
-    nickname: "LCRO",
+    nickname: "ALRF",
     motto: "「自分の軸を持ち、場の空気を自然に支配する」",
   },
-  "LCRE": {
+  "ALRP": {
     subtitle: "信頼と冷静さで周囲を安心させるタイプ",
     emoji: "🐾",
-    nickname: "LCRE",
+    nickname: "ALRP",
     motto: "「クールな外見の内側に、深い誠実さがある」",
   },
-  "LCPO": {
+  "ALVF": {
     subtitle: "自然と注目を集め、場を動かすタイプ",
     emoji: "👑",
-    nickname: "LCPO",
+    nickname: "ALVF",
     motto: "「存在するだけで、周りに光を与える」",
   },
-  "LCPE": {
+  "ALVP": {
     subtitle: "エネルギーで周囲を巻き込む実行者タイプ",
     emoji: "🔥",
-    nickname: "LCPE",
+    nickname: "ALVP",
     motto: "「熱量で壁を突き破り、大事な人を全力で守る」",
   },
-  "LARO": {
+  "AERF": {
     subtitle: "包容力で自然に信頼を集めるタイプ",
     emoji: "🌟",
-    nickname: "LARO",
+    nickname: "AERF",
     motto: "「温かさと実力で、人々の目標になる」",
   },
-  "LARE": {
+  "AERP": {
     subtitle: "リーダー性とバランス感覚を兼ね備えたタイプ",
     emoji: "⚡",
-    nickname: "LARE",
+    nickname: "AERP",
     motto: "「対立を調和させ、全員が動ける状態を作る」",
   },
-  "LAPO": {
+  "AEVF": {
     subtitle: "適応力抜群で本領発揮すると無敵なタイプ",
     emoji: "🦋",
-    nickname: "LAPO",
+    nickname: "AEVF",
     motto: "「どんな環境にも染まりながら、自分の本質を失わない」",
   },
-  "LAPE": {
+  "AEVP": {
     subtitle: "優しさと強さを併せ持つ万能タイプ",
     emoji: "🦁",
-    nickname: "LAPE",
+    nickname: "AEVP",
     motto: "「誰かのために全力を尽くすとき、最大の力を発揮する」",
   },
-  "FCRO": {
+  "SLRF": {
     subtitle: "距離感の達人で場を読む戦略家タイプ",
     emoji: "🎩",
-    nickname: "FCRO",
+    nickname: "SLRF",
     motto: "「場の空気を読んで最適解を導く」",
   },
-  "FCRE": {
+  "SLRP": {
     subtitle: "愛嬌と冷静さを使い分ける直感派タイプ",
     emoji: "🐰",
-    nickname: "FCRE",
+    nickname: "SLRP",
     motto: "「柔らかさの裏に、鋭い観察眼を持っている」",
   },
-  "FCPO": {
+  "SLVF": {
     subtitle: "ムードメーカーで本質は優しい魅力派タイプ",
     emoji: "👾",
-    nickname: "FCPO",
+    nickname: "SLVF",
     motto: "「場を盛り上げながら、誰よりも深く人を見ている」",
   },
-  "FCPE": {
+  "SLVP": {
     subtitle: "誠実で感情豊かな真っ直ぐなタイプ",
     emoji: "🐕",
-    nickname: "FCPE",
+    nickname: "SLVP",
     motto: "「一度決めた信念を、どんな状況でも貫き通す」",
   },
-  "FARO": {
+  "SERF": {
     subtitle: "独自の視点で世界を解釈する観察者タイプ",
     emoji: "🌀",
-    nickname: "FARO",
+    nickname: "SERF",
     motto: "「普通に見えて、誰も考えない角度から物事を捉える」",
   },
-  "FARE": {
+  "SERP": {
     subtitle: "観察力が高く縁の下の力持ちタイプ",
     emoji: "📋",
-    nickname: "FARE",
+    nickname: "SERP",
     motto: "「全体を俯瞰し、必要な人に必要なサポートをする」",
   },
-  "FAPO": {
+  "SEVF": {
     subtitle: "優しさと自由奔放さを兼ね備えたタイプ",
     emoji: "😇",
-    nickname: "FAPO",
+    nickname: "SEVF",
     motto: "「予測不能な行動の中に、深い思いやりが宿っている」",
   },
-  "FAPE": {
+  "SEVP": {
     subtitle: "器が大きく最も人間力が高いと言われるタイプ",
     emoji: "💝",
-    nickname: "FAPE",
+    nickname: "SEVP",
     motto: "「どんな人も受け入れる大きな器で、世界を包み込む」",
   },
 };

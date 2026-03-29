@@ -326,6 +326,11 @@ const _MBTI_IDX: Record<string, number> = {
 };
 
 const _LOVE_IDX: Record<string, number> = {
+  ALRF:0, ALRP:1, ALVF:2, ALVP:3,
+  AERF:4, AERP:5, AEVF:6, AEVP:7,
+  SLRF:8, SLRP:9, SLVF:10, SLVP:11,
+  SERF:12, SERP:13, SEVF:14, SEVP:15,
+  // legacy codes (pre-rename migration)
   LCRO:0, LCRE:1, LCPO:2, LCPE:3,
   LARO:4, LARE:5, LAPO:6, LAPE:7,
   FCRO:8, FCRE:9, FCPO:10, FCPE:11,

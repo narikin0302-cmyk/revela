@@ -40,31 +40,31 @@ interface CharaType {
   motto: string;
   subtitle: string;
   description: string;
-  group: "L" | "F";
-  secondary: "C" | "A";
+  group: "A" | "S";
+  secondary: "L" | "E";
 }
 
 const ALL_TYPES: CharaType[] = [
-  { code: "LCRO", nickname: "ボス猫", emoji: "😼", motto: "自分の軸を持ち、場の空気を自然に支配する", subtitle: "自分のペースで世界を掌握するタイプ", description: "あなたは静かに、しかし確実に場を支配する存在。声を荒げなくても、その存在感だけで周囲が自然と従います。冷静さの裏に深い観察眼を持ち、本当に動くべき瞬間を本能的に知っている。", group: "L", secondary: "C" },
-  { code: "LCRE", nickname: "隠れベイビー", emoji: "🐾", motto: "クールな外見の内側に、深い誠実さがある", subtitle: "信頼と冷静さで周囲を安心させるタイプ", description: "クールに見えて、実は誰よりも深く人を想っている。感情を表に出さない分、一度信じた人への誠実さは揺るぎない。周囲はあなたの存在によって、なぜか安心感を覚えます。", group: "L", secondary: "C" },
-  { code: "LCPO", nickname: "主役体質", emoji: "👑", motto: "存在するだけで、周りに光を与える", subtitle: "自然と注目を集め、場を動かすタイプ", description: "あなたが部屋に入ると、空気が変わる。意識していなくても、自然と中心にいる。その情熱と明るさは周囲を巻き込み、気づけば皆があなたの方向を向いている。", group: "L", secondary: "C" },
-  { code: "LCPE", nickname: "ツンデレヤンキー", emoji: "🔥", motto: "熱量で壁を突き破り、大事な人を全力で守る", subtitle: "エネルギーで周囲を巻き込む実行者タイプ", description: "荒削りに見えて、内側は誰よりも熱い。表面のクールさは鎧で、本当は大切な人のためなら何でもする。そのギャップが人を惹きつけ、深い絆を生み出します。", group: "L", secondary: "C" },
-  { code: "LARO", nickname: "憧れの先輩", emoji: "🌟", motto: "温かさと実力で、人々の目標になる", subtitle: "包容力で自然に信頼を集めるタイプ", description: "誰もがあなたのそばにいると、もっと頑張れる気がする。温かさと実力を兼ね備え、自然と人が集まってくる。憧れられながらも、ひとりひとりに向き合う誠実さが魅力です。", group: "L", secondary: "A" },
-  { code: "LARE", nickname: "カリスマバランサー", emoji: "⚡", motto: "対立を調和させ、全員が動ける状態を作る", subtitle: "リーダー性とバランス感覚を兼ね備えたタイプ", description: "複雑な人間関係でも、あなたの存在が橋渡しになる。対立する意見をうまく統合し、全員が「それで行こう」と思える着地点を見つける天才。リーダーシップと共感力が高いレベルで共存しています。", group: "L", secondary: "A" },
-  { code: "LAPO", nickname: "パーフェクトカメレオン", emoji: "🦋", motto: "どんな環境にも染まりながら、自分の本質を失わない", subtitle: "適応力抜群で本領発揮すると無敵なタイプ", description: "どんな環境でも自然に溶け込めるのに、どこにいても「あなたらしさ」は失われない。その柔軟さと本質の強さが組み合わさり、ピンチのときほど真価を発揮します。", group: "L", secondary: "A" },
-  { code: "LAPE", nickname: "キャプテンライオン", emoji: "🦁", motto: "誰かのために全力を尽くすとき、最大の力を発揮する", subtitle: "優しさと強さを併せ持つ万能タイプ", description: "守るべき人ができたとき、あなたは最強になる。優しさと強さを同時に持ち、どんな局面でも諦めない。その献身は周囲の人の心に深く刻まれます。", group: "L", secondary: "A" },
-  { code: "FCRO", nickname: "ロマンスマジシャン", emoji: "🎩", motto: "場の空気を読んで最適解を導く", subtitle: "距離感の達人で場を読む戦略家タイプ", description: "いつでも最適な距離感を保ちながら、気づいたら相手を虜にしている。そのミステリアスな雰囲気と鋭い観察眼が、独特の魅力を生み出します。", group: "F", secondary: "C" },
-  { code: "FCRE", nickname: "ちゃっかりうさぎ", emoji: "🐰", motto: "柔らかさの裏に、鋭い観察眼を持っている", subtitle: "愛嬌と冷静さを使い分ける直感派タイプ", description: "かわいらしい外見と鋭い本質の落差が、人を不思議と引きつける。ほんわかしているようで、実は場の空気を誰より正確に読んでいる。", group: "F", secondary: "C" },
-  { code: "FCPO", nickname: "恋愛モンスター", emoji: "👾", motto: "場を盛り上げながら、誰よりも深く人を見ている", subtitle: "ムードメーカーで本質は優しい魅力派タイプ", description: "表向きは場を盛り上げるムードメーカー。でもその目は、常に誰かの本音を静かに観察している。気づいたら人の心の中に自然と入り込んでいる、不思議な魅力の持ち主です。", group: "F", secondary: "C" },
-  { code: "FCPE", nickname: "忠犬ハチ公", emoji: "🐕", motto: "一度決めた信念を、どんな状況でも貫き通す", subtitle: "誠実で感情豊かな真っ直ぐなタイプ", description: "一度信じた人への誠実さは、何があっても揺らがない。感情をストレートに表現する正直さと、決して裏切らない一貫性が最大の武器。", group: "F", secondary: "C" },
-  { code: "FARO", nickname: "不思議生命体", emoji: "🌀", motto: "普通に見えて、誰も考えない角度から物事を捉える", subtitle: "独自の視点で世界を解釈する観察者タイプ", description: "普通に見えて、実は誰も気づかないことに気づいている。独自の視点から世界を解釈し、突拍子もないアイデアが時に核心を突く。", group: "F", secondary: "A" },
-  { code: "FARE", nickname: "敏腕マネージャー", emoji: "📋", motto: "全体を俯瞰し、必要な人に必要なサポートをする", subtitle: "観察力が高く縁の下の力持ちタイプ", description: "表舞台には出ないけれど、あなたがいるから全てが回っている。全体を見渡す冷静な目と、必要な人を必要なタイミングで支える力。", group: "F", secondary: "A" },
-  { code: "FAPO", nickname: "デビル天使", emoji: "😇", motto: "予測不能な行動の中に、深い思いやりが宿っている", subtitle: "優しさと自由奔放さを兼ね備えたタイプ", description: "次の行動が全く読めないのに、なぜか傷つく人がいない。その自由奔放さの根っこに、深い思いやりが宿っている。悪魔のような自由さと天使のような優しさが共存する、唯一無二の存在。", group: "F", secondary: "A" },
-  { code: "FAPE", nickname: "最後の恋人", emoji: "💝", motto: "どんな人も受け入れる大きな器で、世界を包み込む", subtitle: "器が大きく最も人間力が高いと言われるタイプ", description: "どんな人も、あなたの前では素直になれる。批判せず、ただ受け入れる大きな器。その深い包容力は、傷ついた人の心を静かに癒し、人生の最後に頼りたくなる存在にしています。", group: "F", secondary: "A" },
+  { code: "ALRF", nickname: "ボス猫", emoji: "😼", motto: "自分の軸を持ち、場の空気を自然に支配する", subtitle: "自分のペースで世界を掌握するタイプ", description: "あなたは静かに、しかし確実に場を支配する存在。声を荒げなくても、その存在感だけで周囲が自然と従います。冷静さの裏に深い観察眼を持ち、本当に動くべき瞬間を本能的に知っている。", group: "A", secondary: "L" },
+  { code: "ALRP", nickname: "隠れベイビー", emoji: "🐾", motto: "クールな外見の内側に、深い誠実さがある", subtitle: "信頼と冷静さで周囲を安心させるタイプ", description: "クールに見えて、実は誰よりも深く人を想っている。感情を表に出さない分、一度信じた人への誠実さは揺るぎない。周囲はあなたの存在によって、なぜか安心感を覚えます。", group: "A", secondary: "L" },
+  { code: "ALVF", nickname: "主役体質", emoji: "👑", motto: "存在するだけで、周りに光を与える", subtitle: "自然と注目を集め、場を動かすタイプ", description: "あなたが部屋に入ると、空気が変わる。意識していなくても、自然と中心にいる。その情熱と明るさは周囲を巻き込み、気づけば皆があなたの方向を向いている。", group: "A", secondary: "L" },
+  { code: "ALVP", nickname: "ツンデレヤンキー", emoji: "🔥", motto: "熱量で壁を突き破り、大事な人を全力で守る", subtitle: "エネルギーで周囲を巻き込む実行者タイプ", description: "荒削りに見えて、内側は誰よりも熱い。表面のクールさは鎧で、本当は大切な人のためなら何でもする。そのギャップが人を惹きつけ、深い絆を生み出します。", group: "A", secondary: "L" },
+  { code: "AERF", nickname: "憧れの先輩", emoji: "🌟", motto: "温かさと実力で、人々の目標になる", subtitle: "包容力で自然に信頼を集めるタイプ", description: "誰もがあなたのそばにいると、もっと頑張れる気がする。温かさと実力を兼ね備え、自然と人が集まってくる。憧れられながらも、ひとりひとりに向き合う誠実さが魅力です。", group: "A", secondary: "E" },
+  { code: "AERP", nickname: "カリスマバランサー", emoji: "⚡", motto: "対立を調和させ、全員が動ける状態を作る", subtitle: "リーダー性とバランス感覚を兼ね備えたタイプ", description: "複雑な人間関係でも、あなたの存在が橋渡しになる。対立する意見をうまく統合し、全員が「それで行こう」と思える着地点を見つける天才。リーダーシップと共感力が高いレベルで共存しています。", group: "A", secondary: "E" },
+  { code: "AEVF", nickname: "パーフェクトカメレオン", emoji: "🦋", motto: "どんな環境にも染まりながら、自分の本質を失わない", subtitle: "適応力抜群で本領発揮すると無敵なタイプ", description: "どんな環境でも自然に溶け込めるのに、どこにいても「あなたらしさ」は失われない。その柔軟さと本質の強さが組み合わさり、ピンチのときほど真価を発揮します。", group: "A", secondary: "E" },
+  { code: "AEVP", nickname: "キャプテンライオン", emoji: "🦁", motto: "誰かのために全力を尽くすとき、最大の力を発揮する", subtitle: "優しさと強さを併せ持つ万能タイプ", description: "守るべき人ができたとき、あなたは最強になる。優しさと強さを同時に持ち、どんな局面でも諦めない。その献身は周囲の人の心に深く刻まれます。", group: "A", secondary: "E" },
+  { code: "SLRF", nickname: "ロマンスマジシャン", emoji: "🎩", motto: "場の空気を読んで最適解を導く", subtitle: "距離感の達人で場を読む戦略家タイプ", description: "いつでも最適な距離感を保ちながら、気づいたら相手を虜にしている。そのミステリアスな雰囲気と鋭い観察眼が、独特の魅力を生み出します。", group: "S", secondary: "L" },
+  { code: "SLRP", nickname: "ちゃっかりうさぎ", emoji: "🐰", motto: "柔らかさの裏に、鋭い観察眼を持っている", subtitle: "愛嬌と冷静さを使い分ける直感派タイプ", description: "かわいらしい外見と鋭い本質の落差が、人を不思議と引きつける。ほんわかしているようで、実は場の空気を誰より正確に読んでいる。", group: "S", secondary: "L" },
+  { code: "SLVF", nickname: "恋愛モンスター", emoji: "👾", motto: "場を盛り上げながら、誰よりも深く人を見ている", subtitle: "ムードメーカーで本質は優しい魅力派タイプ", description: "表向きは場を盛り上げるムードメーカー。でもその目は、常に誰かの本音を静かに観察している。気づいたら人の心の中に自然と入り込んでいる、不思議な魅力の持ち主です。", group: "S", secondary: "L" },
+  { code: "SLVP", nickname: "忠犬ハチ公", emoji: "🐕", motto: "一度決めた信念を、どんな状況でも貫き通す", subtitle: "誠実で感情豊かな真っ直ぐなタイプ", description: "一度信じた人への誠実さは、何があっても揺らがない。感情をストレートに表現する正直さと、決して裏切らない一貫性が最大の武器。", group: "S", secondary: "L" },
+  { code: "SERF", nickname: "不思議生命体", emoji: "🌀", motto: "普通に見えて、誰も考えない角度から物事を捉える", subtitle: "独自の視点で世界を解釈する観察者タイプ", description: "普通に見えて、実は誰も気づかないことに気づいている。独自の視点から世界を解釈し、突拍子もないアイデアが時に核心を突く。", group: "S", secondary: "E" },
+  { code: "SERP", nickname: "敏腕マネージャー", emoji: "📋", motto: "全体を俯瞰し、必要な人に必要なサポートをする", subtitle: "観察力が高く縁の下の力持ちタイプ", description: "表舞台には出ないけれど、あなたがいるから全てが回っている。全体を見渡す冷静な目と、必要な人を必要なタイミングで支える力。", group: "S", secondary: "E" },
+  { code: "SEVF", nickname: "デビル天使", emoji: "😇", motto: "予測不能な行動の中に、深い思いやりが宿っている", subtitle: "優しさと自由奔放さを兼ね備えたタイプ", description: "次の行動が全く読めないのに、なぜか傷つく人がいない。その自由奔放さの根っこに、深い思いやりが宿っている。悪魔のような自由さと天使のような優しさが共存する、唯一無二の存在。", group: "S", secondary: "E" },
+  { code: "SEVP", nickname: "最後の恋人", emoji: "💝", motto: "どんな人も受け入れる大きな器で、世界を包み込む", subtitle: "器が大きく最も人間力が高いと言われるタイプ", description: "どんな人も、あなたの前では素直になれる。批判せず、ただ受け入れる大きな器。その深い包容力は、傷ついた人の心を静かに癒し、人生の最後に頼りたくなる存在にしています。", group: "S", secondary: "E" },
 ];
 
 type Tab = "mbti" | "chara" | "seiza" | "tarot" | "rpg";
-type FilterGroup = "ALL" | "L" | "F" | "C" | "A";
+type FilterGroup = "ALL" | "A" | "S" | "L" | "E";
 
 export default function CharaPage() {
   const searchParams = useSearchParams();
@@ -104,18 +104,18 @@ export default function CharaPage() {
 
   const filterBtns: { label: string; value: FilterGroup; desc: string }[] = [
     { label: "すべて", value: "ALL", desc: "全16" },
-    { label: "L系", value: "L", desc: "積極的" },
-    { label: "F系", value: "F", desc: "受動的" },
-    { label: "C系", value: "C", desc: "クール" },
-    { label: "A系", value: "A", desc: "感情的" },
+    { label: "A系", value: "A", desc: "主体的" },
+    { label: "S系", value: "S", desc: "支援的" },
+    { label: "L系", value: "L", desc: "論理" },
+    { label: "E系", value: "E", desc: "感情" },
   ];
 
   const filtered = ALL_TYPES.filter((t) => {
     if (filter === "ALL") return true;
-    if (filter === "L") return t.group === "L";
-    if (filter === "F") return t.group === "F";
-    if (filter === "C") return t.secondary === "C";
-    if (filter === "A") return t.secondary === "A";
+    if (filter === "A") return t.group === "A";
+    if (filter === "S") return t.group === "S";
+    if (filter === "L") return t.secondary === "L";
+    if (filter === "E") return t.secondary === "E";
     return true;
   });
 
@@ -349,8 +349,8 @@ export default function CharaPage() {
                 <p className="text-xs italic mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>「{type.motto}」</p>
                 <p className="text-xs leading-relaxed opacity-70">{type.description}</p>
                 <div className="flex gap-2 mt-3">
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: type.group === "L" ? "rgba(255,255,255,0.12)" : "rgba(232,160,191,0.12)", border: type.group === "L" ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(232,160,191,0.3)", color: type.group === "L" ? "rgba(255,255,255,0.7)" : "#e8a0bf" }}>{type.group === "L" ? "L: 積極的" : "F: 受動的"}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: type.secondary === "C" ? "rgba(147,197,253,0.12)" : "rgba(110,231,183,0.12)", border: type.secondary === "C" ? "1px solid rgba(147,197,253,0.3)" : "1px solid rgba(110,231,183,0.3)", color: type.secondary === "C" ? "#93c5fd" : "#6ee7b7" }}>{type.secondary === "C" ? "C: クール" : "A: 感情的"}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: type.group === "A" ? "rgba(255,255,255,0.12)" : "rgba(232,160,191,0.12)", border: type.group === "A" ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(232,160,191,0.3)", color: type.group === "A" ? "rgba(255,255,255,0.7)" : "#e8a0bf" }}>{type.group === "A" ? "A: 主体的" : "S: 支援的"}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: type.secondary === "L" ? "rgba(147,197,253,0.12)" : "rgba(110,231,183,0.12)", border: type.secondary === "L" ? "1px solid rgba(147,197,253,0.3)" : "1px solid rgba(110,231,183,0.3)", color: type.secondary === "L" ? "#93c5fd" : "#6ee7b7" }}>{type.secondary === "L" ? "L: 論理" : "E: 感情"}</span>
                 </div>
               </div>
             ))}
