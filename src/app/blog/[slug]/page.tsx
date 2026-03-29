@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!article) return {};
 
   return {
-    title: `${article.title} | MBTIブログ | revela`,
+    title: `${article.title} | 性格タイプブログ | revela`,
     description: article.description,
     keywords: article.tags.join(", "),
     openGraph: {
@@ -37,10 +37,10 @@ function formatDate(dateStr: string): string {
 }
 
 const TAG_COLORS: Record<string, string> = {
-  "MBTI基礎": "#7c3aed",
-  "MBTI解説": "#8b5cf6",
-  "MBTI相性": "#059669",
-  "MBTI活用": "#047857",
+  "性格タイプ基礎": "#7c3aed",
+  "性格タイプ解説": "#8b5cf6",
+  "性格タイプ相性": "#059669",
+  "性格タイプ活用": "#047857",
   "16タイプ": "#6d28d9",
   INTJ: "#7c3aed",
   ENFP: "#34d399",
@@ -221,7 +221,7 @@ export default async function ArticlePage({ params }: Props) {
               marginBottom: 24,
             }}
           >
-            まずは自分のMBTIとキャラコードを診断。<br />
+            まずは自分の性格タイプと行動スタイルを診断。<br />
             仲間を誘ってパーティーを組めば、チームの陣形がわかる。
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>

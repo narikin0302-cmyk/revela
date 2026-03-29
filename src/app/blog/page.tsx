@@ -11,14 +11,14 @@ function formatDate(dateStr: string): string {
 }
 
 const TAG_COLORS: Record<string, string> = {
-  "MBTI基礎": "#7c3aed", "MBTI解説": "#8b5cf6", "MBTI相性": "#059669",
-  "MBTI活用": "#047857", "16タイプ": "#6d28d9",
+  "性格タイプ基礎": "#7c3aed", "性格タイプ解説": "#8b5cf6", "性格タイプ相性": "#059669",
+  "性格タイプ活用": "#047857", "16タイプ": "#6d28d9",
   INTJ: "#7c3aed", INTP: "#8b5cf6", ENTJ: "#6d28d9", ENTP: "#a78bfa",
   INFJ: "#059669", INFP: "#10b981", ENFJ: "#047857", ENFP: "#34d399",
   ISTJ: "#1d4ed8", ISFJ: "#2563eb", ESTJ: "#1e40af", ESFJ: "#0891b2",
   ISTP: "#92400e", ISFP: "#d97706", ESTP: "#b45309", ESFP: "#f59e0b",
   "仕事・キャリア": "#1d4ed8", "恋愛": "#db2777", "人間関係": "#0891b2",
-  "自己分析": "#92400e", "性格分析": "#a78bfa", "ラブタイプ": "#ec4899",
+  "自己分析": "#92400e", "性格分析": "#a78bfa", "行動スタイル": "#ec4899",
   "職業RPG": "#7c3aed", "LEADERロール": "#6d28d9", "SUPPORTロール": "#2563eb",
   "BRAINロール": "#7c3aed", "TRICKSTERロール": "#a78bfa", "チーム分析": "#047857",
   "上司": "#dc2626", "職場": "#b45309", "PTA": "#059669", "育児・学校": "#0891b2",
@@ -38,7 +38,7 @@ const ALL_MBTI = [
 ];
 
 const CATEGORY_TAGS = [
-  "MBTI解説","MBTI相性","MBTI活用","仕事・キャリア","恋愛","ラブタイプ",
+  "性格タイプ解説","性格タイプ相性","性格タイプ活用","仕事・キャリア","恋愛","行動スタイル",
   "職業RPG","LEADERロール","SUPPORTロール","BRAINロール","TRICKSTERロール","16タイプ",
   "人間関係","上司","職場","PTA","育児・学校","姑","家族","ママ友","コミュニケーション",
 ];
@@ -50,8 +50,8 @@ const EXCLUDED_FROM_QUICK = new Set([
 ]);
 
 const TREE_SECTIONS = [
-  { key: "MBTI",   label: "MBTIタイプ解説",   emoji: "🧠", desc: "16タイプの特徴・強み・弱み・向いている仕事" },
-  { key: "ラブタイプ", label: "ラブタイプ",   emoji: "💘", desc: "MBTIタイプ別の恋愛傾向・相性" },
+  { key: "性格タイプ",   label: "性格タイプ解説",   emoji: "🧠", desc: "16タイプの特徴・強み・弱み・向いている仕事" },
+  { key: "行動スタイル", label: "行動スタイル",   emoji: "💘", desc: "性格タイプ別の恋愛傾向・相性" },
   { key: "職業RPG", label: "職業RPGクラス",   emoji: "⚔️", desc: "4ロールとクラスの詳細解説" },
   { key: "職場環境", label: "職場環境",        emoji: "🏢", desc: "業種別・チーム陣形の分析" },
   { key: "人間関係", label: "人間関係攻略",   emoji: "🤝", desc: "上司・姑・PTA・ママ友…ニッチな人間関係をRPGロールで解剖" },
@@ -295,7 +295,7 @@ export default function BlogPage() {
   // Profile quick tabs
   const profileTags: { label: string; tag: string; sub: string }[] = [];
   if (profile.mbti) {
-    profileTags.push({ label: profile.mbti, tag: profile.mbti, sub: "MBTI" });
+    profileTags.push({ label: profile.mbti, tag: profile.mbti, sub: "性格タイプ" });
     profileTags.push({ label: "恋愛", tag: "恋愛", sub: "ラブ" });
   }
   if (profile.rpgRole) {
@@ -329,10 +329,10 @@ export default function BlogPage() {
             marginBottom: 12,
             color: "#EDEDED",
           }}>
-            MBTIブログ
+            性格タイプブログ
           </h1>
           <p style={{ fontSize: 14, color: "rgba(237,237,237,0.55)", lineHeight: 1.7 }}>
-            自己分析に役立つMBTI解説・相性・キャリアの記事
+            自己分析に役立つ性格タイプ解説・相性・キャリアの記事
           </p>
         </div>
 
@@ -457,7 +457,7 @@ export default function BlogPage() {
                 borderRadius: 14, padding: "16px", width: 280,
                 boxShadow: "0 8px 30px rgba(0,0,0,0.6)", backdropFilter: "blur(20px)",
               }}>
-                <p style={{ fontSize: 10, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 10 }}>MBTIタイプ</p>
+                <p style={{ fontSize: 10, color: "rgba(237,237,237,0.3)", letterSpacing: "0.15em", marginBottom: 10 }}>性格タイプ</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
                   {availableMbti.map((tag) => {
                     const color = TAG_COLORS[tag] ?? "#6b7280";
