@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     template: "%s | revela",
   },
   description:
-    "MBTI×ラブタイプ×星座×タロット。4つの診断で、本当の自分を発見しよう。revela",
-  keywords: "MBTI, 星座, タロット, ラブタイプ, 性格診断, 自己分析, 相性診断, 職場キャラ診断",
+    "職業RPG×自己分析。本音と建て前のギャップで、自分に合う仕事・職場を見つけよう。revela",
+  keywords: "職業RPG, 自己分析, 性格タイプ, 行動スタイル, 星座, タロット, 就活, 転職, 自分に合う仕事",
   manifest: "/manifest.json",
   openGraph: {
     title: "revela | 本当の自分を知る",
     description:
-      "MBTI×ラブタイプ×星座×タロット。4つの診断で、本当の自分を発見しよう。",
+      "職業RPG×自己分析。本音と建て前のギャップで、自分に合う仕事・職場を見つけよう。",
     type: "website",
     locale: "ja_JP",
     siteName: "revela",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "revela | 本当の自分を知る",
-    description: "MBTI×ラブタイプ×星座×タロット。4つの診断で、本当の自分を発見しよう。",
+    description: "職業RPG×自己分析。本音と建て前のギャップで、自分に合う仕事・職場を見つけよう。",
   },
 };
 
@@ -81,7 +81,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "revela",
-              description: "MBTI×ラブタイプ×星座×タロット。自己分析ツール",
+              description: "職業RPG×自己分析。本音と建て前のギャップを可視化する自己分析ツール",
               url: "https://revela.jp",
               potentialAction: {
                 "@type": "SearchAction",
@@ -119,7 +119,7 @@ export default function RootLayout({
               © 2026 revela
             </p>
             <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>
-              診断結果はMBTI・キャラクターコード・星座のみ、匿名で統計目的に収集されます。
+              診断結果は性格タイプ・行動スタイル・星座のみ、匿名で統計目的に収集されます。
             </p>
           </footer>
         </div>

@@ -248,7 +248,7 @@ function CodeCompatibilityResult({
         <p className="text-xs tracking-widest mb-4" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>
           ✦ スコア詳細
         </p>
-        <ScoreBar label="MBTI相性"   score={mbtiScore}   color="rgba(255,255,255,0.55)" />
+        <ScoreBar label="性格タイプ相性"   score={mbtiScore}   color="rgba(255,255,255,0.55)" />
         <ScoreBar label="キャラ相性" score={charaScore}  color="#e8a0bf" />
         <ScoreBar label="星座相性"   score={zodiacScore} color="#93c5fd" />
       </div>
@@ -593,7 +593,7 @@ export default function AiseiPage() {
           {(["code", "mbti"] as Mode[]).map((m) => {
             const labels: Record<Mode, string> = {
               code: "revelaコードで診断",
-              mbti: "MBTIで診断",
+              mbti: "性格タイプで診断",
             };
             return (
               <button

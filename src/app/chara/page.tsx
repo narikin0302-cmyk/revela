@@ -95,7 +95,7 @@ export default function CharaPage() {
   }, []);
 
   const TABS = [
-    { id: "mbti" as Tab, label: "MBTI", sub: "16タイプ" },
+    { id: "mbti" as Tab, label: "性格タイプ", sub: "16タイプ" },
     { id: "chara" as Tab, label: "キャラクター", sub: "16タイプ" },
     { id: "seiza" as Tab, label: "星座", sub: "12星座" },
     { id: "tarot" as Tab, label: "タロット", sub: "10枚" },

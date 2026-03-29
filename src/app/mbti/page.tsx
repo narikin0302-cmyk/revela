@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "MBTI 16タイプ一覧 | revela",
-  description: "MBTIの16タイプを解説。INFJ・ENFP・INTPなど全タイプの特徴・強み・相性をまとめました。",
+  title: "性格タイプ 16タイプ一覧 | revela",
+  description: "16の性格タイプを解説。INFJ・ENFP・INTPなど全タイプの特徴・強み・向いている仕事をまとめました。",
 };
 
 interface MbtiTypeData {

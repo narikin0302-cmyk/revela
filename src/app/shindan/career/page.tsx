@@ -1422,7 +1422,7 @@ export default function CareerPage() {
 
   const analyzeTexts = [
     "RPG職業データベースを参照中...",
-    "MBTIプロファイルと照合中...",
+    "性格タイプと照合中...",
     "タロットの神託を統合中...",
     "あなたの職場ロールを確定中...",
   ];
@@ -1605,7 +1605,7 @@ export default function CareerPage() {
       // Draw MBTI
       ctx.fillStyle = "rgba(255,255,255,0.4)";
       ctx.font = "14px sans-serif";
-      ctx.fillText("MBTI", 300, 360);
+      ctx.fillText("性格タイプ", 300, 360);
       ctx.fillStyle = rpgClass.color;
       ctx.font = "bold 32px sans-serif";
       ctx.fillText(selectedMbti, 300, 400);
@@ -1709,7 +1709,7 @@ export default function CareerPage() {
                 borderRadius: 14, padding: "14px 16px", textAlign: "center",
               }}
             >
-              <p style={{ fontSize: 10, opacity: 0.5, letterSpacing: "0.2em", marginBottom: 4 }}>MBTI</p>
+              <p style={{ fontSize: 10, opacity: 0.5, letterSpacing: "0.2em", marginBottom: 4 }}>性格タイプ</p>
               <p style={{ fontSize: 22, fontWeight: 700, color: rpgClass.color }}>{selectedMbti}</p>
             </div>
             <div
@@ -2030,7 +2030,7 @@ export default function CareerPage() {
         {/* ── MBTI ── */}
         {phase === "mbti" && (
           <div className="fade-up">
-            <SectionTitle en="STEP 01" ja="MBTIタイプを選んでください" />
+            <SectionTitle en="STEP 01" ja="性格タイプを選んでください" />
             <p style={{ fontSize: 12, opacity: 0.5, textAlign: "center", marginBottom: 20 }}>
               わからない場合はスキップできます
             </p>

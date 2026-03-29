@@ -43,7 +43,7 @@ export default function DiagnosisTabs() {
   const [tab, setTab] = useState<Tab>("mbti");
 
   const TABS: { id: Tab; label: string; icon: string }[] = [
-    { id: "mbti", label: "MBTI", icon: "🧠" },
+    { id: "mbti", label: "性格タイプ", icon: "🧠" },
     { id: "chara", label: "キャラクター", icon: "♡" },
     { id: "seiza", label: "星座", icon: "⭐" },
     { id: "tarot", label: "タロット", icon: "🔮" },

@@ -89,7 +89,7 @@ function ResultView() {
   };
 
   const chips = [
-    { label: "MBTI", value: mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg },
+    { label: "性格タイプ", value: mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg },
     { label: "CODE", value: love, sub: loveInfo?.nickname ?? "", color: "#e8a0bf", bg: "rgba(232,160,191,0.12)" },
     { label: "星座", value: zodiac !== "なし" ? zodiac : "—", sub: zodiacData ? `${zodiacData.element}属性` : "", color: "#22d3ee", bg: "rgba(34,211,238,0.08)" },
     { label: "タロット", value: tarot, sub: reversed ? "逆位置" : "正位置", color: "#c084fc", bg: "rgba(192,132,252,0.08)" },

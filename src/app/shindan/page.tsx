@@ -2,31 +2,26 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import {
-  mbtiQuestions,
   loveQuestions,
   zodiacSigns,
   mbtiDescriptions,
   loveTypeDescriptions,
-  trueSelfQuestions,
   getResultReading,
-  getRandomizedMBTIQuestions,
-  getRandomizedLoveQuestions,
+  getRandomizedWorkQuestions,
+  getRandomizedSoulQuestions,
 } from "@/data/questions";
-import type { LoveType, ResultReading, StrengthItem, ChallengeItem, MBTIQuestion, LoveQuestion } from "@/data/questions";
+import type { LoveType, ResultReading, StrengthItem, ChallengeItem, LoveQuestion } from "@/data/questions";
 import {
-  calculateMBTI,
   calculateLoveType,
-  calculateTrueSelf,
   getZodiacFromDate,
   zodiacInfo,
 } from "@/lib/calculate";
-import type { MBTIAnswers, LoveAnswers, TrueSelfAnswers, LikertScore, MBTIDimensionScore } from "@/lib/calculate";
-import { getMBTIScores } from "@/lib/calculate";
+import type { LoveAnswers, LikertScore, MBTIDimensionScore } from "@/lib/calculate";
 import { saveHistoryEntry } from "@/lib/storage";
 import { trackDiagnosisResult, fetchDiagnosisStats } from "@/lib/supabase";
-import { generateRevelaCode } from "@/lib/revelaCodes";
+import { generateRevelaCode, loveTypeToMbti } from "@/lib/revelaCodes";
 import { getMbtiCharaName } from "@/data/charaNames";
-import { getRpgClassByCombo, getRpgSynergy } from "@/data/rpgClasses";
+import { getRpgClassByCombo, getRpgClassByDualCode, calcGapScore, getRpgSynergy } from "@/data/rpgClasses";
 
 // ============================================================
 // Types
@@ -38,8 +33,8 @@ interface FormData {
   birthMonth: string;
   birthDay: string;
   zodiac: string;
-  mbtiAnswers: MBTIAnswers;
-  loveAnswers: LoveAnswers;
+  workAnswers: LoveAnswers;
+  soulAnswers: LoveAnswers;
 }
 
 // ============================================================
@@ -125,7 +120,7 @@ function AnalyzingScreen({ onComplete }: { onComplete: () => void }) {
 
   const texts = [
     "星の配置を読み解いています...",
-    "MBTIパターンを解析中...",
+    "性格タイプを解析中...",
     "キャラクターコードを照合しています...",
 
     "あなた専用の自己分析を生成しています...",
@@ -392,7 +387,7 @@ function AnalyzingScreen({ onComplete }: { onComplete: () => void }) {
 // Improved Step Indicator (Improvement 1)
 // ============================================================
 
-const STEP_LABELS = ["星座", "MBTI", "キャラ", "タロット", "結果"] as const;
+const STEP_LABELS = ["星座", "性格タイプ", "行動スタイル", "タロット", "結果"] as const;
 
 function StepIndicator({ step }: { step: number }) {
   // step: 1=星座, 2=MBTI, 3=キャラ; 4=分析レポート(results area)
@@ -595,7 +590,7 @@ function Step0({
         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.2)" }}
       >
         <p className="text-sm font-medium mb-4" style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}>
-          MBTIタイプをすでに知っていますか？
+          性格タイプをすでに知っていますか？
         </p>
         <div className="flex gap-3 mb-4">
           <button style={btnYes(knowsMBTI === true)}  onClick={() => setKnowsMBTI(true)}>
@@ -636,7 +631,7 @@ function Step0({
 
         {knowsMBTI === true && (
           <div className="animate-fade-in">
-            <label className="block text-xs tracking-widest mb-2 opacity-60">MBTIタイプを選択</label>
+            <label className="block text-xs tracking-widest mb-2 opacity-60">性格タイプを選択</label>
             <div className="grid grid-cols-2 gap-2">
               {ALL_MBTI_TYPES.map((type) => {
                 const isSelected = knownMBTI === type;
@@ -774,6 +769,73 @@ function Step0({
 // ============================================================
 // Step 1: Birthday + Zodiac (with skip & quick-select)
 // ============================================================
+
+// ============================================================
+// Step0New: シンプルなカスタマイズ画面（質問数選択のみ）
+// ============================================================
+
+function Step0New({
+  workCount, onWorkCountChange,
+  soulCount, onSoulCountChange,
+  onNext,
+}: {
+  workCount: 5 | 10 | 15;
+  onWorkCountChange: (n: 5 | 10 | 15) => void;
+  soulCount: 5 | 10 | 15;
+  onSoulCountChange: (n: 5 | 10 | 15) => void;
+  onNext: () => void;
+}) {
+  const btnStyle = (active: boolean): React.CSSProperties => ({
+    padding: "6px 14px",
+    borderRadius: "9999px",
+    fontSize: "12px",
+    fontWeight: active ? 700 : 500,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    background: active ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.04)",
+    color: active ? "#EDEDED" : "rgba(255,255,255,0.45)",
+    border: active ? "1px solid rgba(255,255,255,0.4)" : "1px solid rgba(255,255,255,0.1)",
+  });
+
+  return (
+    <div className="animate-fade-in max-w-lg mx-auto">
+      <SectionTitle en="STEP 00" ja="診断のカスタマイズ" />
+      <p className="text-center text-xs opacity-50 mb-8 leading-relaxed">
+        質問数を選んでください。多いほど精度が上がります。
+      </p>
+
+      <div className="rounded-2xl p-5 mb-5" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.2)" }}>
+        <p className="text-sm font-medium mb-3" style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}>
+          💼 職場の自分 — 質問数
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          {([5, 10, 15] as const).map((n) => (
+            <button key={n} onClick={() => onWorkCountChange(n)} style={btnStyle(workCount === n)}>
+              {n}問{n === 5 ? "（速攻）" : n === 10 ? "（標準）" : "（詳細）"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl p-5 mb-8" style={{ background: "rgba(232,160,191,0.05)", border: "1px solid rgba(232,160,191,0.2)" }}>
+        <p className="text-sm font-medium mb-3" style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}>
+          🌙 本音の自分 — 質問数
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          {([5, 10, 15] as const).map((n) => (
+            <button key={n} onClick={() => onSoulCountChange(n)} style={btnStyle(soulCount === n)}>
+              {n}問{n === 5 ? "（速攻）" : n === 10 ? "（標準）" : "（詳細）"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <button onClick={onNext} className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold">
+        診断をはじめる →
+      </button>
+    </div>
+  );
+}
 
 type ZodiacInputMode = "birthdate" | "quickselect";
 
@@ -966,9 +1028,10 @@ function Step1({
 }
 
 // ============================================================
-// Step 2: MBTI Questions (or skipped)
+// Step 3: キャラクターコード Questions (職場 or 本音)
 // ============================================================
 
+// (LIKERT_LABELS kept for potential reuse)
 const LIKERT_LABELS: { score: LikertScore; label: string; short: string }[] = [
   { score: 1, label: "そう思う",         short: "そう思う" },
   { score: 2, label: "ややそう思う",     short: "やや\nそう思う" },
@@ -977,314 +1040,26 @@ const LIKERT_LABELS: { score: LikertScore; label: string; short: string }[] = [
   { score: 5, label: "そう思わない",     short: "そう思わ\nない" },
 ];
 
-function Step2({
-  answers,
-  onAnswer,
-  onNext,
-  onBack,
-  questions,
-}: {
-  answers: MBTIAnswers;
-  onAnswer: (id: number, score: LikertScore) => void;
-  onNext: () => void;
-  onBack: () => void;
-  questions: MBTIQuestion[];
-}) {
-  const answered = Object.keys(answers).length;
-  const total = questions.length;
-  const canProceed = answered === total;
-
-  return (
-    <div className="animate-fade-in slide-in-right">
-      <SectionTitle en="STEP 02" ja="性格診断 — MBTI" />
-      <div className="text-center mb-6">
-        <span className="text-xs tracking-widest opacity-50">{answered} / {total} 回答済み</span>
-      </div>
-
-      <div className="space-y-5 max-w-lg mx-auto">
-        {questions.map((q, idx) => {
-          const selected = answers[q.id];
-          return (
-            <div key={q.id} className="card-glow rounded-2xl p-5">
-              <p className="text-xs opacity-40 mb-2 tracking-widest">Q{String(idx + 1).padStart(2, "0")}</p>
-              <p className="text-sm sm:text-base mb-1 leading-relaxed font-medium">{q.question}</p>
-              <p className="text-xs opacity-50 mb-4 leading-relaxed">「{q.optionA}」</p>
-              <div className="grid grid-cols-5 gap-1.5">
-                {LIKERT_LABELS.map(({ score, label }) => {
-                  const isSelected = selected === score;
-                  return (
-                    <button
-                      key={score}
-                      onClick={() => onAnswer(q.id, score)}
-                      className="rounded-xl py-2 px-1 text-center transition-all duration-150"
-                      style={{
-                        background: isSelected ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.04)",
-                        border: isSelected ? "none" : "1px solid rgba(255,255,255,0.2)",
-                        color: isSelected ? "#0a0a0a" : "rgba(255,255,255,0.6)",
-                        fontWeight: isSelected ? 700 : 400,
-                        fontSize: "10px",
-                        lineHeight: "1.3",
-                        whiteSpace: "pre-line",
-                      }}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="flex justify-between mt-1.5 px-0.5">
-                <span className="text-xs opacity-30">← 当てはまる</span>
-                <span className="text-xs opacity-30">当てはまらない →</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex gap-3 max-w-lg mx-auto mt-8">
-        <button onClick={onBack} className="btn-outline-gold flex-1 py-3.5 rounded-full text-sm tracking-widest">← 前の問いへ戻る</button>
-        <button
-          onClick={onNext}
-          disabled={!canProceed}
-          className="btn-outline-primary flex-[2] py-3.5 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-        >
-          {canProceed ? "MBTI結果を見る →" : `残り${total - answered}問`}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// Step 2.5: True Self MBTI Verification
-// ============================================================
-
-function TrueSelfStep({
-  initialMBTI,
-  fromDiagnosis,
-  onConfirm,
-  onSkip,
-}: {
-  initialMBTI: string;
-  fromDiagnosis: boolean;
-  onConfirm: (finalMBTI: string, trueSelf: string | null) => void;
-  onSkip: () => void;
-}) {
-  const [answers, setAnswers] = useState<TrueSelfAnswers>({});
-  const [result, setResult] = useState<{ confirmed: boolean; suggestedType: string } | null>(null);
-  const [chosenType, setChosenType] = useState<string>("");
-
-  const answered = Object.keys(answers).length;
-  const total = trueSelfQuestions.length;
-  const canCheck = answered === total;
-
-  const handleAnswer = (id: number, choice: "A" | "B") => {
-    setAnswers((prev) => ({ ...prev, [id]: choice }));
-    setResult(null);
-  };
-
-  const handleCheck = () => {
-    const r = calculateTrueSelf(initialMBTI, answers);
-    setResult(r);
-    setChosenType(r.confirmed ? initialMBTI : "");
-  };
-
-  const handleChoose = (type: string) => {
-    setChosenType(type);
-  };
-
-  const handleContinue = () => {
-    if (!result) return;
-    if (result.confirmed) {
-      onConfirm(initialMBTI, null);
-    } else {
-      const trueSelf = chosenType !== initialMBTI ? chosenType : null;
-      onConfirm(chosenType || initialMBTI, trueSelf);
-    }
-  };
-
-  return (
-    <div className="animate-fade-in max-w-lg mx-auto">
-      <div className="text-center mb-8">
-        <p className="text-xs tracking-[0.4em] mb-2" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>TRUE SELF</p>
-        <h2 className="text-xl sm:text-2xl font-light mb-3" style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}>
-          {fromDiagnosis ? "本当のあなたを確かめましょう" : "🔮 本当にそれがあなたの本質？"}
-        </h2>
-        <div className="h-px w-16 mx-auto mb-4" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)" }} />
-      </div>
-
-      <div
-        className="rounded-2xl p-5 mb-6 text-center"
-        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.2)" }}
-      >
-        {fromDiagnosis ? (
-          <>
-            <p className="text-base font-medium mb-2" style={{ color: "rgba(255,255,255,0.55)" }}>
-              あなたのMBTI診断結果は「{initialMBTI}」でした。
-            </p>
-            <p className="text-xs opacity-60 leading-relaxed">
-              でも... 本当にそれが本当のあなたですか？<br />
-              表面的な行動パターンと内なる本質がずれていることがよくあります。<br />
-              追加の3問で、あなたの「あなたのタイプ」を確かめましょう。
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="text-base font-medium mb-2" style={{ color: "rgba(255,255,255,0.55)" }}>
-              ちょっと待って！
-            </p>
-            <p className="text-xs opacity-60 leading-relaxed">
-              本当に「{initialMBTI}」があなたの本質ですか？<br />
-              以下の3問に答えて確かめてみましょう。
-            </p>
-          </>
-        )}
-      </div>
-
-      {!result && (
-        <>
-          <div className="space-y-4 mb-6">
-            {trueSelfQuestions.map((q, idx) => (
-              <div key={q.id} className="card-glow rounded-2xl p-5">
-                <p className="text-xs opacity-40 mb-2 tracking-widest">Q{String(idx + 1).padStart(2, "0")}</p>
-                <p className="text-sm mb-4 leading-relaxed font-medium">{q.question}</p>
-                <div className="space-y-2">
-                  {(["A", "B"] as const).map((choice) => {
-                    const text = choice === "A" ? q.optionA : q.optionB;
-                    const isSelected = answers[q.id] === choice;
-                    return (
-                      <button
-                        key={choice}
-                        onClick={() => handleAnswer(q.id, choice)}
-                        className={`option-btn w-full rounded-xl px-4 py-3 text-xs sm:text-sm leading-relaxed${isSelected ? " selected" : ""}`}
-                      >
-                        <span
-                          className="inline-block w-6 h-6 rounded-full text-xs mr-3 flex-shrink-0"
-                          style={{
-                            background: isSelected ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.06)",
-                            border: isSelected ? "1px solid rgba(255,255,255,0.6)" : "1px solid rgba(255,255,255,0.1)",
-                            color: isSelected ? "#EDEDED" : "inherit",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            verticalAlign: "middle",
-                          }}
-                        >
-                          {choice}
-                        </span>
-                        {text}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={handleCheck}
-              disabled={!canCheck}
-              className="btn-outline-primary flex-1 py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-            >
-              {canCheck ? "あなたのタイプを確認する ✦" : `残り${total - answered}問`}
-            </button>
-          </div>
-
-          <div className="text-center mt-4">
-            <button
-              onClick={onSkip}
-              className="text-xs opacity-40 hover:opacity-70 transition-opacity underline tracking-wider"
-            >
-              今はスキップ（後で確認できます）
-            </button>
-          </div>
-        </>
-      )}
-
-      {result && (
-        <div className="animate-fade-in space-y-4">
-          {result.confirmed ? (
-            <div
-              className="rounded-2xl p-5 text-center"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.4)" }}
-            >
-              <div className="text-3xl mb-2">✨</div>
-              <p className="text-base font-medium mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>
-                やっぱり{initialMBTI}です！
-              </p>
-              <p className="text-xs opacity-60">あなたの直感は正しかった。本当の姿が確認されました。</p>
-            </div>
-          ) : (
-            <div
-              className="rounded-2xl p-5"
-              style={{ background: "rgba(232,160,191,0.06)", border: "1px solid rgba(232,160,191,0.3)" }}
-            >
-              <p className="text-sm font-medium mb-3 text-center" style={{ color: "#e8a0bf" }}>
-                あなたの本質は{result.suggestedType}に近いかもしれません。<br />
-                <span className="text-xs opacity-60">どちらで続けますか？</span>
-              </p>
-              <div className="flex gap-3">
-                {[initialMBTI, result.suggestedType].map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => handleChoose(type)}
-                    style={{
-                      flex: 1,
-                      padding: "12px 8px",
-                      borderRadius: "12px",
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      background: chosenType === type
-                        ? "rgba(255,255,255,0.15)"
-                        : "rgba(255,255,255,0.05)",
-                      color: "#EDEDED",
-                      border: chosenType === type ? "1px solid rgba(255,255,255,0.4)" : "1px solid rgba(255,255,255,0.2)",
-                    }}
-                  >
-                    {type}
-                    {type === initialMBTI && (
-                      <span className="block text-xs font-normal opacity-70">元の結果</span>
-                    )}
-                    {type === result.suggestedType && (
-                      <span className="block text-xs font-normal opacity-70">新しい発見</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <button
-            onClick={handleContinue}
-            disabled={!result.confirmed && !chosenType}
-            className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-          >
-            この結果で進む →
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ============================================================
-// Step 3: キャラクターコード Questions (or skipped)
-// ============================================================
-
 function Step3({
   answers,
   onAnswer,
   onNext,
   onBack,
   questions,
+  title = "キャラクターコード診断",
+  titleEn = "STEP 03",
+  subtitle,
+  nextLabel,
 }: {
   answers: LoveAnswers;
   onAnswer: (id: number, score: LikertScore) => void;
   onNext: () => void;
   onBack: () => void;
   questions: LoveQuestion[];
+  title?: string;
+  titleEn?: string;
+  subtitle?: string;
+  nextLabel?: string;
 }) {
   const answered = Object.keys(answers).length;
   const total = questions.length;
@@ -1292,7 +1067,10 @@ function Step3({
 
   return (
     <div className="animate-fade-in">
-      <SectionTitle en="STEP 03" ja="キャラクターコード診断" />
+      <SectionTitle en={titleEn} ja={title} />
+      {subtitle && (
+        <p className="text-center text-xs opacity-50 mb-4 tracking-wide">{subtitle}</p>
+      )}
       <div className="text-center mb-6">
         <span className="text-xs tracking-widest opacity-50">{answered} / {total} 回答済み</span>
       </div>
@@ -1342,7 +1120,7 @@ function Step3({
           disabled={!canProceed}
           className="btn-outline-primary flex-[2] py-3.5 rounded-full text-sm tracking-widest font-bold disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
         >
-          {canProceed ? "キャラコードを確定する ✦" : `残り${total - answered}問`}
+          {canProceed ? (nextLabel ?? "確定する ✦") : `残り${total - answered}問`}
         </button>
       </div>
     </div>
@@ -2713,7 +2491,7 @@ function ShareCardModal({
         {(() => {
           const rpgChip = getRpgClassByCombo(displayMBTI, loveType);
           const chips = [
-            { label: "MBTI", value: displayMBTI, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false },
+            { label: "性格タイプ", value: displayMBTI, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false },
             { label: "CODE", value: loveType, sub: loveInfo.nickname, color: "#e8a0bf", bg: "rgba(232,160,191,0.12)", span: false },
             { label: "星座", value: zodiac === "なし" ? "—" : zodiac, sub: "", color: "#93c5fd", bg: "rgba(147,197,253,0.08)", span: false },
             { label: "タロット", value: tarotCard.name, sub: tarotIsReversed ? "逆位置" : "正位置", color: "#c084fc", bg: "rgba(192,132,252,0.08)", span: false },
@@ -2850,6 +2628,7 @@ function ResultsPage({
   mbtiType,
   trueSelfMbti,
   loveType,
+  workType,
   tarotCard,
   tarotIsReversed,
   onReset,
@@ -2859,6 +2638,7 @@ function ResultsPage({
   mbtiType: string;
   trueSelfMbti: string | null;
   loveType: LoveType;
+  workType?: LoveType;
   tarotCard: TarotCard;
   tarotIsReversed: boolean;
   onReset: () => void;
@@ -3053,7 +2833,7 @@ function ResultsPage({
         ctx.font = "10px sans-serif";
         ctx.fillStyle = "rgba(255,255,255,0.45)";
         ctx.textAlign = "center";
-        ctx.fillText("MBTI", W / 2, 138);
+        ctx.fillText("性格タイプ", W / 2, 138);
         ctx.font = "bold 40px sans-serif";
         ctx.fillStyle = displayColors.primary;
         ctx.fillText(displayMBTI, W / 2, 178);
@@ -3282,7 +3062,7 @@ function ResultsPage({
         const catchphrase = getMbtiCharaName(displayMBTI, loveType) ?? `${MBTI_ADJ[displayMBTI] ?? ""}${loveInfo.nickname}`;
 
         // RPGクラス
-        const rpgCardClass = getRpgClassByCombo(displayMBTI, loveType);
+        const rpgCardClass = workType ? getRpgClassByDualCode(workType, loveType) : getRpgClassByCombo(displayMBTI, loveType);
         const rpgName = rpgCardClass?.name ?? "冒険者";
         const rpgEmoji = rpgCardClass?.emoji ?? loveInfo.emoji;
 
@@ -3657,48 +3437,6 @@ function ResultsPage({
           </div>
         )}
 
-        {/* MBTI dimension scores */}
-        {Object.keys(data.mbtiAnswers).length > 0 && (() => {
-          const dimScores = getMBTIScores(data.mbtiAnswers);
-          const DIM_LABELS: Record<string, { left: string; right: string }> = {
-            E: { left: "外向的", right: "内向的" },
-            S: { left: "現実的", right: "直感的" },
-            T: { left: "論理的", right: "感情的" },
-            J: { left: "計画的", right: "柔軟" },
-          };
-          return (
-            <div className="mb-4 space-y-2.5 px-1">
-              {dimScores.map(({ left, right, leftPct, rightPct, winner }) => {
-                const label = DIM_LABELS[left] ?? { left, right };
-                const winnerPct = winner === left ? leftPct : rightPct;
-                const winnerLabel = winner === left ? label.left : label.right;
-                return (
-                  <div key={left}>
-                    <div className="flex justify-between text-xs mb-1 opacity-70">
-                      <span style={{ color: winner === left ? displayColors.primary : "rgba(255,255,255,0.35)" }}>{left} {label.left} {leftPct}%</span>
-                      <span style={{ color: winner === right ? displayColors.primary : "rgba(255,255,255,0.35)" }}>{rightPct}% {label.right} {right}</span>
-                    </div>
-                    <div className="relative h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-                      <div
-                        className="absolute left-0 top-0 h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${leftPct}%`,
-                          background: winner === left
-                            ? `linear-gradient(90deg, ${displayColors.primary}99, ${displayColors.primary})`
-                            : `linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.25))`,
-                        }}
-                      />
-                    </div>
-                    <p className="text-xs text-right mt-0.5" style={{ color: displayColors.primary, opacity: 0.6 }}>
-                      {winnerPct}% {winnerLabel}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })()}
-
         <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)" }} />
 
         {/* ✦ あなたの強み — accordion */}
@@ -3756,7 +3494,7 @@ function ResultsPage({
       {/* RPG Career — inline result */}
       {(() => {
         const displayMBTI = trueSelfMbti ?? mbtiType;
-        const rpgClass = getRpgClassByCombo(displayMBTI, loveType);
+        const rpgClass = workType ? getRpgClassByDualCode(workType, loveType) : getRpgClassByCombo(displayMBTI, loveType);
         if (!rpgClass) return null;
         const synergy = zodiacData ? getRpgSynergy(rpgClass.name, zodiacData.element) : null;
         return (
@@ -4027,48 +3765,40 @@ const initialForm: FormData = {
   birthMonth: "",
   birthDay: "",
   zodiac: "",
-  mbtiAnswers: {},
-  loveAnswers: {},
+  workAnswers: {},
+  soulAnswers: {},
 };
 
 type SubStep = "normal" | "trueSelf" | "trueSelfSkipped";
 
 export default function ShindanPage() {
   // Question count selector
-  const [mbtiCount, setMbtiCount] = useState<5 | 10 | 15>(10);
-  const [loveCount, setLoveCount] = useState<5 | 10 | 15>(5);
+  const [workCount, setWorkCount] = useState<5 | 10 | 15>(10);
+  const [soulCount, setSoulCount] = useState<5 | 10 | 15>(10);
 
   // Randomized questions — regenerate when count changes
   const [activeQuestions, setActiveQuestions] = useState(() => ({
-    mbti: getRandomizedMBTIQuestions(10),
-    love: getRandomizedLoveQuestions(5),
+    work: getRandomizedWorkQuestions(10),
+    soul: getRandomizedSoulQuestions(10),
   }));
 
-  const handleMbtiCountChange = (count: 5 | 10 | 15) => {
-    setMbtiCount(count);
-    setFormData((prev) => ({ ...prev, mbtiAnswers: {} }));
-    setActiveQuestions((prev) => ({ ...prev, mbti: getRandomizedMBTIQuestions(count) }));
+  const handleWorkCountChange = (count: 5 | 10 | 15) => {
+    setWorkCount(count);
+    setFormData((prev) => ({ ...prev, workAnswers: {} }));
+    setActiveQuestions((prev) => ({ ...prev, work: getRandomizedWorkQuestions(count) }));
   };
 
-  const handleLoveCountChange = (count: 5 | 10 | 15) => {
-    setLoveCount(count);
-    setFormData((prev) => ({ ...prev, loveAnswers: {} }));
-    setActiveQuestions((prev) => ({ ...prev, love: getRandomizedLoveQuestions(count) }));
+  const handleSoulCountChange = (count: 5 | 10 | 15) => {
+    setSoulCount(count);
+    setFormData((prev) => ({ ...prev, soulAnswers: {} }));
+    setActiveQuestions((prev) => ({ ...prev, soul: getRandomizedSoulQuestions(count) }));
   };
-
-  // Step 0 skip state
-  const [knowsMBTI, setKnowsMBTI] = useState<boolean | null>(null);
-  const [knownMBTI, setKnownMBTI] = useState<string>("");
-  const [knowsLove, setKnowsLove] = useState<boolean | null>(null);
-  const [knownLove, setKnownLove] = useState<LoveType | "">("");
 
   // Form + results
   const [step, setStep] = useState<Step>(0);
-  const [subStep, setSubStep] = useState<SubStep>("normal");
   const [formData, setFormData] = useState<FormData>(initialForm);
-  const [mbtiResult, setMbtiResult] = useState("");
-  const [trueSelfMbti, setTrueSelfMbti] = useState<string | null>(null);
-  const [loveResult, setLoveResult] = useState<LoveType | null>(null);
+  const [workResult, setWorkResult] = useState<LoveType | null>(null);
+  const [soulResult, setSoulResult] = useState<LoveType | null>(null);
   const [selectedTarot, setSelectedTarot] = useState<TarotCard | null>(null);
   const [tarotIsReversed, setTarotIsReversed] = useState(false);
 
@@ -4077,19 +3807,16 @@ export default function ShindanPage() {
   const [showGates, setShowGates] = useState(false);
   const [gatesComplete, setGatesComplete] = useState(false);
 
-  // Whether the MBTI came from diagnosis (true) or skip (false)
-  const [mbtiFromDiagnosis, setMbtiFromDiagnosis] = useState(true);
-
   const handleFormChange = useCallback((key: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const handleMBTIAnswer = useCallback((id: number, score: LikertScore) => {
-    setFormData((prev) => ({ ...prev, mbtiAnswers: { ...prev.mbtiAnswers, [id]: score } }));
+  const handleWorkAnswer = useCallback((id: number, score: LikertScore) => {
+    setFormData((prev) => ({ ...prev, workAnswers: { ...prev.workAnswers, [id]: score } }));
   }, []);
 
-  const handleLoveAnswer = useCallback((id: number, score: LikertScore) => {
-    setFormData((prev) => ({ ...prev, loveAnswers: { ...prev.loveAnswers, [id]: score } }));
+  const handleSoulAnswer = useCallback((id: number, score: LikertScore) => {
+    setFormData((prev) => ({ ...prev, soulAnswers: { ...prev.soulAnswers, [id]: score } }));
   }, []);
 
   const goToStep = (s: Step) => {
@@ -4097,104 +3824,28 @@ export default function ShindanPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleStep0Next = () => {
-    goToStep(1);
-  };
+  const handleStep0Next = () => { goToStep(1); };
 
-  const handleStep1Next = () => {
-    if (knowsMBTI === true && knownMBTI) {
-      setMbtiResult(knownMBTI);
-      setMbtiFromDiagnosis(false);
-      if (knowsLove === true && knownLove) {
-        setLoveResult(knownLove as LoveType);
-        setSubStep("trueSelf");
-        goToStep(4);
-      } else {
-        setSubStep("trueSelf");
-        goToStep(4);
-      }
-    } else {
-      goToStep(2);
-    }
-  };
+  const handleStep1Next = () => { goToStep(2); };
 
   const handleSkipZodiac = () => {
     handleFormChange("zodiac", "なし");
     handleFormChange("birthMonth", "");
     handleFormChange("birthDay", "");
-    // Jump straight to MBTI questions
-    if (knowsMBTI === true && knownMBTI) {
-      setMbtiResult(knownMBTI);
-      setMbtiFromDiagnosis(false);
-      if (knowsLove === true && knownLove) {
-        setLoveResult(knownLove as LoveType);
-        setSubStep("trueSelf");
-        goToStep(4);
-      } else {
-        setSubStep("trueSelf");
-        goToStep(4);
-      }
-    } else {
-      goToStep(2);
-    }
+    goToStep(2);
   };
 
   const handleStep2Next = () => {
-    const mbti = calculateMBTI(formData.mbtiAnswers, activeQuestions.mbti);
-    setMbtiResult(mbti);
-    setMbtiFromDiagnosis(true);
-    if (knowsLove === true && knownLove) {
-      setLoveResult(knownLove as LoveType);
-      setSubStep("trueSelf");
-      goToStep(4);
-    } else {
-      setSubStep("trueSelf");
-      goToStep(3);
-    }
+    const work = calculateLoveType(formData.workAnswers, activeQuestions.work);
+    setWorkResult(work);
+    goToStep(3);
   };
 
   const handleStep3Next = () => {
-    const love = knowsLove && knownLove ? (knownLove as LoveType) : calculateLoveType(formData.loveAnswers, activeQuestions.love);
-    setLoveResult(love);
+    const soul = calculateLoveType(formData.soulAnswers, activeQuestions.soul);
+    setSoulResult(soul);
     setShowTarot(true);
-    setSubStep("normal");
     goToStep(4);
-  };
-
-  const handleTrueSelfConfirm = (finalMBTI: string, altMBTI: string | null) => {
-    if (altMBTI) setTrueSelfMbti(altMBTI);
-    else setTrueSelfMbti(null);
-
-    if (knowsLove === true && knownLove) {
-      setLoveResult(knownLove as LoveType);
-      setSubStep("normal");
-      setShowTarot(true);
-      goToStep(4);
-    } else if (loveResult) {
-      setSubStep("normal");
-      setShowTarot(true);
-      goToStep(4);
-    } else {
-      setSubStep("normal");
-      goToStep(3);
-    }
-  };
-
-  const handleTrueSelfSkip = () => {
-    setTrueSelfMbti(null);
-    if (knowsLove === true && knownLove) {
-      setLoveResult(knownLove as LoveType);
-      setShowTarot(true);
-      setSubStep("normal");
-      goToStep(4);
-    } else if (loveResult) {
-      setShowTarot(true);
-      setSubStep("normal");
-      goToStep(4);
-    } else {
-      setSubStep("normal");
-      goToStep(3);
-    }
   };
 
   const handleTarotSelect = (card: TarotCard, isReversed: boolean) => {
@@ -4217,20 +3868,14 @@ export default function ShindanPage() {
 
   const handleReset = () => {
     setFormData(initialForm);
-    setMbtiResult("");
-    setTrueSelfMbti(null);
-    setLoveResult(null);
+    setWorkResult(null);
+    setSoulResult(null);
     setSelectedTarot(null);
     setTarotIsReversed(false);
     setShowTarot(true);
     setShowAnalyzing(false);
     setShowGates(false);
     setGatesComplete(false);
-    setKnowsMBTI(null);
-    setKnownMBTI("");
-    setKnowsLove(null);
-    setKnownLove("");
-    setSubStep("normal");
     goToStep(0);
   };
 
@@ -4238,9 +3883,8 @@ export default function ShindanPage() {
   const totalSteps = 4;
 
   // Determine what to show at step 4
-  const showTrueSelf = step === 4 && subStep === "trueSelf" && mbtiResult;
-  const showTarotSelection = step === 4 && subStep === "normal" && showTarot && !showAnalyzing;
-  const showResults = step === 4 && subStep === "normal" && !showTarot && !showAnalyzing && mbtiResult && loveResult && selectedTarot;
+  const showTarotSelection = step === 4 && showTarot && !showAnalyzing;
+  const showResults = step === 4 && !showTarot && !showAnalyzing && workResult && soulResult && selectedTarot;
 
   return (
     <div className="relative min-h-screen px-4 py-8 sm:py-12">
@@ -4260,26 +3904,18 @@ export default function ShindanPage() {
 
         {step >= 1 && step <= 3 && <ProgressBar step={progressStep} total={totalSteps} />}
 
-        {/* Step 0 */}
+        {/* Step 0: Question count customization */}
         {step === 0 && (
-          <Step0
-            knownMBTI={knownMBTI}
-            setKnownMBTI={setKnownMBTI}
-            knowsMBTI={knowsMBTI}
-            setKnowsMBTI={setKnowsMBTI}
-            knownLove={knownLove}
-            setKnownLove={setKnownLove}
-            knowsLove={knowsLove}
-            setKnowsLove={setKnowsLove}
+          <Step0New
+            workCount={workCount}
+            onWorkCountChange={handleWorkCountChange}
+            soulCount={soulCount}
+            onSoulCountChange={handleSoulCountChange}
             onNext={handleStep0Next}
-            mbtiCount={mbtiCount}
-            onMbtiCountChange={handleMbtiCountChange}
-            loveCount={loveCount}
-            onLoveCountChange={handleLoveCountChange}
           />
         )}
 
-        {/* Step 1: Birthday */}
+        {/* Step 1: Birthday / Zodiac */}
         {step === 1 && (
           <Step1
             data={formData}
@@ -4290,50 +3926,49 @@ export default function ShindanPage() {
           />
         )}
 
-        {/* Step 2: MBTI */}
+        {/* Step 2: 職場の自分 Quiz A */}
         {step === 2 && (
-          <Step2
-            answers={formData.mbtiAnswers}
-            onAnswer={handleMBTIAnswer}
+          <Step3
+            answers={formData.workAnswers}
+            onAnswer={handleWorkAnswer}
             onNext={handleStep2Next}
             onBack={() => goToStep(1)}
-            questions={activeQuestions.mbti}
+            questions={activeQuestions.work}
+            title="職場の自分"
+            titleEn="WORK STYLE"
+            subtitle="仕事・職場でのあなたを選んでください"
+            nextLabel="次へ →"
           />
         )}
 
-        {/* Step 3: Character Code */}
+        {/* Step 3: 本音の自分 Quiz B */}
         {step === 3 && (
           <Step3
-            answers={formData.loveAnswers}
-            onAnswer={handleLoveAnswer}
+            answers={formData.soulAnswers}
+            onAnswer={handleSoulAnswer}
             onNext={handleStep3Next}
-            onBack={() => goToStep(knowsMBTI && knownMBTI ? 1 : 2)}
-            questions={activeQuestions.love}
+            onBack={() => goToStep(2)}
+            questions={activeQuestions.soul}
+            title="本音の自分"
+            titleEn="TRUE SELF"
+            subtitle="本音・プライベートなあなたを選んでください"
+            nextLabel="タロットへ →"
           />
         )}
 
-        {/* Step 4a: True Self */}
-        {showTrueSelf && (
-          <TrueSelfStep
-            initialMBTI={mbtiResult}
-            fromDiagnosis={mbtiFromDiagnosis}
-            onConfirm={handleTrueSelfConfirm}
-            onSkip={handleTrueSelfSkip}
-          />
-        )}
-
-        {/* Step 4b: Tarot selection */}
+        {/* Step 4a: Tarot selection */}
         {showTarotSelection && (
           <TarotSelection onSelect={handleTarotSelect} />
         )}
 
-        {/* Step 4c: Results */}
-        {showResults && mbtiResult && loveResult && selectedTarot && (
+        {/* Step 4b: Results */}
+        {showResults && workResult && soulResult && selectedTarot && (
           <ResultsPage
             data={formData}
-            mbtiType={mbtiResult}
-            trueSelfMbti={trueSelfMbti}
-            loveType={loveResult}
+            mbtiType={loveTypeToMbti(workResult)}
+            trueSelfMbti={loveTypeToMbti(soulResult)}
+            loveType={soulResult}
+            workType={workResult}
             tarotCard={selectedTarot}
             tarotIsReversed={tarotIsReversed}
             onReset={handleReset}

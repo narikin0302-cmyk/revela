@@ -5,10 +5,10 @@ import DailyMessage from "@/components/DailyMessage";
 export const metadata: Metadata = {
   title: "revela | 深層の本質を、言語化する",
   description:
-    "MBTI×ラブタイプ×星座×タロット。256通りの組み合わせで、あなただけの自己分析。",
+    "職業RPG×自己分析。256通りの組み合わせで、あなただけのRPGクラスを発見。",
   openGraph: {
     title: "revela | 深層の本質を、言語化する",
-    description: "MBTI×ラブタイプ×星座×タロット。256通りの組み合わせで、あなただけの自己分析。",
+    description: "職業RPG×自己分析。256通りの組み合わせで、あなただけのRPGクラスを発見。",
     type: "website",
     locale: "ja_JP",
     siteName: "revela",
@@ -17,22 +17,22 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "revela | 深層の本質を、言語化する",
-    description: "MBTI×ラブタイプ×星座×タロット。256通りの組み合わせで、あなただけの自己分析。",
+    description: "職業RPG×自己分析。256通りの組み合わせで、あなただけのRPGクラスを発見。",
   },
 };
 
 const testimonials = [
   {
     text: "「自分のことを分かってくれた気がして、読みながら泣いてしまいました。」",
-    type: "INFJ × ロマンスマジシャン × 魚座",
+    type: "予言者 × 魚座",
   },
   {
     text: "「こんなに的確な分析を見たことがない。友達全員に送りました。」",
-    type: "ENFP × 主役体質 × 獅子座",
+    type: "冒険者 × 獅子座",
   },
   {
     text: "「曖昧だった自分の軸が、言語化されてすっきりしました。」",
-    type: "INTJ × 憧れの先輩 × 水瓶座",
+    type: "賢者 × 水瓶座",
   },
 ];
 
@@ -40,22 +40,22 @@ const menuItems = [
   {
     icon: "✦",
     title: "総合診断",
-    desc: "MBTI×ラブ×星座×タロット",
+    desc: "性格×行動×星座×タロット",
     href: "/shindan",
     isMain: true,
   },
 
-  { icon: "💞", title: "相性診断", desc: "MBTIタイプの相性", href: "/shindan/aisei", isMain: false },
+  { icon: "💞", title: "相性診断", desc: "性格タイプの相性", href: "/shindan/aisei", isMain: false },
 ];
 
 const faqs = [
   {
     q: "診断は完全無料ですか？",
-    a: "はい、MBTI診断・ラブタイプ診断・星座・タロット・相性診断はすべて無料でご利用いただけます。",
+    a: "はい、性格タイプ診断・行動スタイル診断・星座・タロット・相性診断はすべて無料でご利用いただけます。",
   },
   {
-    q: "MBTIの結果は正確ですか？",
-    a: "revelaのMBTI診断は10問の厳選された質問で構成されており、傾向を把握するためのものです。より正確な結果が必要な方は公式16Personalitiesテストも合わせてご参照ください。",
+    q: "診断結果は正確ですか？",
+    a: "revelaの診断は厳選された質問で構成されており、傾向を把握するためのものです。日常での自分の行動パターンを思い浮かべながら答えると、より精度の高い結果が得られます。",
   },
   {
     q: "個人情報は保存されますか？",
@@ -66,8 +66,8 @@ const faqs = [
     a: "いいえ。タロット診断はページを読み込むたびにカードの順番がシャッフルされます。引いたカードと3枚の組み合わせに基づいた独自のリーディングが毎回生成されます。逆位置も30%の確率で出現します。",
   },
   {
-    q: "相性診断で低い結果が出ました。この関係はダメですか？",
-    a: "相性診断はあくまで傾向の参考です。どんな組み合わせでも、お互いの理解と努力次第で深い関係を築くことができます。低いスコアは克服すべきポイントを知るためのヒントとして活用してください。",
+    q: "相性診断で低い結果が出ました。この組み合わせはダメですか？",
+    a: "相性診断はあくまで傾向の参考です。どんな組み合わせでも、お互いの理解と努力次第で良い関係を築くことができます。低いスコアは克服すべきポイントを知るためのヒントとして活用してください。",
   },
 ];
 
@@ -129,7 +129,7 @@ export default function HomePage() {
         >
           <div className="flex items-center justify-center gap-0 flex-wrap">
             {[
-              { label: "MBTI" },
+              { label: "性格タイプ" },
               { label: "星座" },
               { label: "タロット" },
               { label: "キャラ" },
@@ -224,7 +224,7 @@ export default function HomePage() {
 
           {[
             { step: "01", icon: "📅", title: "星座を選ぶ", desc: "生年月日か\n星座を選択" },
-            { step: "02", icon: "✍️", title: "質問に答える", desc: "MBTI・ラブタイプ\n各5〜10問" },
+            { step: "02", icon: "✍️", title: "質問に答える", desc: "性格・行動スタイル\n各5〜10問" },
             { step: "03", icon: "📊", title: "結果を受け取る", desc: "あなただけの\n自己分析が完成" },
           ].map((item, i) => (
             <div key={i} className="relative flex-1 flex flex-col items-center text-center px-4">

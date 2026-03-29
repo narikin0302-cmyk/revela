@@ -83,7 +83,7 @@ export default function StatsPage() {
 
       {/* MBTI ランキング */}
       <section className="mb-14">
-        <p className="text-xs tracking-[0.3em] mb-6 opacity-50">MBTI タイプ分布</p>
+        <p className="text-xs tracking-[0.3em] mb-6 opacity-50">性格タイプ分布</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>

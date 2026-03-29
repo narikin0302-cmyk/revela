@@ -106,7 +106,7 @@ export default function OGImage() {
                   letterSpacing: "0.2em",
                 }}
               >
-                {["MBTI", "星座", "タロット", "キャラ"][i]}
+                {["性格タイプ", "星座", "タロット", "行動スタイル"][i]}
               </span>
             </div>
           ))}

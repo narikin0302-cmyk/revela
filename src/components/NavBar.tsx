@@ -48,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: "総合診断", href: "/shindan" },
       { label: "相性診断", href: "/shindan/aisei" },
       { label: "── 一覧 ──", href: "" },
-      { label: "MBTI 16タイプ一覧", href: "/chara?tab=mbti" },
+      { label: "性格タイプ 16タイプ一覧", href: "/chara?tab=mbti" },
       { label: "キャラクターコード一覧", href: "/chara?tab=chara" },
       { label: "星座一覧", href: "/chara?tab=seiza" },
       { label: "タロット一覧", href: "/chara?tab=tarot" },

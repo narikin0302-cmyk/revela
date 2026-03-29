@@ -47,7 +47,7 @@ function ResultSummaryCard({ entry }: { entry: HistoryEntry }) {
 
   const chips = [
     entry.mbti && mbtiColor
-      ? { label: "MBTI", value: entry.mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false }
+      ? { label: "性格タイプ", value: entry.mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false }
       : null,
     entry.loveType && loveInfo
       ? { label: "CODE", value: entry.loveType, sub: loveInfo.nickname, color: "#e8a0bf", bg: "rgba(232,160,191,0.12)", span: false }
