@@ -24,15 +24,15 @@ export const metadata: Metadata = {
 const testimonials = [
   {
     text: "「自分のことを分かってくれた気がして、読みながら泣いてしまいました。」",
-    type: "予言者 × 魚座",
+    type: "予言者",
   },
   {
     text: "「こんなに的確な分析を見たことがない。友達全員に送りました。」",
-    type: "冒険者 × 獅子座",
+    type: "冒険者",
   },
   {
     text: "「曖昧だった自分の軸が、言語化されてすっきりしました。」",
-    type: "賢者 × 水瓶座",
+    type: "賢者",
   },
 ];
 
@@ -40,7 +40,7 @@ const menuItems = [
   {
     icon: "✦",
     title: "総合診断",
-    desc: "性格×行動×星座×タロット",
+    desc: "現在地×本音×職業RPG",
     href: "/shindan",
     isMain: true,
   },
@@ -51,7 +51,7 @@ const menuItems = [
 const faqs = [
   {
     q: "診断は完全無料ですか？",
-    a: "はい、性格タイプ診断・行動スタイル診断・星座・タロット・相性診断はすべて無料でご利用いただけます。",
+    a: "はい、現在地診断・本音診断・職業RPG診断・相性診断はすべて無料でご利用いただけます。",
   },
   {
     q: "診断結果は正確ですか？",
@@ -60,10 +60,6 @@ const faqs = [
   {
     q: "個人情報は保存されますか？",
     a: "診断結果はお客様のデバイス上（ブラウザのlocalStorage）にのみ保存されます。サーバーへの送信は行っておらず、個人情報の収集はしていません。",
-  },
-  {
-    q: "タロット診断は毎回同じ結果になりますか？",
-    a: "いいえ。タロット診断はページを読み込むたびにカードの順番がシャッフルされます。引いたカードと3枚の組み合わせに基づいた独自のリーディングが毎回生成されます。逆位置も30%の確率で出現します。",
   },
   {
     q: "相性診断で低い結果が出ました。この組み合わせはダメですか？",
@@ -112,7 +108,7 @@ export default function HomePage() {
             className="text-sm sm:text-base leading-relaxed mb-2 font-light max-w-sm mx-auto"
             style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}
           >
-            5つの診断軸が交わるとき、<br />あなたの輪郭が浮かび上がる。
+            3つの診断軸が交わるとき、<br />あなたの輪郭が浮かび上がる。
           </p>
           <p
             className="font-cinzel text-xs tracking-[0.3em] mb-10"
@@ -129,10 +125,8 @@ export default function HomePage() {
         >
           <div className="flex items-center justify-center gap-0 flex-wrap">
             {[
-              { label: "性格タイプ" },
-              { label: "星座" },
-              { label: "タロット" },
-              { label: "キャラ" },
+              { label: "現在地" },
+              { label: "本音" },
               { label: "職業RPG" },
             ].map((item, i, arr) => (
               <div key={i} className="flex items-center">
@@ -223,8 +217,8 @@ export default function HomePage() {
           />
 
           {[
-            { step: "01", icon: "📅", title: "星座を選ぶ", desc: "生年月日か\n星座を選択" },
-            { step: "02", icon: "✍️", title: "質問に答える", desc: "性格・行動スタイル\n各5〜10問" },
+            { step: "01", icon: "✍️", title: "質問に答える", desc: "現在地・本音\n各5〜15問" },
+            { step: "02", icon: "🔍", title: "タイプを確定", desc: "16通りの組み合わせで\nあなたを分類" },
             { step: "03", icon: "📊", title: "結果を受け取る", desc: "あなただけの\n自己分析が完成" },
           ].map((item, i) => (
             <div key={i} className="relative flex-1 flex flex-col items-center text-center px-4">

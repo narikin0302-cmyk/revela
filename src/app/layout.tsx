@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     template: "%s | revela",
   },
   description:
-    "職業RPG×自己分析。本音と建て前のギャップで、自分に合う仕事・職場を見つけよう。revela",
+    "職業RPG×自己分析。本音と現在地のギャップで、自分に合う仕事・職場を見つけよう。revela",
   keywords: "職業RPG, 自己分析, 性格タイプ, 行動スタイル, 星座, タロット, 就活, 転職, 自分に合う仕事",
   manifest: "/manifest.json",
   openGraph: {
     title: "revela | 本当の自分を知る",
     description:
-      "職業RPG×自己分析。本音と建て前のギャップで、自分に合う仕事・職場を見つけよう。",
+      "職業RPG×自己分析。本音と現在地のギャップで、自分に合う仕事・職場を見つけよう。",
     type: "website",
     locale: "ja_JP",
     siteName: "revela",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "revela | 本当の自分を知る",
-    description: "職業RPG×自己分析。本音と建て前のギャップで、自分に合う仕事・職場を見つけよう。",
+    description: "職業RPG×自己分析。本音と現在地のギャップで、自分に合う仕事・職場を見つけよう。",
   },
 };
 
@@ -81,7 +81,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "revela",
-              description: "職業RPG×自己分析。本音と建て前のギャップを可視化する自己分析ツール",
+              description: "職業RPG×自己分析。本音と現在地のギャップを可視化する自己分析ツール",
               url: "https://revela.jp",
               potentialAction: {
                 "@type": "SearchAction",

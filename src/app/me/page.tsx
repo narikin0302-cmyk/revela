@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { parseRevelaCode, type ParsedCode } from "@/lib/revelaCodes";
+import { parseRevelaCode, generateRevelaCode, type ParsedCode } from "@/lib/revelaCodes";
 import { getRpgClassByCombo, getRpgSynergy } from "@/data/rpgClasses";
 import { zodiacInfo } from "@/lib/calculate";
 import { ZODIAC_FLAVOR } from "@/data/seiza";
@@ -65,7 +65,7 @@ function generateInsights(code: ParsedCode): Insight[] {
   const isLeader     = loveType[0] === "L";
   const isCool       = loveType[1] === "C";
   const isReserved   = loveType[2] === "R";
-  const zodiacKanji  = ZODIAC_HIRA_TO_KANJI[zodiac] ?? "";
+  const zodiacKanji  = ZODIAC_HIRA_TO_KANJI[zodiac ?? ""] ?? "";
   const element      = zodiacInfo[zodiacKanji]?.element ?? "";
 
   const insights: Insight[] = [];
@@ -137,7 +137,7 @@ export default function MePage() {
           まだ診断が完了していません
         </h1>
         <p style={{ fontSize: 13, opacity: 0.5, marginBottom: 32 }}>
-          MBTI × ラブタイプ診断を受けると、あなたの統合プロフィールが表示されます。
+          現在地・本音診断を受けると、あなたの統合プロフィールが表示されます。
         </p>
         <Link href="/shindan" style={{ padding: "14px 32px", borderRadius: 9999, background: "transparent", border: "1px solid rgba(255,255,255,0.35)", color: "#EDEDED", fontWeight: 500, fontSize: 14, textDecoration: "none", letterSpacing: "0.08em" }}>
           分析をはじめる →
@@ -147,12 +147,15 @@ export default function MePage() {
   }
 
   // データ解決
-  const zodiacKanji  = ZODIAC_HIRA_TO_KANJI[code.zodiac] ?? "";
+  const zodiacKanji  = ZODIAC_HIRA_TO_KANJI[code.zodiac ?? ""] ?? "";
   const zodiacData   = zodiacKanji ? zodiacInfo[zodiacKanji] : null;
-  const zodiacFlavor = zodiacKanji ? ZODIAC_FLAVOR[zodiacKanji] : null;
-  const ec           = zodiacData ? (ELEMENT_COLOR[zodiacData.element] ?? "rgba(255,255,255,0.5)") : "rgba(255,255,255,0.5)";
+  const _zodiacFlavor = zodiacKanji ? ZODIAC_FLAVOR[zodiacKanji] : null;
+  void _zodiacFlavor;
+  const _ec          = zodiacData ? (ELEMENT_COLOR[zodiacData.element] ?? "rgba(255,255,255,0.5)") : "rgba(255,255,255,0.5)";
+  void _ec;
 
-  const tarotCard    = tarotCards.find((c) => c.name === code.tarot) ?? null;
+  const _tarotCard   = null;
+  void _tarotCard;
   const loveInfo     = loveTypeDescriptions[code.loveType as LoveType];
   const mbtiInfo     = mbtiDescriptions[code.mbti];
   const charaName    = getMbtiCharaName(code.mbti, code.loveType) ?? loveInfo?.nickname ?? code.loveType;
@@ -187,7 +190,7 @@ export default function MePage() {
           </p>
         )}
         <div style={{ display: "inline-block", padding: "8px 20px", borderRadius: 9999, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.35)", fontFamily: "monospace", fontSize: "clamp(0.85rem,3.5vw,1.1rem)", fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.12em", marginBottom: 8 }}>
-          {code.mbti}-{code.loveType}-{code.zodiac}
+          {rpgClass && generateRevelaCode(code.mbti, code.loveType, rpgClass.name)}
         </div>
         <div className="divider-gold w-16 mx-auto mt-4" />
       </div>
@@ -256,7 +259,7 @@ export default function MePage() {
               </svg>
               <span style={{ fontSize: 72, position: "relative", zIndex: 1, filter: `drop-shadow(0 0 16px ${ts.artAccent})` }}>{rpgEmoji}</span>
               <div style={{ position: "absolute", bottom: 6, right: 6, background: `${ts.artAccent}22`, border: `1px solid ${ts.artAccent}66`, borderRadius: 3, padding: "2px 6px", fontSize: 9, color: ts.artAccent, fontFamily: "monospace", fontWeight: 700, letterSpacing: "0.1em" }}>
-                {code.mbti} × {code.loveType}
+                {mbtiInfo?.displayName ?? code.mbti} × {loveInfo?.nickname ?? code.loveType}
               </div>
             </div>
 
@@ -319,77 +322,32 @@ export default function MePage() {
         </div>
       )}
 
-      {/* ── MBTI + ラブタイプ ── */}
+      {/* ── 現在地 + 本音 ── */}
       <div className="afu grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5" style={{ animationDelay: "0.2s", opacity: 0 }}>
-        {/* MBTI */}
+        {/* 現在地 */}
         <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.2)" }}>
-          <p className="text-xs tracking-widest mb-3 opacity-50" style={{ color: "rgba(255,255,255,0.55)" }}>🧠 MBTI</p>
-          <p className="text-2xl font-bold font-mono mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>{code.mbti}</p>
+          <p className="text-xs tracking-widest mb-3 opacity-50" style={{ color: "rgba(255,255,255,0.55)" }}>🧠 現在地</p>
           {mbtiInfo && (
             <>
-              <p className="text-sm font-medium mb-2" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.8 }}>{mbtiInfo.title}</p>
-              <p className="text-xs opacity-60 leading-relaxed">{mbtiInfo.keywords}</p>
+              <p className="text-base font-bold mb-1" style={{ color: "rgba(255,255,255,0.9)" }}>{mbtiInfo.displayName}</p>
+              <p className="text-xs opacity-60 mb-1">{mbtiInfo.subtitle}</p>
+              <p className="text-xs opacity-40 leading-relaxed">{mbtiInfo.keywords}</p>
             </>
           )}
         </div>
 
-        {/* ラブタイプ */}
+        {/* 本音 */}
         <div className="rounded-2xl p-5" style={{ background: "rgba(232,160,191,0.05)", border: "1px solid rgba(232,160,191,0.2)" }}>
-          <p className="text-xs tracking-widest mb-3 opacity-50" style={{ color: "#e8a0bf" }}>♡ キャラクターコード</p>
-          <p className="text-2xl font-bold font-mono mb-1" style={{ color: "#e8a0bf" }}>{code.loveType}</p>
+          <p className="text-xs tracking-widest mb-3 opacity-50" style={{ color: "#e8a0bf" }}>✦ 本音</p>
           {loveInfo && (
             <>
-              <p className="text-sm font-medium mb-2" style={{ color: "#e8a0bf", opacity: 0.8 }}>{loveInfo.nickname}</p>
-              <p className="text-xs opacity-60 leading-relaxed">{loveInfo.motto}</p>
+              <p className="text-base font-bold mb-1" style={{ color: "#e8a0bf" }}>{loveInfo.nickname}</p>
+              <p className="text-xs opacity-60 mb-1">{loveInfo.subtitle}</p>
+              <p className="text-xs opacity-40 leading-relaxed">{loveInfo.motto}</p>
             </>
           )}
         </div>
       </div>
-
-      {/* ── 星座カード ── */}
-      {zodiacKanji && (
-        <div className="afu mb-5 rounded-2xl p-5" style={{ animationDelay: "0.3s", opacity: 0, background: `${ec}0a`, border: `1px solid ${ec}33` }}>
-          <p className="text-xs tracking-widest mb-3 opacity-50" style={{ color: ec }}>⭐ 星座</p>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-3xl">{zodiacData?.emoji}</span>
-            <div>
-              <p className="text-lg font-bold mb-0.5" style={{ color: ec }}>{zodiacKanji}</p>
-              <div className="flex gap-1.5">
-                <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: `${ec}20`, color: ec, border: `1px solid ${ec}40` }}>{zodiacData?.element}属性</span>
-                <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>{zodiacData?.planet}</span>
-              </div>
-            </div>
-          </div>
-          {zodiacFlavor && (
-            <>
-              <p className="text-sm font-medium mb-2" style={{ color: ec }}>「{zodiacFlavor.catchphrase}」</p>
-              <p className="text-xs leading-relaxed opacity-65">{zodiacFlavor.description}</p>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* ── タロットカード ── */}
-      {tarotCard && (
-        <div className="afu mb-5 rounded-2xl p-5" style={{ animationDelay: "0.4s", opacity: 0, background: `${tarotCard.color}0a`, border: `1px solid ${tarotCard.color}33` }}>
-          <p className="text-xs tracking-widest mb-3 opacity-50" style={{ color: tarotCard.color }}>🔮 タロット</p>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-3xl font-bold font-mono" style={{ color: tarotCard.color, opacity: 0.6 }}>{tarotCard.symbol}</span>
-            <div>
-              <p className="text-lg font-bold mb-0.5" style={{ color: tarotCard.color }}>{tarotCard.name}</p>
-              <p className="text-xs opacity-50">{tarotCard.nameEn} · {tarotCard.keywords}</p>
-            </div>
-          </div>
-          <div className="rounded-xl p-3 mb-3" style={{ background: `${tarotCard.color}10`, border: `1px solid ${tarotCard.color}22` }}>
-            <p className="text-xs tracking-widest mb-2 opacity-50" style={{ color: tarotCard.color }}>正位置</p>
-            <p className="text-xs leading-relaxed opacity-80">{tarotCard.upright}</p>
-          </div>
-          <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <p className="text-xs tracking-widest mb-2 opacity-50">逆位置</p>
-            <p className="text-xs leading-relaxed opacity-65">{tarotCard.reversedMeaning}</p>
-          </div>
-        </div>
-      )}
 
       {/* ── 矛盾・発見 ── */}
       {insights.length > 0 && (

@@ -83,10 +83,10 @@ export interface LoveAnswers {
 }
 
 export function calculateLoveType(answers: LoveAnswers, questions: LoveQuestion[] = loveQuestions): LoveType {
-  const axis1: Record<string, number> = { L: 0, F: 0 };
-  const axis2: Record<string, number> = { C: 0, A: 0 };
-  const axis3: Record<string, number> = { R: 0, P: 0 };
-  const axis4: Record<string, number> = { O: 0, E: 0 };
+  const axis1: Record<string, number> = { A: 0, S: 0 };
+  const axis2: Record<string, number> = { E: 0, L: 0 };
+  const axis3: Record<string, number> = { R: 0, V: 0 };
+  const axis4: Record<string, number> = { F: 0, P: 0 };
 
   questions.forEach((q) => {
     const answer = answers[q.id] as LikertScore | undefined;
@@ -97,10 +97,10 @@ export function calculateLoveType(answers: LoveAnswers, questions: LoveQuestion[
     axisMap[q.bValue] = (axisMap[q.bValue] || 0) + bScore;
   });
 
-  const a1 = axis1.L >= axis1.F ? "L" : "F";
-  const a2 = axis2.C >= axis2.A ? "C" : "A";
-  const a3 = axis3.R >= axis3.P ? "R" : "P";
-  const a4 = axis4.O >= axis4.E ? "O" : "E";
+  const a1 = axis1.A >= axis1.S ? "A" : "S";
+  const a2 = axis2.E >= axis2.L ? "E" : "L";
+  const a3 = axis3.R >= axis3.V ? "R" : "V";
+  const a4 = axis4.F >= axis4.P ? "F" : "P";
 
   return `${a1}${a2}${a3}${a4}` as LoveType;
 }

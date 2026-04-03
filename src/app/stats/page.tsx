@@ -117,7 +117,7 @@ export default function StatsPage() {
 
       {/* キャラクターコード ランキング */}
       <section className="mb-14">
-        <p className="text-xs tracking-[0.3em] mb-6 opacity-50">キャラクターコード 分布</p>
+        <p className="text-xs tracking-[0.3em] mb-6 opacity-50">本音タイプ 分布</p>
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={loveData} margin={{ top: 0, right: 0, left: -20, bottom: 60 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />

@@ -9,22 +9,22 @@ import type { LoveType } from "@/data/questions";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
 
 const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string }> = {
-  INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", label: "分析家" },
-  INTP: { primary: "#8b5cf6", bg: "rgba(139,92,246,0.15)", label: "分析家" },
-  ENTJ: { primary: "#6d28d9", bg: "rgba(109,40,217,0.15)", label: "分析家" },
-  ENTP: { primary: "#a78bfa", bg: "rgba(167,139,250,0.15)", label: "分析家" },
-  INFJ: { primary: "#059669", bg: "rgba(5,150,105,0.15)", label: "外交家" },
-  INFP: { primary: "#10b981", bg: "rgba(16,185,129,0.15)", label: "外交家" },
-  ENFJ: { primary: "#047857", bg: "rgba(4,120,87,0.15)", label: "外交家" },
-  ENFP: { primary: "#34d399", bg: "rgba(52,211,153,0.15)", label: "外交家" },
-  ISTJ: { primary: "#1d4ed8", bg: "rgba(29,78,216,0.15)", label: "番人" },
-  ISFJ: { primary: "#2563eb", bg: "rgba(37,99,235,0.15)", label: "番人" },
-  ESTJ: { primary: "#1e40af", bg: "rgba(30,64,175,0.15)", label: "番人" },
-  ESFJ: { primary: "#3b82f6", bg: "rgba(59,130,246,0.15)", label: "番人" },
-  ISTP: { primary: "#92400e", bg: "rgba(146,64,14,0.15)", label: "探検家" },
-  ISFP: { primary: "#d97706", bg: "rgba(217,119,6,0.15)", label: "探検家" },
-  ESTP: { primary: "#b45309", bg: "rgba(180,83,9,0.15)", label: "探検家" },
-  ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", label: "探検家" },
+  INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", label: "戦略型" },
+  INTP: { primary: "#8b5cf6", bg: "rgba(139,92,246,0.15)", label: "戦略型" },
+  ENTJ: { primary: "#6d28d9", bg: "rgba(109,40,217,0.15)", label: "戦略型" },
+  ENTP: { primary: "#a78bfa", bg: "rgba(167,139,250,0.15)", label: "戦略型" },
+  INFJ: { primary: "#059669", bg: "rgba(5,150,105,0.15)", label: "共鳴型" },
+  INFP: { primary: "#10b981", bg: "rgba(16,185,129,0.15)", label: "共鳴型" },
+  ENFJ: { primary: "#047857", bg: "rgba(4,120,87,0.15)", label: "共鳴型" },
+  ENFP: { primary: "#34d399", bg: "rgba(52,211,153,0.15)", label: "共鳴型" },
+  ISTJ: { primary: "#1d4ed8", bg: "rgba(29,78,216,0.15)", label: "堅実型" },
+  ISFJ: { primary: "#2563eb", bg: "rgba(37,99,235,0.15)", label: "堅実型" },
+  ESTJ: { primary: "#1e40af", bg: "rgba(30,64,175,0.15)", label: "堅実型" },
+  ESFJ: { primary: "#3b82f6", bg: "rgba(59,130,246,0.15)", label: "堅実型" },
+  ISTP: { primary: "#92400e", bg: "rgba(146,64,14,0.15)", label: "感応型" },
+  ISFP: { primary: "#d97706", bg: "rgba(217,119,6,0.15)", label: "感応型" },
+  ESTP: { primary: "#b45309", bg: "rgba(180,83,9,0.15)", label: "感応型" },
+  ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", label: "感応型" },
 };
 
 function Chip({ label, color }: { label: string; color: string }) {
@@ -47,16 +47,10 @@ function ResultSummaryCard({ entry }: { entry: HistoryEntry }) {
 
   const chips = [
     entry.mbti && mbtiColor
-      ? { label: "性格タイプ", value: entry.mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false }
+      ? { label: "現在地", value: entry.mbti, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false }
       : null,
     entry.loveType && loveInfo
-      ? { label: "CODE", value: entry.loveType, sub: loveInfo.nickname, color: "#e8a0bf", bg: "rgba(232,160,191,0.12)", span: false }
-      : null,
-    entry.zodiac && entry.zodiac !== "なし"
-      ? { label: "星座", value: entry.zodiac, sub: "", color: "#22d3ee", bg: "rgba(34,211,238,0.08)", span: false }
-      : null,
-    entry.tarot
-      ? { label: "タロット", value: entry.tarot, sub: entry.isReversed ? "逆位置" : "正位置", color: "#c084fc", bg: "rgba(192,132,252,0.08)", span: false }
+      ? { label: "本音", value: loveInfo.nickname, sub: "", color: "#e8a0bf", bg: "rgba(232,160,191,0.12)", span: false }
       : null,
     rpgChip
       ? { label: "職業RPG", value: `${rpgChip.emoji} ${rpgChip.name}`, sub: rpgChip.tagline, color: "#7c3aed", bg: "rgba(124,58,237,0.08)", span: true }
@@ -104,9 +98,8 @@ function HistoryCard({
   const [expanded, setExpanded] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
 
-  const revelCode = entry.mbti && entry.loveType && entry.zodiac && entry.zodiac !== "なし" && entry.tarot
-    ? generateRevelaCode(entry.mbti, entry.loveType, entry.zodiac)
-    : null;
+  const rpgForCode = entry.mbti && entry.loveType ? getRpgClassByCombo(entry.mbti, entry.loveType) : null;
+  const revelCode = rpgForCode && entry.mbti && entry.loveType ? generateRevelaCode(entry.mbti, entry.loveType, rpgForCode.name) : null;
 
   const handleCopyCode = async () => {
     if (!revelCode) return;

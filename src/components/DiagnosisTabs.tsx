@@ -6,14 +6,14 @@ import { tarotCards } from "@/data/tarot";
 import { zodiacSigns } from "@/data/seiza";
 
 const MBTI_COLORS: Record<string, { primary: string; group: string }> = {
-  INTJ: { primary: "#7c3aed", group: "分析家" }, INTP: { primary: "#8b5cf6", group: "分析家" },
-  ENTJ: { primary: "#6d28d9", group: "分析家" }, ENTP: { primary: "#a78bfa", group: "分析家" },
-  INFJ: { primary: "#059669", group: "外交家" }, INFP: { primary: "#10b981", group: "外交家" },
-  ENFJ: { primary: "#047857", group: "外交家" }, ENFP: { primary: "#34d399", group: "外交家" },
-  ISTJ: { primary: "#1d4ed8", group: "番人" }, ISFJ: { primary: "#2563eb", group: "番人" },
-  ESTJ: { primary: "#1e40af", group: "番人" }, ESFJ: { primary: "#3b82f6", group: "番人" },
-  ISTP: { primary: "#92400e", group: "探検家" }, ISFP: { primary: "#d97706", group: "探検家" },
-  ESTP: { primary: "#b45309", group: "探検家" }, ESFP: { primary: "#f59e0b", group: "探検家" },
+  INTJ: { primary: "#7c3aed", group: "戦略型" }, INTP: { primary: "#8b5cf6", group: "戦略型" },
+  ENTJ: { primary: "#6d28d9", group: "戦略型" }, ENTP: { primary: "#a78bfa", group: "戦略型" },
+  INFJ: { primary: "#059669", group: "共鳴型" }, INFP: { primary: "#10b981", group: "共鳴型" },
+  ENFJ: { primary: "#047857", group: "共鳴型" }, ENFP: { primary: "#34d399", group: "共鳴型" },
+  ISTJ: { primary: "#1d4ed8", group: "堅実型" }, ISFJ: { primary: "#2563eb", group: "堅実型" },
+  ESTJ: { primary: "#1e40af", group: "堅実型" }, ESFJ: { primary: "#3b82f6", group: "堅実型" },
+  ISTP: { primary: "#92400e", group: "感応型" }, ISFP: { primary: "#d97706", group: "感応型" },
+  ESTP: { primary: "#b45309", group: "感応型" }, ESFP: { primary: "#f59e0b", group: "感応型" },
 };
 
 const LOVE_TYPES = [
@@ -43,8 +43,8 @@ export default function DiagnosisTabs() {
   const [tab, setTab] = useState<Tab>("mbti");
 
   const TABS: { id: Tab; label: string; icon: string }[] = [
-    { id: "mbti", label: "性格タイプ", icon: "🧠" },
-    { id: "chara", label: "キャラクター", icon: "♡" },
+    { id: "mbti", label: "現在地", icon: "🧠" },
+    { id: "chara", label: "本音", icon: "♡" },
     { id: "seiza", label: "星座", icon: "⭐" },
     { id: "tarot", label: "タロット", icon: "🔮" },
   ];

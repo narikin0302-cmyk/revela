@@ -7,29 +7,27 @@ import { CLASS_ROLES } from "@/data/rpgSynergy";
 import Link from "next/link";
 import { loveTypeDescriptions, mbtiDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
-import { getMbtiCharaName } from "@/data/charaNames";
 import { tarotCards } from "@/data/tarot";
 import { zodiacSigns, ZODIAC_FLAVOR } from "@/data/seiza";
-import { getHistory } from "@/lib/storage";
 
 // ── MBTI colors ──────────────────────────────────────────────
 const MBTI_COLORS: Record<string, { primary: string; bg: string; group: string }> = {
-  INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", group: "分析家" },
-  INTP: { primary: "#8b5cf6", bg: "rgba(139,92,246,0.15)", group: "分析家" },
-  ENTJ: { primary: "#6d28d9", bg: "rgba(109,40,217,0.15)", group: "分析家" },
-  ENTP: { primary: "#a78bfa", bg: "rgba(167,139,250,0.15)", group: "分析家" },
-  INFJ: { primary: "#059669", bg: "rgba(5,150,105,0.15)", group: "外交家" },
-  INFP: { primary: "#10b981", bg: "rgba(16,185,129,0.15)", group: "外交家" },
-  ENFJ: { primary: "#047857", bg: "rgba(4,120,87,0.15)", group: "外交家" },
-  ENFP: { primary: "#34d399", bg: "rgba(52,211,153,0.15)", group: "外交家" },
-  ISTJ: { primary: "#1d4ed8", bg: "rgba(29,78,216,0.15)", group: "番人" },
-  ISFJ: { primary: "#2563eb", bg: "rgba(37,99,235,0.15)", group: "番人" },
-  ESTJ: { primary: "#1e40af", bg: "rgba(30,64,175,0.15)", group: "番人" },
-  ESFJ: { primary: "#3b82f6", bg: "rgba(59,130,246,0.15)", group: "番人" },
-  ISTP: { primary: "#92400e", bg: "rgba(146,64,14,0.15)", group: "探検家" },
-  ISFP: { primary: "#d97706", bg: "rgba(217,119,6,0.15)", group: "探検家" },
-  ESTP: { primary: "#b45309", bg: "rgba(180,83,9,0.15)", group: "探検家" },
-  ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", group: "探検家" },
+  INTJ: { primary: "#7c3aed", bg: "rgba(124,58,237,0.15)", group: "戦略型" },
+  INTP: { primary: "#8b5cf6", bg: "rgba(139,92,246,0.15)", group: "戦略型" },
+  ENTJ: { primary: "#6d28d9", bg: "rgba(109,40,217,0.15)", group: "戦略型" },
+  ENTP: { primary: "#a78bfa", bg: "rgba(167,139,250,0.15)", group: "戦略型" },
+  INFJ: { primary: "#059669", bg: "rgba(5,150,105,0.15)", group: "共鳴型" },
+  INFP: { primary: "#10b981", bg: "rgba(16,185,129,0.15)", group: "共鳴型" },
+  ENFJ: { primary: "#047857", bg: "rgba(4,120,87,0.15)", group: "共鳴型" },
+  ENFP: { primary: "#34d399", bg: "rgba(52,211,153,0.15)", group: "共鳴型" },
+  ISTJ: { primary: "#1d4ed8", bg: "rgba(29,78,216,0.15)", group: "堅実型" },
+  ISFJ: { primary: "#2563eb", bg: "rgba(37,99,235,0.15)", group: "堅実型" },
+  ESTJ: { primary: "#1e40af", bg: "rgba(30,64,175,0.15)", group: "堅実型" },
+  ESFJ: { primary: "#3b82f6", bg: "rgba(59,130,246,0.15)", group: "堅実型" },
+  ISTP: { primary: "#92400e", bg: "rgba(146,64,14,0.15)", group: "感応型" },
+  ISFP: { primary: "#d97706", bg: "rgba(217,119,6,0.15)", group: "感応型" },
+  ESTP: { primary: "#b45309", bg: "rgba(180,83,9,0.15)", group: "感応型" },
+  ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", group: "感応型" },
 };
 
 // ── LoveType (キャラクター) data ──────────────────────────────
@@ -63,18 +61,14 @@ const ALL_TYPES: CharaType[] = [
   { code: "SEVP", nickname: "最後の恋人", emoji: "💝", motto: "どんな人も受け入れる大きな器で、世界を包み込む", subtitle: "器が大きく最も人間力が高いと言われるタイプ", description: "どんな人も、あなたの前では素直になれる。批判せず、ただ受け入れる大きな器。その深い包容力は、傷ついた人の心を静かに癒し、人生の最後に頼りたくなる存在にしています。", group: "S", secondary: "E" },
 ];
 
-type Tab = "mbti" | "chara" | "seiza" | "tarot" | "rpg";
-type FilterGroup = "ALL" | "A" | "S" | "L" | "E";
+type Tab = "mbti" | "chara" | "rpg";
 
 export default function CharaPage() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab") as Tab) ?? "mbti";
   const [tab, setTab] = useState<Tab>(initialTab);
-  const [filter, setFilter] = useState<FilterGroup>("ALL");
   const [myCode, setMyCode] = useState<string | null>(null);
   const [myMbti, setMyMbti] = useState<string | null>(null);
-  const [myZodiac, setMyZodiac] = useState<string | null>(null);
-  const [myTarot, setMyTarot] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -85,66 +79,50 @@ export default function CharaPage() {
         const parsed = JSON.parse(savedUser);
         if (parsed?.mbti) setMyMbti(parsed.mbti);
       }
-      const savedZodiac = localStorage.getItem("revela_zodiac");
-      if (savedZodiac) setMyZodiac(savedZodiac);
-      const history = getHistory();
-      if (history.length > 0 && history[0].tarot) setMyTarot(history[0].tarot);
     } catch {
       // ignore
     }
   }, []);
 
   const TABS = [
-    { id: "mbti" as Tab, label: "性格タイプ", sub: "16タイプ" },
-    { id: "chara" as Tab, label: "キャラクター", sub: "16タイプ" },
-    { id: "seiza" as Tab, label: "星座", sub: "12星座" },
-    { id: "tarot" as Tab, label: "タロット", sub: "10枚" },
+    { id: "mbti" as Tab, label: "現在地", sub: "16タイプ" },
+    { id: "chara" as Tab, label: "本音", sub: "16タイプ" },
     { id: "rpg" as Tab, label: "職業RPG", sub: "16クラス" },
   ];
-
-  const filterBtns: { label: string; value: FilterGroup; desc: string }[] = [
-    { label: "すべて", value: "ALL", desc: "全16" },
-    { label: "A系", value: "A", desc: "主体的" },
-    { label: "S系", value: "S", desc: "支援的" },
-    { label: "L系", value: "L", desc: "論理" },
-    { label: "E系", value: "E", desc: "感情" },
-  ];
-
-  const filtered = ALL_TYPES.filter((t) => {
-    if (filter === "ALL") return true;
-    if (filter === "A") return t.group === "A";
-    if (filter === "S") return t.group === "S";
-    if (filter === "L") return t.secondary === "L";
-    if (filter === "E") return t.secondary === "E";
-    return true;
-  });
 
   const mbtiList = Object.entries(mbtiDescriptions);
 
   const MBTI_DETAILS: Record<string, { description: string; traits: string[] }> = {
-    INTJ: { description: "戦略的思考と長期ビジョンを持つ稀有な存在。独自の理論を構築し、高い基準で物事を実行します。感情より論理を優先し、目標達成への意志が強い。", traits: ["長期的戦略思考", "高い自立心", "完璧主義的傾向", "鋭い洞察力"] },
-    INTP: { description: "知的好奇心旺盛で、あらゆる問いに論理的な答えを求めます。既存の理論を疑い、独自のフレームワークで世界を理解しようとする革新的な思索者。", traits: ["深い分析力", "理論への情熱", "柔軟な思考", "客観的視点"] },
-    ENTJ: { description: "生まれながらのリーダー。目標達成のために人々を組織し、効率的に動かす力を持ちます。大きなビジョンを描き、それを現実にする実行力と決断力が際立つ。", traits: ["強いリーダーシップ", "戦略的計画力", "高い意欲", "率直なコミュニケーション"] },
-    ENTP: { description: "知的な議論と挑戦を愛する革新者。あらゆる視点から問題を検討し、創造的な解決策を見出します。常識を疑い、新しいアイデアで周囲を刺激します。", traits: ["革新的思考", "機知に富む", "議論好き", "多角的視点"] },
-    INFJ: { description: "深い洞察力と強い使命感を持つ稀少タイプ。人の本質を見通し、社会の変革に静かに貢献します。理想主義と現実的な実行力を兼ね備えた真のビジョナリー。", traits: ["深い共感力", "明確な使命感", "直感的洞察", "献身的"] },
-    INFP: { description: "豊かな内面世界と強い価値観を持つ詩人的な魂。表面的な成功より意味のある仕事を求め、独創的な視点で人の心に届くものを生み出します。", traits: ["深い創造力", "強い価値観", "共感と誠実さ", "独自の世界観"] },
-    ENFJ: { description: "天性のカリスマとリーダーシップで人々を鼓舞します。他者の可能性を最大限引き出すことを喜びとし、チームの調和を保ちながら共通のビジョンへ導く。", traits: ["カリスマ的リーダー", "強い共感力", "人材育成の才能", "説得力"] },
-    ENFP: { description: "情熱とアイデアの泉。常に新しい可能性を見出し、人々を巻き込んで夢を形にします。どんな状況でも熱意と明るさで周囲に活力を与えるチームの太陽。", traits: ["無尽蔵の発想力", "感染する情熱", "柔軟な適応力", "豊かな感受性"] },
-    ISTJ: { description: "信頼性と責任感の体現者。ルールと手順を重視し、約束を必ず守ります。組織の根幹として安定した成果を出し続ける「静かな功労者」です。", traits: ["高い信頼性", "几帳面な実行力", "責任感", "実証的思考"] },
-    ISFJ: { description: "細やかな気配りと強い責任感で周囲を支える守護者。人の痛みに敏感で、縁の下の力持ちとして組織やコミュニティの安定を守ります。", traits: ["献身的なサポート", "優れた記憶力", "細やかな配慮", "強い義務感"] },
-    ESTJ: { description: "秩序と伝統を重んじ、実行力で組織を率いるリーダー。明確なルールと効率的な手順で目標を達成し、チームに方向性と安定感をもたらします。", traits: ["組織的な管理力", "強い実行力", "明確な判断基準", "責任感"] },
-    ESFJ: { description: "社交的で思いやり深く、周囲の調和を大切にする存在。他者のニーズを敏感に察知し、コミュニティや組織のつながりを育む天性の協調者。", traits: ["優れた社交性", "強い協調精神", "細やかな気遣い", "実践的サポート"] },
-    ISTP: { description: "冷静な判断力と卓越した技術力を持つ実践者。理論より行動、話すより手を動かすことで結果を出します。危機的状況でも揺るがない「現場のエース」。", traits: ["卓越した技術力", "冷静な危機対応", "論理的な問題解決", "独立した思考"] },
-    ISFP: { description: "感性豊かで美しいものに強く惹かれるアーティスト気質。自分のペースで深い仕事をし、静かに独自の価値を生み出します。自由と真正性を何より重んじる。", traits: ["豊かな美的センス", "高い感受性", "柔軟な適応力", "真正な自己表現"] },
-    ESTP: { description: "行動と結果の人。考えるより先に動き、現場でチャンスをつかみます。リスクを恐れずスピード感ある判断で周囲を引っ張る「修羅場のスター」です。", traits: ["圧倒的な行動力", "度胸と決断力", "現場対応力", "説得力と魅力"] },
-    ESFP: { description: "いるだけで場が明るくなる存在。人を楽しませることに全力を注ぎ、瞬間瞬間を最高のものにします。柔軟で社交的なエンターテインメントの申し子。", traits: ["天性の明るさ", "高い社交性", "優れた即興力", "豊かな共感力"] },
+    INTJ: { description: "長期的な視点から物事を構造化し、独自の確信に基づいて動く。頭の中にすでに完成形があり、その実現に向けて淡々と進む。感情的な空気よりも本質的な問いを優先するため、周囲には「クール」に映ることも。", traits: ["長期視点で動く", "独自の確信を持つ", "本質を優先する", "静かに実行する"] },
+    INTP: { description: "目の前の問題よりも「なぜそうなるのか」を考えてしまう。既存の枠組みを疑い、独自の視点で再構築する。会議中にふと核心を突く発言をして周囲を黙らせることがある。実行より思考に時間を使いすぎることも。", traits: ["構造を解体して考える", "根拠を重視する", "核心を突く発言", "独自の視点"] },
+    ENTJ: { description: "目標と道筋が見えると自然と人を動かし始める。決断が早く、リスクを計算した上で前に進む。リーダー不在の場では自然とその役割を担い、チームを推進力に変える。高い水準を自他に求める。", traits: ["場を推進する力", "素早い決断", "人を動かす構想力", "高い基準"] },
+    ENTP: { description: "「それ本当に正しい？」が自然と口をついて出る。逆張りではなく、本気で別の可能性を探っている。議論を通じて思考を深めるため、反論を楽しむ節がある。アイデアは豊富だが実行フェーズで飽きやすい面も。", traits: ["常識を問い直す", "議論で深める", "アイデアが尽きない", "可能性を広げる"] },
+    INFJ: { description: "表には出さないが、場の流れと人の本音を敏感に読み取っている。長期的な影響を直感的に把握し、静かに動き始める。信念が強く、それが揺らぐと大きなストレスになる。一対一の深い関わりを好む。", traits: ["場の空気を読む", "先を見通す直感", "深い信念", "静かに動く"] },
+    INFP: { description: "「こうあるべき」という内なる羅針盤を持ち、それに反することには強い抵抗感を覚える。表面上は穏やかだが内面は熱く、意味のある仕事には驚くほどの集中力を発揮する。評価よりも「自分の仕事に誇れるか」を重視する。", traits: ["価値観で動く", "内側の熱量", "深い集中力", "誠実さへのこだわり"] },
+    ENFJ: { description: "誰かが輝く瞬間を作ることに喜びを感じる。チームの感情的な温度を常に把握し、誰が消耗していて誰が力を余らせているかを見ている。人を動かす言葉を本能的に選ぶ。自分のことは後回しにしすぎる傾向も。", traits: ["人の可能性を見る", "感情の温度を読む", "言葉で動かす", "場を前に進める"] },
+    ENFP: { description: "アイデアが次々と湧き、それを誰かに話さずにいられない。話しながら思考が深まるタイプ。停滞した空気を自然と変える力があり、最初の火付け役になることが多い。最後まで走り抜くには意志のコントロールが必要。", traits: ["発想が止まらない", "話すことで考える", "場に火をつける", "可能性を広げる"] },
+    ISTJ: { description: "言ったことは必ずやる。それがこのタイプの最大の強み。派手さはないが、信頼の積み上げ方を知っている。変化より安定を好み、実績のある方法を大切にする。「なぜ変えるのか」への丁寧な説明が必要なタイプ。", traits: ["約束を守る", "信頼を積み上げる", "手順を重視する", "着実に実行する"] },
+    ISFJ: { description: "気づいたら誰かの負担を引き受けている。困っている人を見過ごせず、率先してフォローに入る。記憶力が高く、相手が過去に言ったことを覚えている。自分の限界を超えても「大丈夫です」と言ってしまいがち。", traits: ["サポートに動く", "細部を記憶する", "フォローが速い", "責任感が強い"] },
+    ESTJ: { description: "「どう動けば目標に辿り着くか」を即座に構造化する。役割と責任を明確にすることで組織を機能させる。曖昧さを嫌い、ルールへの信頼が高い。実行力と影響力を兼ね備えた、現場の推進力。", traits: ["即座に構造化する", "役割を明確にする", "曖昧さを排除する", "実行で引っ張る"] },
+    ESFJ: { description: "人と人の間に生まれる摩擦を敏感に感じ取り、自然と調整役になる。誰が孤立していないか、全員が安心しているかを無意識にチェックしている。感謝されることでエネルギーが満たされ、批判には人一倍傷つく。", traits: ["摩擦を感知する", "場を調整する", "全員を気にかける", "感謝で動く"] },
+    ISTP: { description: "無駄な動作を嫌い、本質的な問題に直接手を入れる。言葉より結果で語るタイプ。危機的な状況で最も冷静になれる。深く関わりすぎることを本能的に避け、適切な距離感を保つ。", traits: ["本質に直接触れる", "結果で語る", "危機に冷静", "距離感を保つ"] },
+    ISFP: { description: "その瞬間に感じたことをそのまま行動に移す。計画より直感、ルールより状況を優先する。本物や美しいものに強く惹かれ、自分の仕事に誠実さを求める。目立たないが、近くにいる人には大きな安心感を与える。", traits: ["今を感じて動く", "直感を信じる", "本物にこだわる", "静かな存在感"] },
+    ESTP: { description: "状況を瞬時に読み、最適なアクションを取る。理論より現実、計画より即興。リスクは考えすぎず、動きながら修正する。停滞した場を一気に動かす突破力がある。長期より今この瞬間の勝負に強い。", traits: ["瞬時に読んで動く", "即興で突破する", "動きながら修正", "停滞を壊す"] },
+    ESFP: { description: "その場にいる人が楽しめているかが常に気になる。自然と場の中心になり、停滞した空気を笑顔で変える。台本より即興、準備より勢い。人のエネルギーを受け取って増幅させる天然の存在。", traits: ["場を明るくする", "即興で動く", "エネルギーを増幅", "今を全力で楽しむ"] },
   };
 
   const MBTI_GROUPS = [
-    { label: "分析家", color: "#7c3aed", types: ["INTJ", "INTP", "ENTJ", "ENTP"] },
-    { label: "外交家", color: "#059669", types: ["INFJ", "INFP", "ENFJ", "ENFP"] },
-    { label: "番人",   color: "#1d4ed8", types: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"] },
-    { label: "探検家", color: "#d97706", types: ["ISTP", "ISFP", "ESTP", "ESFP"] },
+    { label: "直感×論理", color: "#7c3aed", types: ["INTJ", "INTP", "ENTJ", "ENTP"] },
+    { label: "直感×感情", color: "#059669", types: ["INFJ", "INFP", "ENFJ", "ENFP"] },
+    { label: "感覚×秩序", color: "#1d4ed8", types: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"] },
+    { label: "感覚×適応", color: "#d97706", types: ["ISTP", "ISFP", "ESTP", "ESFP"] },
+  ];
+
+  const LOVE_GROUPS = [
+    { label: "前衛", sub: "積極×オープン", color: "#f97316", codes: ["ALRF", "ALVF", "AERF", "AEVF"] },
+    { label: "自由", sub: "積極×内向",     color: "#a78bfa", codes: ["ALRP", "ALVP", "AERP", "AEVP"] },
+    { label: "後衛", sub: "受動×オープン", color: "#38bdf8", codes: ["SLRF", "SLVF", "SERF", "SEVF"] },
+    { label: "頭脳", sub: "受動×内向",     color: "#34d399", codes: ["SLRP", "SLVP", "SERP", "SEVP"] },
   ];
 
   return (
@@ -161,7 +139,7 @@ export default function CharaPage() {
           タイプ一覧
         </h1>
         <p className="text-sm opacity-50 max-w-md mx-auto leading-relaxed">
-          MBTI・キャラクター・星座・タロット・職業RPG。<br />あなたを構成する5つの要素を確認しよう。
+          現在地・本音・職業RPG。<br />あなたを構成する3つの要素を確認しよう。
         </p>
         <div className="divider-gold w-20 mx-auto mt-4" />
       </div>
@@ -192,21 +170,21 @@ export default function CharaPage() {
         <>
           {/* Concept intro */}
           <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of MBTI</p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)", background: "rgba(251,191,36,0.06)" }}>認知の基盤</p>
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>現在地</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)", background: "rgba(251,191,36,0.06)" }}>今の職場での動き方</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
-              世界を認識し、判断を下すための「基本OS」。
+              今の自分が、職場でどう動いているか。
             </h2>
             <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
               <p>
-                私たちは、世界をありのままに見ているわけではありません。<br className="hidden md:block" />
-                「事実か、直感か」「論理か、感情か」。<br className="hidden md:block" />
-                誰の脳にも、情報を処理するための無意識のフィルターが存在します。
+                職場でのあなたの動き方には、無意識のパターンがあります。<br className="hidden md:block" />
+                「全体を俯瞰してから動くか、まず手を動かすか」<br className="hidden md:block" />
+                「論理で判断するか、場の空気を読んで動くか」。
               </p>
               <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-                これは能力の優劣を測るものではなく、あなたの脳の「初期設定」です。<br className="hidden md:block" />
-                自分がどんな法則で世界を切り取り、どう動くクセがあるのか。<br className="hidden md:block" />
-                すべての分析の土台となる、思考のアルゴリズムを定義します。
+                これは優劣ではなく、あなたが今いる環境でどう動いているかの「現在地」。<br className="hidden md:block" />
+                4つの軸の組み合わせから16通りのパターンに分類し、<br className="hidden md:block" />
+                自分の職場での動き方を客観的に見える化します。
               </p>
             </div>
             <div className="w-12 h-px mt-12" style={{ background: "rgba(255,255,255,0.15)" }} />
@@ -218,12 +196,12 @@ export default function CharaPage() {
             if (!info || !color) return null;
             return (
               <div className="rounded-2xl p-5 mb-8 max-w-lg mx-auto" style={{ background: `linear-gradient(135deg, ${color.bg}, rgba(255,255,255,0.06))`, border: `1px solid ${color.primary}66` }}>
-                <p className="text-xs tracking-widest mb-2 text-center" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>✦ あなたのMBTI</p>
+                <p className="text-xs tracking-widest mb-2 text-center" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>✦ あなたの現在地</p>
                 <div className="flex items-center gap-4">
-                  <span className="text-3xl font-bold font-mono" style={{ color: color.primary }}>{myMbti}</span>
                   <div>
-                    <p className="text-base font-medium" style={{ color: color.primary }}>{info.title}</p>
-                    <p className="text-xs opacity-60 mt-0.5">{info.keywords}</p>
+                    <p className="text-xl font-bold" style={{ color: color.primary }}>{info.displayName}</p>
+                    <p className="text-xs opacity-70 mt-0.5" style={{ color: color.primary }}>{info.subtitle}</p>
+                    <p className="text-xs opacity-50 mt-0.5">{info.keywords}</p>
                   </div>
                 </div>
               </div>
@@ -246,8 +224,8 @@ export default function CharaPage() {
                   return (
                     <div key={type} className="rounded-2xl p-5 animate-fade-in" style={{ background: isMe ? color.bg : `rgba(255,255,255,0.02)`, border: isMe ? `1px solid ${color.primary}99` : `1px solid ${color.primary}40` }}>
                       {isMe && <p className="text-xs tracking-widest mb-2" style={{ color: color.primary }}>✦ あなた</p>}
-                      <p className="text-xl font-bold font-mono mb-0.5" style={{ color: color.primary }}>{type}</p>
-                      <p className="text-xs mb-3" style={{ fontFamily: "var(--font-noto-serif-jp), serif", opacity: 0.7 }}>{info?.title}</p>
+                      <p className="text-base font-bold mb-0.5" style={{ color: color.primary }}>{info?.displayName ?? type}</p>
+                      <p className="text-xs mb-3" style={{ fontFamily: "var(--font-noto-serif-jp), serif", opacity: 0.7 }}>{info?.subtitle}</p>
                       <div className="h-px mb-3" style={{ background: `linear-gradient(90deg, ${color.primary}40, transparent)` }} />
                       <p className="text-xs leading-relaxed mb-4" style={{ opacity: 0.8, fontFamily: "var(--font-noto-serif-jp), serif" }}>{detail?.description}</p>
                       <div className="flex flex-col gap-1.5">
@@ -272,20 +250,20 @@ export default function CharaPage() {
         <>
           {/* Concept intro */}
           <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Character</p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#e8a0bf", border: "1px solid rgba(232,160,191,0.3)", background: "rgba(232,160,191,0.06)" }}>関係性の構築</p>
+            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>本音</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#e8a0bf", border: "1px solid rgba(232,160,191,0.3)", background: "rgba(232,160,191,0.06)" }}>本当はこう動きたい</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
-              他者と交わり、関係を構築するための「ペルソナ」。
+              仮面を外したとき、本当はどう動きたいのか。
             </h2>
             <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
               <p>
-                ひとりでいる時の顔と、誰かの前にいる時の顔は違います。<br className="hidden md:block" />
-                人は他者と深い関係を築くとき、無意識に自分なりの「立ち回り方」を選択しています。
+                職場では「現在地」として動いている自分がいます。<br className="hidden md:block" />
+                でも本当は、もっと違う動き方をしたいと感じていませんか。
               </p>
               <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-                「尽くしすぎる」「束縛を嫌う」「場を支配する」。<br className="hidden md:block" />
-                内面にある思考のクセが、人間関係においてどう出力されるのか。<br className="hidden md:block" />
-                社会や恋愛という複雑なネットワークにおける、あなたのリアルな立ち位置を分類します。
+                「本当は自由に動きたい」「本当は誰かを導きたい」。<br className="hidden md:block" />
+                内側にある欲求を4つの軸で分類し、<br className="hidden md:block" />
+                あなたの「本音」を16通りで見える化します。
               </p>
             </div>
             <div className="w-12 h-px mt-12" style={{ background: "rgba(232,160,191,0.3)" }} />
@@ -296,12 +274,11 @@ export default function CharaPage() {
             if (!mine) return null;
             return (
               <div className="rounded-2xl p-5 mb-8 max-w-lg mx-auto" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12), rgba(232,160,191,0.08))", border: "1px solid rgba(255,255,255,0.4)" }}>
-                <p className="text-xs tracking-widest mb-2 text-center" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>✦ あなたのキャラクターコード</p>
+                <p className="text-xs tracking-widest mb-2 text-center" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>✦ あなたの本音</p>
                 <div className="flex items-center gap-4">
                   <span className="text-4xl">{mine.emoji}</span>
                   <div>
-                    <span className="text-xs font-bold tracking-widest px-2 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.55)", fontFamily: "monospace" }}>{mine.code}</span>
-                    <p className="text-base font-medium mt-1" style={{ color: "#e8a0bf" }}>{getMbtiCharaName(myMbti, mine.code) ?? mine.nickname}</p>
+                    <p className="text-base font-medium" style={{ color: "#e8a0bf" }}>{loveTypeDescriptions[mine.code as LoveType]?.nickname ?? mine.nickname}</p>
                     <p className="text-xs opacity-60 mt-0.5">{mine.motto}</p>
                   </div>
                 </div>
@@ -309,192 +286,37 @@ export default function CharaPage() {
             );
           })()}
 
-          {/* Axis legend */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 max-w-2xl mx-auto">
-            {[
-              { axis: "L / F", desc: "積極的 / 受動的", color: "rgba(255,255,255,0.55)" },
-              { axis: "C / A", desc: "クール / 感情的", color: "#e8a0bf" },
-              { axis: "R / P", desc: "現実的 / 情熱的", color: "#93c5fd" },
-              { axis: "O / E", desc: "オープン / 内向的", color: "#6ee7b7" },
-            ].map((item) => (
-              <div key={item.axis} className="rounded-xl p-3 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <p className="text-sm font-bold mb-1" style={{ color: item.color }}>{item.axis}</p>
-                <p className="text-xs opacity-50">{item.desc}</p>
+          {LOVE_GROUPS.map((grp) => (
+            <div key={grp.label} className="mb-12">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${grp.color}50)` }} />
+                <span className="text-xs px-4 py-1 rounded-full" style={{ color: grp.color, border: `1px solid ${grp.color}40`, letterSpacing: "0.2em" }}>{grp.sub}</span>
+                <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${grp.color}50, transparent)` }} />
               </div>
-            ))}
-          </div>
-
-          {/* Filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {filterBtns.map((btn) => (
-              <button key={btn.value} onClick={() => setFilter(btn.value)} className="px-4 py-2 rounded-full text-xs transition-all duration-200"
-                style={{ background: filter === btn.value ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)", color: filter === btn.value ? "#EDEDED" : "rgba(255,255,255,0.5)", border: filter === btn.value ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(255,255,255,0.12)", fontWeight: filter === btn.value ? 700 : 400, letterSpacing: "0.08em" }}>
-                {btn.label}<span className="ml-1.5 opacity-60 text-xs">{btn.desc}</span>
-              </button>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {filtered.map((type) => (
-              <div key={type.code} className="card-glow rounded-2xl p-5 animate-fade-in" style={{ border: myCode === type.code ? "1px solid rgba(255,255,255,0.7)" : "1px solid rgba(255,255,255,0.2)", background: myCode === type.code ? "rgba(255,255,255,0.07)" : undefined }}>
-                {myCode === type.code && <p className="text-xs tracking-widest mb-2" style={{ color: "rgba(255,255,255,0.55)" }}>✦ あなた</p>}
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-3xl flex-shrink-0">{type.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-xs font-bold tracking-widest px-2 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.35)", color: "rgba(255,255,255,0.55)", fontFamily: "monospace" }}>{type.code}</span>
-                    <p className="text-sm font-medium mt-1" style={{ color: "#e8a0bf" }}>{getMbtiCharaName(myMbti, type.code) ?? type.nickname}</p>
-                    <p className="text-xs opacity-50 mt-0.5">{type.subtitle}</p>
-                  </div>
-                </div>
-                <p className="text-xs italic mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>「{type.motto}」</p>
-                <p className="text-xs leading-relaxed opacity-70">{type.description}</p>
-                <div className="flex gap-2 mt-3">
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: type.group === "A" ? "rgba(255,255,255,0.12)" : "rgba(232,160,191,0.12)", border: type.group === "A" ? "1px solid rgba(255,255,255,0.3)" : "1px solid rgba(232,160,191,0.3)", color: type.group === "A" ? "rgba(255,255,255,0.7)" : "#e8a0bf" }}>{type.group === "A" ? "A: 主体的" : "S: 支援的"}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: type.secondary === "L" ? "rgba(147,197,253,0.12)" : "rgba(110,231,183,0.12)", border: type.secondary === "L" ? "1px solid rgba(147,197,253,0.3)" : "1px solid rgba(110,231,183,0.3)", color: type.secondary === "L" ? "#93c5fd" : "#6ee7b7" }}>{type.secondary === "L" ? "L: 論理" : "E: 感情"}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* ── 星座 タブ ── */}
-      {tab === "seiza" && (
-        <>
-          {/* Concept intro */}
-          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Zodiac</p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#22d3ee", border: "1px solid rgba(34,211,238,0.3)", background: "rgba(34,211,238,0.06)" }}>先天的な属性</p>
-            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
-              生涯変わることのない、魂の「ベースライン」。
-            </h2>
-            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
-              <p>
-                思考や価値観は、経験によって変化していきます。<br className="hidden md:block" />
-                しかし、生まれた瞬間の季節や環境という「起点」だけは、一生変わることがありません。
-              </p>
-              <p>
-                ここでの星座は、単なる運命論や占いではありません。<br className="hidden md:block" />
-                人間の根源的なエネルギーを4つのエレメント（火・土・風・水）に分類し、<br className="hidden md:block" />
-                基本ステータスに付与される「パッシブスキル」として再定義したものです。
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-                どんなパラメーターの持ち主でも、根底には必ずこの属性が流れています。
-              </p>
-            </div>
-            <div className="w-12 h-px mt-12" style={{ background: "rgba(147,197,253,0.3)" }} />
-          </section>
-
-          {myZodiac && (() => {
-            const mine = zodiacSigns.find((z) => z.name === myZodiac);
-            if (!mine) return null;
-            return (
-              <div className="rounded-2xl p-5 mb-8 max-w-lg mx-auto" style={{ background: "linear-gradient(135deg, rgba(147,197,253,0.1), rgba(255,255,255,0.06))", border: "1px solid rgba(147,197,253,0.4)" }}>
-                <p className="text-xs tracking-widest mb-2 text-center" style={{ color: "#93c5fd", opacity: 0.8 }}>✦ あなたの星座</p>
-                <div className="flex items-center gap-4">
-                  <span className="text-4xl">{mine.symbol}</span>
-                  <div>
-                    <p className="text-base font-medium" style={{ color: "#93c5fd" }}>{mine.name}</p>
-                    <p className="text-xs opacity-60 mt-0.5">{mine.dates} · {mine.element}属性 · {mine.planet}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            {zodiacSigns.map((z) => {
-              const isMe = myZodiac === z.name;
-              const elementColors: Record<string, string> = { 火: "#f87171", 土: "#a78bfa", 風: "#34d399", 水: "#60a5fa" };
-              const ec = elementColors[z.element] ?? "rgba(255,255,255,0.5)";
-              const flavor = ZODIAC_FLAVOR[z.name];
-              return (
-                <div key={z.name} className="rounded-2xl p-5 animate-fade-in" style={{ border: isMe ? `1px solid ${ec}88` : "1px solid rgba(255,255,255,0.08)", background: isMe ? `${ec}10` : "rgba(255,255,255,0.02)" }}>
-                  {isMe && <p className="text-xs tracking-widest mb-2" style={{ color: ec }}>✦ あなたの星座</p>}
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">{z.symbol}</span>
-                    <div>
-                      <p className="text-base font-bold mb-0.5" style={{ color: isMe ? ec : "#e8e8e8" }}>{z.name}</p>
-                      <p className="text-xs opacity-50">{z.dates}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {grp.codes.map((code) => {
+                  const type = ALL_TYPES.find((t) => t.code === code);
+                  if (!type) return null;
+                  const desc = loveTypeDescriptions[type.code];
+                  const isMe = myCode === type.code;
+                  return (
+                    <div key={type.code} className="rounded-2xl p-5 animate-fade-in" style={{ background: isMe ? `${grp.color}18` : "rgba(255,255,255,0.02)", border: isMe ? `1px solid ${grp.color}99` : `1px solid ${grp.color}30` }}>
+                      {isMe && <p className="text-xs tracking-widest mb-2" style={{ color: grp.color }}>✦ あなた</p>}
+                      <div className="flex items-start gap-3 mb-3">
+                        <span className="text-3xl flex-shrink-0">{desc?.emoji ?? type.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium" style={{ color: grp.color }}>{desc?.nickname ?? type.nickname}</p>
+                          <p className="text-xs opacity-50 mt-0.5">{type.subtitle}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs italic mb-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>「{type.motto}」</p>
+                      <p className="text-xs leading-relaxed opacity-70">{type.description}</p>
                     </div>
-                  </div>
-                  {flavor && (
-                    <>
-                      <p className="text-xs font-medium mb-2" style={{ color: ec }}>「{flavor.catchphrase}」</p>
-                      <p className="text-xs leading-relaxed opacity-65 mb-3">{flavor.description}</p>
-                    </>
-                  )}
-                  <div className="flex gap-1.5 flex-wrap">
-                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: `${ec}20`, color: ec, border: `1px solid ${ec}44` }}>{z.element}属性</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>{z.planet}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
-
-      {/* ── タロット タブ ── */}
-      {tab === "tarot" && (
-        <>
-          {/* Concept intro */}
-          <section className="w-full max-w-3xl mx-auto px-2 py-10 md:py-16 flex flex-col items-center text-center mb-4">
-            <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Concept of Tarot</p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#c084fc", border: "1px solid rgba(192,132,252,0.3)", background: "rgba(192,132,252,0.06)" }}>現在の状況と指針</p>
-            <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
-              偶然が導き出す、現在の「バイオリズムと最適解」。
-            </h2>
-            <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
-              <p>
-                人間の本質がどれほど固定されていても、心と状況は日々変動します。<br className="hidden md:block" />
-                「今は攻めるべきか、守るべきか」。<br className="hidden md:block" />
-                固定のパラメーターだけでは対応できない「今の波」を測るため、<br className="hidden md:block" />
-                システムに乱数（ランダム要素）を組み込みました。
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-                これは神秘的な予言ではありません。<br className="hidden md:block" />
-                今の心理状態を客観視し、目の前の課題を突破するための思考のフレームワークです。
-              </p>
-            </div>
-            <div className="w-12 h-px mt-12" style={{ background: "rgba(192,132,252,0.3)" }} />
-          </section>
-
-          {myTarot && (() => {
-            const mine = tarotCards.find((c) => c.name === myTarot);
-            if (!mine) return null;
-            return (
-              <div className="rounded-2xl p-5 mb-8 max-w-lg mx-auto" style={{ background: `linear-gradient(135deg, ${mine.color}20, rgba(255,255,255,0.06))`, border: `1px solid ${mine.color}66` }}>
-                <p className="text-xs tracking-widest mb-2 text-center" style={{ color: mine.color, opacity: 0.8 }}>✦ あなたのタロット</p>
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl font-bold" style={{ color: mine.color, fontFamily: "serif" }}>{mine.symbol}</span>
-                  <div>
-                    <p className="text-base font-medium" style={{ color: mine.color }}>{mine.name}</p>
-                    <p className="text-xs opacity-50 mt-0.5">{mine.nameEn} · {mine.keywords}</p>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
-            );
-          })()}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {tarotCards.map((card) => {
-              const isMe = myTarot === card.name;
-              return (
-                <div key={card.id} className="rounded-2xl p-5 animate-fade-in" style={{ border: isMe ? `1px solid ${card.color}88` : "1px solid rgba(255,255,255,0.08)", background: isMe ? `${card.color}12` : "rgba(255,255,255,0.02)" }}>
-                  {isMe && <p className="text-xs tracking-widest mb-2" style={{ color: card.color }}>✦ あなた</p>}
-                  <div className="flex items-start gap-3 mb-3">
-                    <span className="text-2xl font-bold flex-shrink-0" style={{ color: card.color, fontFamily: "serif", minWidth: 32 }}>{card.symbol}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium" style={{ color: isMe ? card.color : "#e8e8e8" }}>{card.name}</p>
-                      <p className="text-xs opacity-40 mt-0.5">{card.nameEn}</p>
-                    </div>
-                  </div>
-                  <p className="text-xs mb-3" style={{ color: card.color, opacity: 0.7 }}>{card.keywords}</p>
-                  <p className="text-xs leading-relaxed opacity-60 line-clamp-3">{card.upright}</p>
-                  <p className="text-xs mt-2 opacity-40">逆位置: {card.reversedMeaning}</p>
-                </div>
-              );
-            })}
-          </div>
+            </div>
+          ))}
         </>
       )}
 
@@ -507,26 +329,27 @@ export default function CharaPage() {
             <p className="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
               Concept of Classes
             </p>
-            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#34d399", border: "1px solid rgba(52,211,153,0.3)", background: "rgba(52,211,153,0.06)" }}>役割の統合</p>
+            <p className="text-xs tracking-widest mb-6 px-3 py-1 rounded-full" style={{ color: "#34d399", border: "1px solid rgba(52,211,153,0.3)", background: "rgba(52,211,153,0.06)" }}>現在地と本音の統合</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-widest mb-10 leading-tight" style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#f0f0f0", textWrap: "balance" } as React.CSSProperties}>
-              複雑なパラメーターを、ひとつの「役割」に統合する。
+              ギャップの先に、本当の自分がいる。
             </h2>
             <div className="text-sm md:text-base leading-loose tracking-wider space-y-5 text-left md:text-center" style={{ color: "rgba(255,255,255,0.5)", textWrap: "pretty" } as React.CSSProperties}>
               <p>
-                人間の性格や行動原理は、決して一つの枠に収まるものではありません。<br className="hidden md:block" />
-                「論理的だけど、恋愛になると献身的」「自由人に見えて、実は計画的」。<br className="hidden md:block" />
-                そんな矛盾とも思える複雑なパラメーターを視覚的に理解するため、<br className="hidden md:block" />
-                私たちは「RPGのクラス（職業）」というメタファーを採用しました。
+                今の自分（現在地）と、本当はこうありたい自分（本音）。<br className="hidden md:block" />
+                この二つのギャップは、誰にでもあります。
               </p>
               <p>
-                世界を牽引する力、他者を癒す力、常識を壊す力。<br className="hidden md:block" />
-                あなたが持っている特性を多角的に分析し、<br className="hidden md:block" />
-                最も適した「戦い方（クラス）」と「装備（強み）」を導き出します。
+                大事なのは、そのギャップの「形」です。<br className="hidden md:block" />
+                どの方向にズレているか、どれだけの距離があるか。<br className="hidden md:block" />
+                その組み合わせが、チームの中であなたが自然と担う「役割」を決めています。
+              </p>
+              <p>
+                前に出て引っ張るのか、陰で支えるのか。<br className="hidden md:block" />
+                論理で整理するのか、空気をかき混ぜるのか。
               </p>
               <p style={{ color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-                これは単なる性格診断ではなく、あなたが社会というフィールドで<br className="hidden md:block" />
-                自分の特性を最大限に活かすための「取り扱い説明書」です。<br className="hidden md:block" />
-                全16種類のクラスから、あなたの深層に眠る本質を見つけてください。
+                職業RPGクラスは、現在地と本音の掛け合わせから<br className="hidden md:block" />
+                チームでのあなたの立ち位置を可視化する指標です。
               </p>
             </div>
             <div className="w-12 h-px mt-12" style={{ background: "rgba(255,255,255,0.15)" }} />

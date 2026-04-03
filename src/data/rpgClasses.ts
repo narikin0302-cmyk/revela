@@ -313,33 +313,77 @@ export function getRpgSynergy(className: string, element: string): RpgSynergy | 
 }
 
 // ============================================================
-// 256-combo lookup: MBTI × LoveType → RPG class
-// Latin-square distribution — each class appears exactly 16 times
-// When loveType = LCRO, each MBTI gets their "natural" class
+// 4×4 Matrix: 建前グループ × 本音グループ → RPG class
+// 建前4グループ (MBTI) × 本音4グループ (AELV axis1×axis4) = 16クラス
 // ============================================================
 
-const _MBTI_IDX: Record<string, number> = {
-  ENTJ:0, INTJ:1, ENTP:2, INTP:3,
-  INFJ:4, INFP:5, ENFJ:6, ENFP:7,
-  ISTJ:8, ESTJ:9, ISFJ:10, ESFJ:11,
-  ISTP:12, ISFP:13, ESTP:14, ESFP:15,
+// 建前グループ: MBTI → LEADER / BRAIN / SUPPORT / TRICKSTER
+const _MBTI_GROUP: Record<string, string> = {
+  ENTJ: "LEADER",    ESTJ: "LEADER",    ENFJ: "LEADER",    ESTP: "LEADER",
+  INTJ: "BRAIN",     INTP: "BRAIN",     ISTP: "BRAIN",     INFJ: "BRAIN",
+  ISTJ: "SUPPORT",   ISFJ: "SUPPORT",   ESFJ: "SUPPORT",   INFP: "SUPPORT",
+  ENTP: "TRICKSTER", ENFP: "TRICKSTER", ISFP: "TRICKSTER", ESFP: "TRICKSTER",
 };
 
-const _LOVE_IDX: Record<string, number> = {
-  ALRF:0, ALRP:1, ALVF:2, ALVP:3,
-  AERF:4, AERP:5, AEVF:6, AEVP:7,
-  SLRF:8, SLRP:9, SLVF:10, SLVP:11,
-  SERF:12, SERP:13, SEVF:14, SEVP:15,
-  // legacy codes (pre-rename migration)
-  LCRO:0, LCRE:1, LCPO:2, LCPE:3,
-  LARO:4, LARE:5, LAPO:6, LAPE:7,
-  FCRO:8, FCRE:9, FCPO:10, FCPE:11,
-  FARO:12, FARE:13, FAPO:14, FAPE:15,
+// レガシーコード変換 (旧LCRO形式 → 新AELV形式)
+const _LEGACY_LOVE_MAP: Record<string, string> = {
+  LCRO: "ALRF", LCRE: "ALRP", LCPO: "ALVF", LCPE: "ALVP",
+  LARO: "AERF", LARE: "AERP", LAPO: "AEVF", LAPE: "AEVP",
+  FCRO: "SLRF", FCRE: "SLRP", FCPO: "SLVF", FCPE: "SLVP",
+  FARO: "SERF", FARE: "SERP", FAPO: "SEVF", FAPE: "SEVP",
+};
+
+// 本音グループ: AELV axis1(A/S) × axis4(F/P) → 前衛 / 自由 / 後衛 / 頭脳
+function _getLoveGroup(loveType: string): string | null {
+  const code = _LEGACY_LOVE_MAP[loveType] ?? loveType;
+  if (code.length < 4) return null;
+  const a1 = code[0]; // A or S
+  const a4 = code[3]; // F or P
+  if (a1 === "A" && a4 === "F") return "前衛";
+  if (a1 === "A" && a4 === "P") return "自由";
+  if (a1 === "S" && a4 === "F") return "後衛";
+  if (a1 === "S" && a4 === "P") return "頭脳";
+  return null;
+}
+
+// 本音グループ → 建前ロール変換 (DualCode用: AELV建前コード → LEADER等)
+const _LOVE_GROUP_TO_ROLE: Record<string, string> = {
+  前衛: "LEADER", 自由: "TRICKSTER", 後衛: "SUPPORT", 頭脳: "BRAIN",
+};
+
+// 4×4 テーブル: [建前グループ][本音グループ] → RPG class id
+const _RPG_MATRIX: Record<string, Record<string, string>> = {
+  LEADER:    { 前衛: "overlord",    自由: "pirate",    後衛: "paladin",   頭脳: "commander"  },
+  BRAIN:     { 前衛: "assassin",    自由: "alchemist", 後衛: "prophet",   頭脳: "sage"       },
+  SUPPORT:   { 前衛: "guildmaster", 自由: "bard",      後衛: "cleric",    頭脳: "knight"     },
+  TRICKSTER: { 前衛: "adventurer",  自由: "trickster", 後衛: "dancer",    頭脳: "ranger"     },
 };
 
 export function getRpgClassByCombo(mbti: string, loveType: string): RpgClass | null {
-  const m = _MBTI_IDX[mbti];
-  const l = _LOVE_IDX[loveType];
-  if (m === undefined || l === undefined) return getRpgClass(mbti);
-  return RPG_CLASSES[(m + l) % 16];
+  const mbtiGroup = _MBTI_GROUP[mbti];
+  const loveGroup = _getLoveGroup(loveType);
+  if (!mbtiGroup || !loveGroup) return getRpgClass(mbti);
+  const classId = _RPG_MATRIX[mbtiGroup][loveGroup];
+  return RPG_CLASSES.find((c) => c.id === classId) ?? null;
+}
+
+// 職場コード × 本音コード → RPGクラス (新統合システム)
+// workType: AELV建前コード, soulType: AELV本音コード
+export function getRpgClassByDualCode(workType: string, soulType: string): RpgClass | null {
+  const workGroup = _getLoveGroup(workType);
+  const soulGroup = _getLoveGroup(soulType);
+  if (!workGroup || !soulGroup) return null;
+  const roleGroup = _LOVE_GROUP_TO_ROLE[workGroup];
+  const classId = _RPG_MATRIX[roleGroup][soulGroup];
+  return RPG_CLASSES.find((c) => c.id === classId) ?? null;
+}
+
+// ギャップスコア計算 (0〜4、軸ごとに違う文字なら+1)
+export function calcGapScore(workType: string, soulType: string): number {
+  if (workType.length < 4 || soulType.length < 4) return 0;
+  let gap = 0;
+  for (let i = 0; i < 4; i++) {
+    if (workType[i] !== soulType[i]) gap++;
+  }
+  return gap;
 }

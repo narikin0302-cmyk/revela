@@ -249,6 +249,62 @@ export const loveQuestionPool: LoveQuestion[] = [
 ];
 
 // ============================================================
+// Work Question Pool — 「職場の自分」(16 questions, 4 per axis)
+// Professional tone, workplace context
+// ============================================================
+
+export const workQuestionPool: LoveQuestion[] = [
+  // ── Axis 1: A (Active/主体的) vs S (Support/支援的) ──
+  { id: 101, question: "新しいプロジェクトが始まるとき、あなたは？", optionA: "自分からリードして方向性を決める", optionB: "チームをサポートする立場に回る", axis: "1", aValue: "A", bValue: "S" },
+  { id: 102, question: "会議で意見が割れたとき", optionA: "自分の考えを積極的に主張する", optionB: "場を読んで調整役に徹する", axis: "1", aValue: "A", bValue: "S" },
+  { id: 103, question: "職場でのキャリアをイメージすると", optionA: "自分が旗を立てて周りを引っ張っていく", optionB: "信頼される存在として誰かを支えていく", axis: "1", aValue: "A", bValue: "S" },
+  { id: 104, question: "仕事でトラブルが起きたとき", optionA: "真っ先に動いて自分で解決しようとする", optionB: "周囲と状況を共有して連携して動く", axis: "1", aValue: "A", bValue: "S" },
+  // ── Axis 2: L (Logic/論理) vs E (Emotion/感情) ──
+  { id: 105, question: "職場での意思決定で大切にするのは？", optionA: "データと論理に基づく合理的な判断", optionB: "チームの雰囲気や人間関係への影響", axis: "2", aValue: "L", bValue: "E" },
+  { id: 106, question: "上司や同僚に何かを伝えるとき", optionA: "数字や根拠を示して論理的に説明する", optionB: "相手の気持ちを考えて言葉を選ぶ", axis: "2", aValue: "L", bValue: "E" },
+  { id: 107, question: "仕事で評価されたいのは？", optionA: "結果と効率の高さ", optionB: "周囲への気配りとチームワーク", axis: "2", aValue: "L", bValue: "E" },
+  { id: 108, question: "職場の人間関係で大切にしているのは？", optionA: "フェアで論理的なコミュニケーション", optionB: "相手を尊重した感情的なつながり", axis: "2", aValue: "L", bValue: "E" },
+  // ── Axis 3: R (Real/現実) vs V (Vision/未来) ──
+  { id: 109, question: "仕事で提案するとき重視するのは？", optionA: "実績・事例・データの裏付け", optionB: "将来の可能性とビジョンのインパクト", axis: "3", aValue: "R", bValue: "V" },
+  { id: 110, question: "業務改善を考えるとき", optionA: "現状の課題を一つひとつ確実に解決する", optionB: "仕組みごと大きく変えるアイデアを出す", axis: "3", aValue: "R", bValue: "V" },
+  { id: 111, question: "職場で信頼されるために大切だと思うのは？", optionA: "約束を守り、確実に成果を出すこと", optionB: "新しい視点やアイデアを持ち込むこと", axis: "3", aValue: "R", bValue: "V" },
+  { id: 112, question: "仕事の計画を立てるとき", optionA: "現実的なリソースと実績ベースで考える", optionB: "理想の姿から逆算して考える", axis: "3", aValue: "R", bValue: "V" },
+  // ── Axis 4: F (Free/自由) vs P (Plan/計画) ──
+  { id: 113, question: "仕事の進め方として自然なのは？", optionA: "状況に応じて柔軟にやり方を変える", optionB: "最初に計画を立てて、その通りに進める", axis: "4", aValue: "F", bValue: "P" },
+  { id: 114, question: "締め切りや納期に対して", optionA: "追い込まれてからの方が力が出る", optionB: "余裕を持って計画的に終わらせたい", axis: "4", aValue: "F", bValue: "P" },
+  { id: 115, question: "職場のルールや手順について", optionA: "目的に合うなら柔軟に変えていい", optionB: "統一された基準があった方が安心する", axis: "4", aValue: "F", bValue: "P" },
+  { id: 116, question: "複数のタスクが重なったとき", optionA: "気が向いたものから柔軟に対応する", optionB: "優先順位を決めて順番に片付ける", axis: "4", aValue: "F", bValue: "P" },
+];
+
+// ============================================================
+// Soul Question Pool — 「本音の自分」(16 questions, 4 per axis)
+// Casual tone, introspective, honest/private context
+// ============================================================
+
+export const soulQuestionPool: LoveQuestion[] = [
+  // ── Axis 1: A (Active/主体的) vs S (Support/支援的) ──
+  { id: 201, question: "本当は、どんな自分でいたい？", optionA: "誰よりも先に動いて、流れを作る側でいたい", optionB: "誰かの力になって、そっと支える存在でいたい", axis: "1", aValue: "A", bValue: "S" },
+  { id: 202, question: "友達グループで何かを決めるとき", optionA: "自然と「こうしようよ」って引っ張ってる", optionB: "みんなの意見をまとめてあげてることが多い", axis: "1", aValue: "A", bValue: "S" },
+  { id: 203, question: "誰かに頼まれる前に動くことが多い？", optionA: "はい、気づいたら自分から動いてる", optionB: "求められてから動く方が自然", axis: "1", aValue: "A", bValue: "S" },
+  { id: 204, question: "何かに挑戦するとき、自分の立ち位置は？", optionA: "先頭に立ってやってみたい", optionB: "誰かと一緒にサポートしながら進めたい", axis: "1", aValue: "A", bValue: "S" },
+  // ── Axis 2: L (Logic/論理) vs E (Emotion/感情) ──
+  { id: 205, question: "一人でいるとき、頭の中にあるのは？", optionA: "どうすれば上手くいくか、効率よく考えてる", optionB: "あの人今どうしてるかな、あの場面どうだったかな", axis: "2", aValue: "L", bValue: "E" },
+  { id: 206, question: "友達に相談されたとき、自分は？", optionA: "解決策や具体的なアドバイスを考える", optionB: "まずとにかく話を聞いて共感する", axis: "2", aValue: "L", bValue: "E" },
+  { id: 207, question: "誰かと意見がぶつかったとき", optionA: "論理的に正しい方が通るべきだと思う", optionB: "たとえ正しくても、関係が壊れる方が嫌だ", axis: "2", aValue: "L", bValue: "E" },
+  { id: 208, question: "感動する映画や本は？", optionA: "論理的な展開や緻密な設定が面白いもの", optionB: "登場人物の感情や関係性に揺さぶられるもの", axis: "2", aValue: "L", bValue: "E" },
+  // ── Axis 3: R (Real/現実) vs V (Vision/未来) ──
+  { id: 209, question: "ワクワクするのはどんなとき？", optionA: "着実に積み上げてきたものが形になるとき", optionB: "まだ誰もやったことない何かが見えてきたとき", axis: "3", aValue: "R", bValue: "V" },
+  { id: 210, question: "新しいことを始めるとき、自然な感覚は？", optionA: "まず現実的に「できるか」を考える", optionB: "「面白そう」という直感で動き始める", axis: "3", aValue: "R", bValue: "V" },
+  { id: 211, question: "自分の強みだと思うのは？", optionA: "地に足のついた現実感覚と実行力", optionB: "未来を見通すビジョンと発想力", axis: "3", aValue: "R", bValue: "V" },
+  { id: 212, question: "大きな決断をするとき", optionA: "過去の実績や現実的な可能性で判断する", optionB: "直感やワクワク感を優先する", axis: "3", aValue: "R", bValue: "V" },
+  // ── Axis 4: F (Free/自由) vs P (Plan/計画) ──
+  { id: 213, question: "休日の過ごし方は？", optionA: "その日の気分でなんとなく決める", optionB: "前日までにある程度決めておきたい", axis: "4", aValue: "F", bValue: "P" },
+  { id: 214, question: "本音は、どんな環境が好き？", optionA: "自由にやれる、ルールが少ない環境", optionB: "ちゃんとした仕組みがある、安定した環境", axis: "4", aValue: "F", bValue: "P" },
+  { id: 215, question: "やりたいことができたとき", optionA: "勢いで動き出して、後で考える", optionB: "しっかり計画してから始める", axis: "4", aValue: "F", bValue: "P" },
+  { id: 216, question: "理想の生き方は？", optionA: "縛られずに、自分のペースで自由に生きたい", optionB: "安定した基盤の上で、着実に積み上げたい", axis: "4", aValue: "F", bValue: "P" },
+];
+
+// ============================================================
 // Randomized Question Selectors
 // ============================================================
 
@@ -293,6 +349,33 @@ export function getRandomizedLoveQuestions(count: number = 5): LoveQuestion[] {
   return shuffle(result);
 }
 
+function getRandomizedFromPool(pool: LoveQuestion[], count: number): LoveQuestion[] {
+  type LoveAxis = "1" | "2" | "3" | "4";
+  const byAxis: Record<LoveAxis, LoveQuestion[]> = { "1": [], "2": [], "3": [], "4": [] };
+  pool.forEach((q) => byAxis[q.axis as LoveAxis].push(q));
+
+  const axes: LoveAxis[] = ["1", "2", "3", "4"];
+  const perAxis = Math.floor(count / 4);
+  const extras = count % 4;
+  const extraAxes = shuffle(axes).slice(0, extras);
+
+  const result: LoveQuestion[] = [];
+  axes.forEach((axis) => {
+    const needed = perAxis + (extraAxes.includes(axis) ? 1 : 0);
+    result.push(...shuffle(byAxis[axis]).slice(0, needed));
+  });
+
+  return shuffle(result);
+}
+
+export function getRandomizedWorkQuestions(count: number = 8): LoveQuestion[] {
+  return getRandomizedFromPool(workQuestionPool, count);
+}
+
+export function getRandomizedSoulQuestions(count: number = 8): LoveQuestion[] {
+  return getRandomizedFromPool(soulQuestionPool, count);
+}
+
 // ============================================================
 // Zodiac Signs
 // ============================================================
@@ -316,23 +399,23 @@ export const zodiacSigns = [
 // MBTI Descriptions
 // ============================================================
 
-export const mbtiDescriptions: Record<string, { title: string; keywords: string }> = {
-  INTJ: { title: "INTJ", keywords: "戦略的・独立心・完璧主義・ビジョン" },
-  INTP: { title: "INTP", keywords: "知的好奇心・分析的・理論・革新" },
-  ENTJ: { title: "ENTJ", keywords: "リーダーシップ・決断力・野心・効率" },
-  ENTP: { title: "ENTP", keywords: "アイデア・挑戦・機知・可能性" },
-  INFJ: { title: "INFJ", keywords: "直感・共感・理想主義・洞察力" },
-  INFP: { title: "INFP", keywords: "詩的・共感・誠実・夢想家" },
-  ENFJ: { title: "ENFJ", keywords: "カリスマ・共感・インスピレーション・導く" },
-  ENFP: { title: "ENFP", keywords: "自由・創造・情熱・可能性" },
-  ISTJ: { title: "ISTJ", keywords: "責任感・誠実・伝統・信頼性" },
-  ISFJ: { title: "ISFJ", keywords: "温かみ・献身・実直・思いやり" },
-  ESTJ: { title: "ESTJ", keywords: "秩序・規律・実行力・誠実" },
-  ESFJ: { title: "ESFJ", keywords: "調和・サポート・社交性・思いやり" },
-  ISTP: { title: "ISTP", keywords: "実践的・冷静・観察力・技術" },
-  ISFP: { title: "ISFP", keywords: "感性・自由・芸術・今この瞬間" },
-  ESTP: { title: "ESTP", keywords: "行動力・エネルギッシュ・現実主義・刺激" },
-  ESFP: { title: "ESFP", keywords: "陽気・自発性・美的センス・喜び" },
+export const mbtiDescriptions: Record<string, { title: string; keywords: string; displayName: string; subtitle: string; shortName: string }> = {
+  INTJ: { title: "INTJ", keywords: "戦略的・独立心・完璧主義・ビジョン", displayName: "遠くを見据えて動く人", subtitle: "一人で世界を書き換える", shortName: "戦略家" },
+  INTP: { title: "INTP", keywords: "知的好奇心・分析的・理論・革新", displayName: "本質を追いかける人", subtitle: "答えのない問いに魅せられる", shortName: "探求者" },
+  ENTJ: { title: "ENTJ", keywords: "リーダーシップ・決断力・野心・効率", displayName: "場を仕切って動かす人", subtitle: "場を制圧し勝利を掴む", shortName: "統率者" },
+  ENTP: { title: "ENTP", keywords: "アイデア・挑戦・機知・可能性", displayName: "常識を疑い続ける人", subtitle: "常識を壊してから始める", shortName: "革新者" },
+  INFJ: { title: "INFJ", keywords: "直感・共感・理想主義・洞察力", displayName: "人の未来を見通す人", subtitle: "未来を見通し人を動かす", shortName: "洞察者" },
+  INFP: { title: "INFP", keywords: "詩的・共感・誠実・夢想家", displayName: "理想を手放さない人", subtitle: "魂で世界を感じる", shortName: "理想家" },
+  ENFJ: { title: "ENFJ", keywords: "カリスマ・共感・インスピレーション・導く", displayName: "人の可能性を引き出す人", subtitle: "人の可能性を引き出す天才", shortName: "育成者" },
+  ENFP: { title: "ENFP", keywords: "自由・創造・情熱・可能性", displayName: "熱量で周りを巻き込む人", subtitle: "情熱で世界を染める", shortName: "熱狂者" },
+  ISTJ: { title: "ISTJ", keywords: "責任感・誠実・伝統・信頼性", displayName: "地道にやり遂げる人", subtitle: "揺るぎない誠実さで守り抜く", shortName: "堅実者" },
+  ISFJ: { title: "ISFJ", keywords: "温かみ・献身・実直・思いやり", displayName: "陰で誰かを支える人", subtitle: "陰でチームを支える存在", shortName: "支援者" },
+  ESTJ: { title: "ESTJ", keywords: "秩序・規律・実行力・誠実", displayName: "仕組みで場を動かす人", subtitle: "規律と実行力で場を束ねる", shortName: "実行者" },
+  ESFJ: { title: "ESFJ", keywords: "調和・サポート・社交性・思いやり", displayName: "場の空気を整える人", subtitle: "人と人をつなぐ要", shortName: "調和者" },
+  ISTP: { title: "ISTP", keywords: "実践的・冷静・観察力・技術", displayName: "黙々と極める人", subtitle: "口より手が先に動く達人", shortName: "熟達者" },
+  ISFP: { title: "ISFP", keywords: "感性・自由・芸術・今この瞬間", displayName: "感性のままに動く人", subtitle: "今この瞬間に全力を注ぐ", shortName: "感性家" },
+  ESTP: { title: "ESTP", keywords: "行動力・エネルギッシュ・現実主義・刺激", displayName: "考える前に動く人", subtitle: "考える前に動いて結果を出す", shortName: "先行者" },
+  ESFP: { title: "ESFP", keywords: "陽気・自発性・美的センス・喜び", displayName: "その場を明るくする人", subtitle: "笑顔で場を明るく変える", shortName: "活気者" },
 };
 
 // ============================================================
@@ -342,98 +425,98 @@ export const mbtiDescriptions: Record<string, { title: string; keywords: string 
 export const loveTypeDescriptions: Record<LoveType, { subtitle: string; emoji: string; nickname: string; motto: string }> = {
   "ALRF": {
     subtitle: "自分のペースで世界を掌握するタイプ",
-    emoji: "😼",
-    nickname: "ALRF",
+    emoji: "⚔️",
+    nickname: "自分のやり方を貫きたい",
     motto: "「自分の軸を持ち、場の空気を自然に支配する」",
   },
   "ALRP": {
     subtitle: "信頼と冷静さで周囲を安心させるタイプ",
-    emoji: "🐾",
-    nickname: "ALRP",
+    emoji: "🗡️",
+    nickname: "確かな手応えを積み上げたい",
     motto: "「クールな外見の内側に、深い誠実さがある」",
   },
   "ALVF": {
     subtitle: "自然と注目を集め、場を動かすタイプ",
-    emoji: "👑",
-    nickname: "ALVF",
+    emoji: "🔮",
+    nickname: "可能性を自由に広げたい",
     motto: "「存在するだけで、周りに光を与える」",
   },
   "ALVP": {
     subtitle: "エネルギーで周囲を巻き込む実行者タイプ",
-    emoji: "🔥",
-    nickname: "ALVP",
+    emoji: "🏰",
+    nickname: "大きな構想を形にしたい",
     motto: "「熱量で壁を突き破り、大事な人を全力で守る」",
   },
   "AERF": {
     subtitle: "包容力で自然に信頼を集めるタイプ",
-    emoji: "🌟",
-    nickname: "AERF",
+    emoji: "🔥",
+    nickname: "誰かの英雄でありたい",
     motto: "「温かさと実力で、人々の目標になる」",
   },
   "AERP": {
     subtitle: "リーダー性とバランス感覚を兼ね備えたタイプ",
-    emoji: "⚡",
-    nickname: "AERP",
+    emoji: "🛡️",
+    nickname: "大切な人を全力で守りたい",
     motto: "「対立を調和させ、全員が動ける状態を作る」",
   },
   "AEVF": {
     subtitle: "適応力抜群で本領発揮すると無敵なタイプ",
-    emoji: "🦋",
-    nickname: "AEVF",
+    emoji: "🌹",
+    nickname: "世界を動かす存在でありたい",
     motto: "「どんな環境にも染まりながら、自分の本質を失わない」",
   },
   "AEVP": {
     subtitle: "優しさと強さを併せ持つ万能タイプ",
-    emoji: "🦁",
-    nickname: "AEVP",
+    emoji: "⚡",
+    nickname: "信じる道を全力で進みたい",
     motto: "「誰かのために全力を尽くすとき、最大の力を発揮する」",
   },
   "SLRF": {
     subtitle: "距離感の達人で場を読む戦略家タイプ",
-    emoji: "🎩",
-    nickname: "SLRF",
+    emoji: "🎭",
+    nickname: "陰から全てを見通したい",
     motto: "「場の空気を読んで最適解を導く」",
   },
   "SLRP": {
     subtitle: "愛嬌と冷静さを使い分ける直感派タイプ",
-    emoji: "🐰",
-    nickname: "SLRP",
+    emoji: "⚗️",
+    nickname: "静かに真理を極めたい",
     motto: "「柔らかさの裏に、鋭い観察眼を持っている」",
   },
   "SLVF": {
     subtitle: "ムードメーカーで本質は優しい魅力派タイプ",
-    emoji: "👾",
-    nickname: "SLVF",
+    emoji: "🌙",
+    nickname: "自分だけの世界を自由に表現したい",
     motto: "「場を盛り上げながら、誰よりも深く人を見ている」",
   },
   "SLVP": {
     subtitle: "誠実で感情豊かな真っ直ぐなタイプ",
-    emoji: "🐕",
-    nickname: "SLVP",
+    emoji: "📚",
+    nickname: "誰よりも深く物事を理解したい",
     motto: "「一度決めた信念を、どんな状況でも貫き通す」",
   },
   "SERF": {
     subtitle: "独自の視点で世界を解釈する観察者タイプ",
-    emoji: "🌀",
-    nickname: "SERF",
+    emoji: "🌿",
+    nickname: "ありのままの自分でいたい",
     motto: "「普通に見えて、誰も考えない角度から物事を捉える」",
   },
   "SERP": {
     subtitle: "観察力が高く縁の下の力持ちタイプ",
-    emoji: "📋",
-    nickname: "SERP",
+    emoji: "🌸",
+    nickname: "誰かの心の支えでありたい",
     motto: "「全体を俯瞰し、必要な人に必要なサポートをする」",
   },
   "SEVF": {
     subtitle: "優しさと自由奔放さを兼ね備えたタイプ",
-    emoji: "😇",
-    nickname: "SEVF",
+    emoji: "🎵",
+    nickname: "自分らしく輝きたい",
     motto: "「予測不能な行動の中に、深い思いやりが宿っている」",
   },
   "SEVP": {
     subtitle: "器が大きく最も人間力が高いと言われるタイプ",
-    emoji: "💝",
-    nickname: "SEVP",
+    emoji: "⭐",
+    nickname: "全てを包み込む存在でありたい",
     motto: "「どんな人も受け入れる大きな器で、世界を包み込む」",
   },
 };
@@ -1081,8 +1164,8 @@ export function getResultReading(
   const zodiacNote = zodiac ? `${zodiac}の星のもとに生まれたあなたは` : "あなたは";
 
   return {
-    title: "あなただけの鑑定書",
-    description: `<span class="result-section-label">【総合鑑定】</span>${zodiacNote}、<mark>独自の輝きを放つ存在</mark>です。${tarotNote}が示すメッセージと、あなたの持つ内なる力が交差するとき、新しい扉が開きます。その扉の向こうに何があるのかを知っているのは、あなた自身だけです。<span class="result-section-label">【行動傾向】</span>あなたの行動スタイルは<mark>唯一無二</mark>です。その個性が本物のパートナーを引き寄せます。真の繋がりは、自分らしさを発揮したときに初めて生まれます。<span class="result-section-label">【メッセージ】</span><mark>自分自身を信じることが、すべての始まり</mark>です。あなたはすでに、答えを持っています。`,
+    title: "あなたの自己分析結果",
+    description: `<span class="result-section-label">【自己分析】</span>${zodiacNote}、<mark>独自の輝きを放つ存在</mark>です。あなたの持つ内なる力と外向きの姿が交差するとき、新しい扉が開きます。その扉の向こうに何があるのかを知っているのは、あなた自身だけです。<span class="result-section-label">【行動傾向】</span>あなたの行動スタイルは<mark>唯一無二</mark>です。その個性が本物のパートナーを引き寄せます。真の繋がりは、自分らしさを発揮したときに初めて生まれます。<span class="result-section-label">【メッセージ】</span><mark>自分自身を信じることが、すべての始まり</mark>です。あなたはすでに、答えを持っています。`,
     advice: "自分の心の声に耳を傾けて。あなたの直感が最良の答えを知っています。今日、一つだけ自分のために何かをしてみましょう。小さな一歩が、大きな変化の始まりになります。",
     tarotCard: tarotCard || "星",
     tarotMeaning: "希望の光があなたの道を照らす",

@@ -119,10 +119,8 @@ function AnalyzingScreen({ onComplete }: { onComplete: () => void }) {
   const [visible, setVisible] = useState(true);
 
   const texts = [
-    "星の配置を読み解いています...",
-    "性格タイプを解析中...",
-    "キャラクターコードを照合しています...",
-
+    "現在地タイプを解析中...",
+    "本音タイプを照合しています...",
     "あなた専用の自己分析を生成しています...",
   ];
 
@@ -387,10 +385,10 @@ function AnalyzingScreen({ onComplete }: { onComplete: () => void }) {
 // Improved Step Indicator (Improvement 1)
 // ============================================================
 
-const STEP_LABELS = ["星座", "性格タイプ", "行動スタイル", "タロット", "結果"] as const;
+const STEP_LABELS = ["生年月日", "現在地", "本音", "結果"] as const;
 
 function StepIndicator({ step }: { step: number }) {
-  // step: 1=星座, 2=MBTI, 3=キャラ; 4=分析レポート(results area)
+  // step: 1=生年月日, 2=MBTI(現在地), 3=キャラ(本音); 4=分析レポート(results area)
   // We map to 0-indexed for display
   const currentIdx = step - 1; // 0..3
 
@@ -590,7 +588,7 @@ function Step0({
         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.2)" }}
       >
         <p className="text-sm font-medium mb-4" style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}>
-          性格タイプをすでに知っていますか？
+          現在地タイプをすでに知っていますか？
         </p>
         <div className="flex gap-3 mb-4">
           <button style={btnYes(knowsMBTI === true)}  onClick={() => setKnowsMBTI(true)}>
@@ -631,7 +629,7 @@ function Step0({
 
         {knowsMBTI === true && (
           <div className="animate-fade-in">
-            <label className="block text-xs tracking-widest mb-2 opacity-60">性格タイプを選択</label>
+            <label className="block text-xs tracking-widest mb-2 opacity-60">現在地タイプを選択</label>
             <div className="grid grid-cols-2 gap-2">
               {ALL_MBTI_TYPES.map((type) => {
                 const isSelected = knownMBTI === type;
@@ -678,7 +676,7 @@ function Step0({
         style={{ background: "rgba(232,160,191,0.05)", border: "1px solid rgba(232,160,191,0.2)" }}
       >
         <p className="text-sm font-medium mb-4" style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}>
-          キャラクターコードを知っていますか？
+          本音タイプを知っていますか？
         </p>
         <div className="flex gap-3 mb-4">
           <button style={btnYes(knowsLove === true)}  onClick={() => setKnowsLove(true)}>
@@ -1046,7 +1044,7 @@ function Step3({
   onNext,
   onBack,
   questions,
-  title = "キャラクターコード診断",
+  title = "本音診断",
   titleEn = "STEP 03",
   subtitle,
   nextLabel,
@@ -1064,6 +1062,20 @@ function Step3({
   const answered = Object.keys(answers).length;
   const total = questions.length;
   const canProceed = answered === total;
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const handleAnswer = (id: number, score: LikertScore, idx: number) => {
+    onAnswer(id, score);
+    // 次の未回答の問にスクロール（すでに回答済みの問を飛ばす）
+    const nextIdx = questions.findIndex((q, i) => i > idx && answers[q.id] === undefined);
+    const targetIdx = nextIdx !== -1 ? nextIdx : idx + 1;
+    const targetEl = cardRefs.current[targetIdx];
+    if (targetEl) {
+      setTimeout(() => {
+        targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 80);
+    }
+  };
 
   return (
     <div className="animate-fade-in">
@@ -1078,7 +1090,7 @@ function Step3({
         {questions.map((q, idx) => {
           const selected = answers[q.id];
           return (
-            <div key={q.id} className="card-glow rounded-2xl p-5">
+            <div key={q.id} ref={(el) => { cardRefs.current[idx] = el; }} className="card-glow rounded-2xl p-5">
               <p className="text-xs opacity-40 mb-2 tracking-widest">Q{String(idx + 1).padStart(2, "0")}</p>
               <p className="text-sm sm:text-base mb-1 leading-relaxed font-medium">{q.question}</p>
               <p className="text-xs opacity-50 mb-4 leading-relaxed">「{q.optionA}」</p>
@@ -1088,7 +1100,7 @@ function Step3({
                   return (
                     <button
                       key={score}
-                      onClick={() => onAnswer(q.id, score)}
+                      onClick={() => handleAnswer(q.id, score, idx)}
                       className="rounded-xl py-2 px-1 text-center transition-all duration-150"
                       style={{
                         background: isSelected ? "linear-gradient(135deg, #b8508a, #e8a0bf)" : "rgba(255,255,255,0.04)",
@@ -2415,6 +2427,7 @@ function ShareCardModal({
   onClose: () => void;
 }) {
   const displayMBTI = trueSelfMbti ?? mbtiType;
+  const displayMBTIInfo = mbtiDescriptions[displayMBTI];
   const loveInfo = loveTypeDescriptions[loveType];
   const mbtiColor = getMbtiColor(displayMBTI);
   const [textCopied, setTextCopied] = useState(false);
@@ -2423,7 +2436,7 @@ function ShareCardModal({
   const plainDesc = description.replace(/<[^>]+>/g, "").split(/[。！？]/)[0] + "。";
 
   const handleCopyText = async () => {
-    const text = `✨ revelaで自己分析しました ✨\n\n🧠 ${displayMBTI} — ${mbtiColor.label}\n✦ ${loveInfo.nickname}（${loveType}）\n⭐ ${zodiac}\n🔮 ${tarotCard.name}${tarotIsReversed ? "（逆位置）" : ""}\n\n「${title}」\n\nrevela.jp で無料診断 ✦\n#revela #MBTI診断 #自己分析`;
+    const text = `✨ revelaで自己分析しました ✨\n\n🧠 ${mbtiColor.emoji} ${displayMBTIInfo?.displayName ?? displayMBTI}\n✦ ${loveInfo.nickname}\n\n「${title}」\n\nrevela.jp で無料診断 ✦\n#revela #性格タイプ診断 #自己分析`;
     try {
       await navigator.clipboard.writeText(text);
       setTextCopied(true);
@@ -2491,10 +2504,8 @@ function ShareCardModal({
         {(() => {
           const rpgChip = getRpgClassByCombo(displayMBTI, loveType);
           const chips = [
-            { label: "性格タイプ", value: displayMBTI, sub: mbtiColor.label, color: mbtiColor.primary, bg: mbtiColor.bg, span: false },
-            { label: "CODE", value: loveType, sub: loveInfo.nickname, color: "#e8a0bf", bg: "rgba(232,160,191,0.12)", span: false },
-            { label: "星座", value: zodiac === "なし" ? "—" : zodiac, sub: "", color: "#93c5fd", bg: "rgba(147,197,253,0.08)", span: false },
-            { label: "タロット", value: tarotCard.name, sub: tarotIsReversed ? "逆位置" : "正位置", color: "#c084fc", bg: "rgba(192,132,252,0.08)", span: false },
+            { label: "現在地", value: displayMBTIInfo?.displayName ?? displayMBTI, sub: displayMBTIInfo?.subtitle ?? "", color: mbtiColor.primary, bg: mbtiColor.bg, span: false },
+            { label: "本音", value: loveInfo.nickname, sub: loveInfo.subtitle, color: "#e8a0bf", bg: "rgba(232,160,191,0.12)", span: false },
             { label: "職業RPG", value: rpgChip ? `${rpgChip.emoji} ${rpgChip.name}` : "—", sub: rpgChip?.tagline ?? "", color: "#7c3aed", bg: "rgba(124,58,237,0.08)", span: true },
           ];
           return (
@@ -2610,6 +2621,25 @@ const MBTI_ADJ: Record<string, string> = {
   ISFP: "芸術的な",    ISFJ: "献身的な",       ISTP: "冷静沈着な", ISTJ: "誠実な",
 };
 
+// 接続形に変換（な→で、る→て）
+function mbtiAdjConj(adj: string): string {
+  if (adj.endsWith("な")) return adj.slice(0, -1) + "で";
+  if (adj.endsWith("る")) return adj.slice(0, -1) + "て";
+  return adj;
+}
+
+// 本音タイプ別形容詞（短く・名詞修飾できる形）
+const LOVE_ADJ: Record<string, string> = {
+  ALRF: "独立心あふれる",   ALRP: "冷静沈着な",
+  ALVF: "華やかな",         ALVP: "野心的な",
+  AERF: "英雄志向の",       AERP: "義理堅い",
+  AEVF: "無敵な",           AEVP: "信念に生きる",
+  SLRF: "洞察力鋭い",       SLRP: "謎めいた",
+  SLVF: "個性的な",         SLVP: "真理を求める",
+  SERF: "自然体な",         SERP: "縁の下で支える",
+  SEVF: "自由奔放な",       SEVP: "包容力のある",
+};
+
 const YGO_ATK: Record<string, number> = {
   LCRO: 2800, LCRE: 2400, LCPO: 3000, LCPE: 2600,
   LARO: 2500, LARE: 2700, LAPO: 2300, LAPE: 2900,
@@ -2708,8 +2738,9 @@ function ResultsPage({
     const finalMBTI = trueSelfMbti ?? mbtiType;
     try {
       localStorage.setItem("revela_user", JSON.stringify({ mbti: finalMBTI }));
-      if (data.zodiac && data.zodiac !== "なし") {
-        const code = generateRevelaCode(finalMBTI, loveType, data.zodiac);
+      const rpgForCode = getRpgClassByCombo(finalMBTI, loveType);
+      if (rpgForCode) {
+        const code = generateRevelaCode(finalMBTI, loveType, rpgForCode.name);
         localStorage.setItem("revela_mycode", code);
       }
     } catch {
@@ -2721,12 +2752,12 @@ function ResultsPage({
   const descParts = reading.description.split(/(?=<span class="result-section-label">)/g).filter(Boolean);
 
   const buildShareText = () => {
-    const mbtiLabel = trueSelfMbti ? `${mbtiType}→${trueSelfMbti}` : mbtiType;
+    const workLabel = trueSelfMbti ? `${mbtiDescriptions[mbtiType]?.displayName ?? mbtiType}→${displayMBTIInfo?.displayName ?? trueSelfMbti}` : (displayMBTIInfo?.displayName ?? mbtiType);
     const tarotLabel = tarotIsReversed ? `${tarotCard.name}（逆位置）` : tarotCard.name;
     const strength0 = reading.strengths[0]?.title ?? "";
     const strength1 = reading.strengths[1]?.title ?? "";
     const strengthStr = strength1 ? `${strength0} / ${strength1}` : strength0;
-    return `✨ revelaで自己分析しました ✨\n\n🧠 ${mbtiLabel}（${displayMBTIInfo?.title || ""}）\n✦ ${loveInfo.nickname}（${loveType}）\n⭐ ${data.zodiac}\n🔮 ${tarotLabel}\n\n📊 あなたの自己分析\n強み: ${strengthStr}\n\n🔗 revela.jp/shindan で無料診断\n#revela #MBTI診断 #自己分析 #キャラクターコード`;
+    return `✨ revelaで自己分析しました ✨\n\n🧠 ${workLabel}\n✦ ${loveInfo.nickname}\n\n📊 あなたの自己分析\n強み: ${strengthStr}\n\n🔗 revela.jp/shindan で無料診断\n#revela #性格タイプ診断 #自己分析`;
   };
 
   const handleShare = async () => {
@@ -2763,7 +2794,7 @@ function ResultsPage({
   };
 
   const handleSave = async () => {
-    const text = `【revela 自己分析】\n\nMBTI: ${displayMBTI}（${displayMBTIInfo?.title || ""}）\nキャラクターコード: ${loveInfo.nickname}（${loveType}）\n${loveInfo.motto}\n星座: ${data.zodiac}\nタロット: ${tarotCard.name}${tarotIsReversed ? "（逆位置）" : ""}\n\n「${reading.title}」\n\n${reading.advice}`;
+    const text = `【revela 自己分析】\n\n現在地: ${displayMBTIInfo?.displayName ?? displayMBTI}\n本音: ${loveInfo.nickname}\n${loveInfo.motto}\n\n「${reading.title}」\n\n${reading.advice}`;
     try {
       await navigator.clipboard.writeText(text);
       setToastVisible(true);
@@ -2833,68 +2864,32 @@ function ResultsPage({
         ctx.font = "10px sans-serif";
         ctx.fillStyle = "rgba(255,255,255,0.45)";
         ctx.textAlign = "center";
-        ctx.fillText("性格タイプ", W / 2, 138);
-        ctx.font = "bold 40px sans-serif";
+        ctx.fillText("現在地", W / 2, 138);
+        ctx.font = "bold 22px sans-serif";
         ctx.fillStyle = displayColors.primary;
-        ctx.fillText(displayMBTI, W / 2, 178);
-        if (displayMBTIInfo?.title) {
-          ctx.font = "13px sans-serif";
+        ctx.fillText(displayMBTIInfo?.displayName ?? displayMBTI, W / 2, 172);
+        if (displayMBTIInfo?.subtitle) {
+          ctx.font = "11px sans-serif";
           ctx.fillStyle = "rgba(255,255,255,0.55)";
-          ctx.fillText(displayMBTIInfo.title, W / 2, 196);
+          ctx.fillText(displayMBTIInfo.subtitle, W / 2, 192);
         }
 
-        // ── キャラクターコード block ──
+        // ── 行動スタイル block ──
         ctx.fillStyle = "rgba(232,160,191,0.12)";
-        ctx.fillRect(40, 222, 240, 68);
+        ctx.fillRect(40, 222, 520, 68);
         ctx.strokeStyle = "rgba(232,160,191,0.3)";
         ctx.lineWidth = 0.8;
-        ctx.strokeRect(40, 222, 240, 68);
+        ctx.strokeRect(40, 222, 520, 68);
         ctx.font = "9px sans-serif";
         ctx.fillStyle = "rgba(255,255,255,0.4)";
         ctx.textAlign = "center";
-        ctx.fillText("CHARACTER CODE", 160, 242);
+        ctx.fillText("本音", W / 2, 242);
         ctx.font = "bold 15px serif";
         ctx.fillStyle = "#e8a0bf";
-        ctx.fillText(loveInfo.nickname, 160, 264);
+        ctx.fillText(loveInfo.nickname, W / 2, 264);
         ctx.font = "11px sans-serif";
         ctx.fillStyle = "rgba(255,255,255,0.45)";
-        ctx.fillText(loveType, 160, 282);
-
-        // ── 星座 block ──
-        ctx.fillStyle = "rgba(147,197,253,0.10)";
-        ctx.fillRect(320, 222, 240, 68);
-        ctx.strokeStyle = "rgba(147,197,253,0.25)";
-        ctx.lineWidth = 0.8;
-        ctx.strokeRect(320, 222, 240, 68);
-        ctx.font = "9px sans-serif";
-        ctx.fillStyle = "rgba(255,255,255,0.4)";
-        ctx.textAlign = "center";
-        ctx.fillText("ZODIAC", 440, 242);
-        ctx.font = "bold 22px serif";
-        ctx.fillStyle = "#93c5fd";
-        ctx.fillText(data.zodiac !== "なし" ? data.zodiac : "—", 440, 268);
-        if (data.zodiac !== "なし" && zodiacData) {
-          ctx.font = "11px sans-serif";
-          ctx.fillStyle = "rgba(255,255,255,0.45)";
-          ctx.fillText(zodiacData.element || "", 440, 283);
-        }
-
-        // ── タロット block ──
-        ctx.fillStyle = "rgba(139,92,246,0.12)";
-        ctx.fillRect(40, 312, 520, 68);
-        ctx.strokeStyle = "rgba(139,92,246,0.3)";
-        ctx.lineWidth = 0.8;
-        ctx.strokeRect(40, 312, 520, 68);
-        ctx.font = "9px sans-serif";
-        ctx.fillStyle = "rgba(255,255,255,0.4)";
-        ctx.textAlign = "center";
-        ctx.fillText("TAROT", W / 2, 332);
-        ctx.font = "bold 22px serif";
-        ctx.fillStyle = "#c4b5fd";
-        ctx.fillText(tarotCard.name + (tarotIsReversed ? "（逆位置）" : ""), W / 2, 358);
-        ctx.font = "11px sans-serif";
-        ctx.fillStyle = "rgba(255,255,255,0.4)";
-        ctx.fillText(tarotIsReversed ? tarotCard.reversedMeaning : tarotCard.meaning, W / 2, 374);
+        ctx.fillText(loveInfo.subtitle, W / 2, 282);
 
         // ── divider ──
         ctx.strokeStyle = "rgba(255,255,255,0.2)";
@@ -2931,8 +2926,9 @@ function ResultsPage({
 
         // ── revela code (if available) ──
         const finalMBTI2 = trueSelfMbti ?? displayMBTI;
-        if (data.zodiac && data.zodiac !== "なし") {
-          const code = generateRevelaCode(finalMBTI2, loveType, data.zodiac);
+        const rpgForCanvas = getRpgClassByCombo(finalMBTI2, loveType);
+        if (rpgForCanvas) {
+          const code = generateRevelaCode(finalMBTI2, loveType, rpgForCanvas.name);
           ctx.fillStyle = "rgba(255,255,255,0.08)";
           ctx.fillRect(W / 2 - 160, 670, 320, 44);
           ctx.strokeStyle = "rgba(255,255,255,0.3)";
@@ -3045,7 +3041,7 @@ function ResultsPage({
         >
           <p className="text-xs tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>JAPAN STATS</p>
           <p className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
-            あなたの <span style={{ color: displayColors.primary, fontWeight: 700 }}>{trueSelfMbti ?? mbtiType}</span> は
+            あなたの <span style={{ color: displayColors.primary, fontWeight: 700 }}>{displayMBTIInfo?.displayName ?? (trueSelfMbti ?? mbtiType)}</span> は
             {statsRank.total.toLocaleString()}人中{" "}
             <span style={{ color: "#f5c842", fontWeight: 700, fontSize: "1.1em" }}>第{statsRank.mbtiRank}位</span>
           </p>
@@ -3059,12 +3055,11 @@ function ResultsPage({
         const stars = Math.max(4, Math.min(9, Math.round(atk / 350)));
         const grp = loveType.charAt(0);
         const sec = loveType.charAt(1);
-        const catchphrase = getMbtiCharaName(displayMBTI, loveType) ?? `${MBTI_ADJ[displayMBTI] ?? ""}${loveInfo.nickname}`;
-
         // RPGクラス
         const rpgCardClass = workType ? getRpgClassByDualCode(workType, loveType) : getRpgClassByCombo(displayMBTI, loveType);
         const rpgName = rpgCardClass?.name ?? "冒険者";
         const rpgEmoji = rpgCardClass?.emoji ?? loveInfo.emoji;
+        const catchphrase = `${mbtiAdjConj(MBTI_ADJ[displayMBTI] ?? "")}${LOVE_ADJ[loveType] ?? ""}${rpgName}`;
 
         // 星座属性
         const zodiacElem = zodiacData?.element ?? null;
@@ -3148,20 +3143,7 @@ function ResultsPage({
               <span style={{ fontSize: 13, fontWeight: 900, color: ts.nameColor, letterSpacing: "0.02em", lineHeight: 1.2, flex: 1 }}>
                 {catchphrase}
               </span>
-              {/* 属性バッジ（星座） */}
-              <div style={{
-                borderRadius: 6,
-                background: elemSt.bg,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-                boxShadow: `0 0 8px ${ts.frameOuter}88`,
-                fontSize: 8, fontWeight: 700, color: elemSt.color,
-                padding: "2px 5px",
-                whiteSpace: "nowrap",
-                letterSpacing: "0.02em",
-              }}>
-                {attrDisplay}
-              </div>
+              {/* 属性バッジ（星座）- 非表示 */}
             </div>
 
             {/* ── レベル星 ── */}
@@ -3214,7 +3196,7 @@ function ResultsPage({
                 fontWeight: 700,
                 letterSpacing: "0.1em",
               }}>
-                {displayMBTI} × {loveType}
+                {displayMBTIInfo?.displayName ?? displayMBTI} × {loveInfo.nickname}
               </div>
             </div>
 
@@ -3227,7 +3209,7 @@ function ResultsPage({
               fontWeight: 600,
               letterSpacing: "0.05em",
             }}>
-              {`【${data.zodiac !== "なし" ? data.zodiac : "星座不明"}／${rpgName}】`}
+              {`【${rpgName}】`}
             </div>
 
             {/* ── テキストボックス ── */}
@@ -3300,57 +3282,34 @@ function ResultsPage({
           <p className="text-xs tracking-[0.3em] opacity-50" style={{ color: "rgba(255,255,255,0.55)" }}>━━━━━━━━━━━━━━━━━━━━━━</p>
         </div>
 
-        {/* 4-element summary */}
-        <div className="space-y-2 mb-5 text-sm">
+        {/* 2-element summary */}
+        <div className="space-y-2 mb-4 text-sm">
           <div
             className="flex items-center gap-3 px-2 py-1.5 rounded-lg"
             style={{ background: displayColors.bg }}
           >
             <span>🧠</span>
-            <span className="opacity-60 text-xs w-24 flex-shrink-0">性格タイプ</span>
+            <span className="opacity-60 text-xs w-24 flex-shrink-0">現在地</span>
             <span className="font-bold" style={{ color: displayColors.primary }}>
-              {displayMBTI}
-              {trueSelfMbti && trueSelfMbti !== mbtiType && (
-                <span className="text-xs ml-2 opacity-60" style={{ color: mbtiColors.primary }}>← 元: {mbtiType}</span>
-              )}
-              {displayMBTIInfo && (
-                <span className="text-xs opacity-70 ml-1" style={{ color: displayColors.primary }}>
-                  {displayColors.label}
-                </span>
-              )}
+              {displayMBTIInfo?.displayName ?? displayMBTI}
             </span>
           </div>
           <div className="flex items-center gap-3 px-2 py-1.5 rounded-lg" style={{ background: "rgba(232,160,191,0.06)" }}>
             <span>✦</span>
-            <span className="opacity-60 text-xs w-24 flex-shrink-0">キャラクターコード</span>
+            <span className="opacity-60 text-xs w-24 flex-shrink-0">本音</span>
             <span className="font-medium" style={{ color: "#e8a0bf" }}>
               {loveInfo.nickname}
-              <span className="text-xs opacity-60 ml-1">（{loveType}）</span>
             </span>
           </div>
-          <div className="flex items-center gap-3 px-2 py-1.5 rounded-lg" style={{ background: "rgba(147,197,253,0.06)" }}>
-            <span>⭐</span>
-            <span className="opacity-60 text-xs w-24 flex-shrink-0">星座</span>
-            <span className="font-medium" style={{ color: data.zodiac === "なし" ? "rgba(147,197,253,0.4)" : "#93c5fd" }}>
-              {data.zodiac === "なし" ? "星座なし" : data.zodiac}
-              {zodiacData && <span className="text-xs opacity-60 ml-1">（{zodiacData.element}・{zodiacData.planet}）</span>}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 px-2 py-1.5 rounded-lg" style={{ background: "rgba(147,51,234,0.06)" }}>
-            <span>🔮</span>
-            <span className="opacity-60 text-xs w-24 flex-shrink-0">タロット</span>
-            <span className="font-medium" style={{ color: "#c084fc" }}>
-              {tarotCard.name}
-              {tarotIsReversed && (
-                <span
-                  className="text-xs ml-2 px-1.5 py-0.5 rounded font-bold"
-                  style={{ background: "rgba(220,60,60,0.2)", color: "#ff8080", border: "1px solid rgba(220,60,60,0.4)" }}
-                >
-                  逆位置
-                </span>
-              )}
-            </span>
-          </div>
+        </div>
+
+        {/* 建前・本音ギャップ */}
+        <div className="rounded-xl p-4 mb-5 text-xs leading-relaxed space-y-1.5" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          <p><span className="opacity-50">建前は</span><span style={{ color: displayColors.primary }}>「{displayMBTIInfo?.subtitle}」</span><span className="opacity-50">傾向</span></p>
+          <p><span className="opacity-50">本音は</span><span style={{ color: "#e8a0bf" }}>「{loveInfo.subtitle}」</span><span className="opacity-50">傾向</span></p>
+          {displayMBTIInfo?.subtitle !== loveInfo.subtitle && (
+            <p className="opacity-40 pt-1">外側と内側にギャップがあります</p>
+          )}
         </div>
 
         <div className="h-px mb-5" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }} />
@@ -3392,30 +3351,6 @@ function ResultsPage({
         <div className="mb-5">
           <p className="text-xs tracking-widest opacity-40 mb-3" style={{ color: "#e8a0bf" }}>✦ 行動傾向・対人スタイル</p>
           <p className="text-sm leading-relaxed opacity-80">{reading.loveReading}</p>
-        </div>
-
-        <div className="h-px mb-5" style={{ background: "linear-gradient(90deg, transparent, rgba(147,51,234,0.3), transparent)" }} />
-
-        {/* タロット mini + 今のあなたへのメッセージ */}
-        <div className="mb-4">
-          <p className="text-xs tracking-widest opacity-40 mb-3" style={{ color: "#c084fc" }}>✦ 今のあなたへのメッセージ</p>
-          <div className="flex items-start gap-4">
-            <div style={{ width: "56px", height: "88px", flexShrink: 0, filter: "drop-shadow(0 0 12px rgba(255,255,255,0.4))" }}>
-              <CardFrontSVG card={tarotCard} isReversed={tarotIsReversed} />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium mb-1" style={{ color: "rgba(255,255,255,0.55)" }}>
-                {tarotCard.name}
-                {tarotIsReversed && (
-                  <span className="text-xs ml-2" style={{ color: "#ff8080" }}>逆位置</span>
-                )}
-              </p>
-              <p className="text-xs opacity-50 italic mb-2">
-                {tarotIsReversed ? tarotCard.reversedMeaning : tarotCard.meaning}
-              </p>
-              <p className="text-xs sm:text-sm leading-relaxed opacity-75">{reading.cosmicMessage}</p>
-            </div>
-          </div>
         </div>
 
         <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }} />
@@ -3461,34 +3396,6 @@ function ResultsPage({
           <p className="text-xs sm:text-sm leading-relaxed opacity-80 italic">「{reading.advice}」</p>
         </div>
 
-        <div className="h-px mb-4" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)" }} />
-
-        {/* ✦ ラッキーエレメント */}
-        <div style={sectionStyle(0.8)}>
-          <p className="text-xs tracking-widest opacity-40 mb-3" style={{ color: "rgba(255,255,255,0.55)" }}>✦ ラッキーエレメント</p>
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { label: "ラッキーカラー", value: reading.luckyElements.color, icon: "🎨" },
-              { label: "ラッキーアイテム", value: reading.luckyElements.item, icon: "✨" },
-              { label: "ラッキーデー", value: reading.luckyElements.day, icon: "📅" },
-              { label: "ラッキーナンバー", value: String(reading.luckyElements.number), icon: "🔢" },
-            ].map(({ label, value, icon }, i) => (
-              <div
-                key={i}
-                className="chip-pop rounded-xl p-3 text-center"
-                style={{
-                  animationDelay: `${0.9 + i * 0.1}s`,
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                }}
-              >
-                <div className="text-lg mb-1">{icon}</div>
-                <div className="text-xs opacity-40 mb-1 tracking-wide">{label}</div>
-                <div className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.55)" }}>{value}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* RPG Career — inline result */}
@@ -3536,9 +3443,9 @@ function ResultsPage({
       {/* ━━━ 友達と相性診断 section ━━━ */}
       {(() => {
         const finalMBTI = trueSelfMbti ?? mbtiType;
-        const canGenerateCode = data.zodiac && data.zodiac !== "なし";
-        if (!canGenerateCode) return null;
-        const revelCode = generateRevelaCode(finalMBTI, loveType, data.zodiac);
+        const rpgForShare = getRpgClassByCombo(finalMBTI, loveType);
+        if (!rpgForShare) return null;
+        const revelCode = generateRevelaCode(finalMBTI, loveType, rpgForShare.name);
         const handleCopyCode = async () => {
           try {
             await navigator.clipboard.writeText(revelCode);
@@ -3645,7 +3552,7 @@ function ResultsPage({
           className="text-xs opacity-60 hover:opacity-90 transition-opacity tracking-wider"
           style={{ color: "#e8a0bf", textDecoration: "none" }}
         >
-          あなたのキャラクターコードについてもっと詳しく →
+          あなたの本音についてもっと詳しく →
         </a>
       </div>
 
@@ -3802,7 +3709,7 @@ export default function ShindanPage() {
   const [selectedTarot, setSelectedTarot] = useState<TarotCard | null>(null);
   const [tarotIsReversed, setTarotIsReversed] = useState(false);
 
-  const [showTarot, setShowTarot] = useState(true);
+  const [showTarot, setShowTarot] = useState(false);
   const [showAnalyzing, setShowAnalyzing] = useState(false);
   const [showGates, setShowGates] = useState(false);
   const [gatesComplete, setGatesComplete] = useState(false);
@@ -3824,7 +3731,11 @@ export default function ShindanPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleStep0Next = () => { goToStep(1); };
+  const handleStep0Next = () => {
+    // 星座選択UIを非表示にしているため、zodiacを"なし"に設定してステップ2へスキップ
+    handleFormChange("zodiac", "なし");
+    goToStep(2);
+  };
 
   const handleStep1Next = () => { goToStep(2); };
 
@@ -3844,7 +3755,13 @@ export default function ShindanPage() {
   const handleStep3Next = () => {
     const soul = calculateLoveType(formData.soulAnswers, activeQuestions.soul);
     setSoulResult(soul);
-    setShowTarot(true);
+    // タロット選択UIを非表示にしているため、ランダムでカードを自動選択して分析へ進む
+    const randomCard = TAROT_CARDS[Math.floor(Math.random() * TAROT_CARDS.length)];
+    const randomReversed = Math.random() < 0.3;
+    setSelectedTarot(randomCard);
+    setTarotIsReversed(randomReversed);
+    setShowTarot(false);
+    setShowAnalyzing(true);
     goToStep(4);
   };
 
@@ -3879,8 +3796,9 @@ export default function ShindanPage() {
     goToStep(0);
   };
 
-  const progressStep = step === 0 ? 0 : step <= 3 ? step : 4;
-  const totalSteps = 4;
+  // step=2→インデックス0(現在地), step=3→インデックス1(本音), step=4→インデックス2(結果)
+  const progressStep = step === 0 ? 0 : step <= 3 ? step - 1 : 3;
+  const totalSteps = 3;
 
   // Determine what to show at step 4
   const showTarotSelection = step === 4 && showTarot && !showAnalyzing;
@@ -3902,7 +3820,7 @@ export default function ShindanPage() {
           <p className="text-xs tracking-wider" style={{ color: "rgba(255,255,255,0.25)" }}>自己分析ツール</p>
         </div>
 
-        {step >= 1 && step <= 3 && <ProgressBar step={progressStep} total={totalSteps} />}
+        {step >= 2 && step <= 3 && <ProgressBar step={progressStep} total={totalSteps} />}
 
         {/* Step 0: Question count customization */}
         {step === 0 && (
@@ -3915,8 +3833,8 @@ export default function ShindanPage() {
           />
         )}
 
-        {/* Step 1: Birthday / Zodiac */}
-        {step === 1 && (
+        {/* Step 1: Birthday / Zodiac (hidden from UI, auto-skipped) */}
+        {false && step === 1 && (
           <Step1
             data={formData}
             onChange={handleFormChange}
@@ -3932,7 +3850,7 @@ export default function ShindanPage() {
             answers={formData.workAnswers}
             onAnswer={handleWorkAnswer}
             onNext={handleStep2Next}
-            onBack={() => goToStep(1)}
+            onBack={() => goToStep(0)}
             questions={activeQuestions.work}
             title="職場の自分"
             titleEn="WORK STYLE"
@@ -3956,8 +3874,8 @@ export default function ShindanPage() {
           />
         )}
 
-        {/* Step 4a: Tarot selection */}
-        {showTarotSelection && (
+        {/* Step 4a: Tarot selection (hidden from UI, auto-selected) */}
+        {false && showTarotSelection && (
           <TarotSelection onSelect={handleTarotSelect} />
         )}
 

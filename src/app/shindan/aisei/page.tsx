@@ -14,6 +14,7 @@ import {
   SYNERGY_PATTERNS,
   CLASS_ROLES,
 } from "@/data/rpgSynergy";
+import { mbtiDescriptions } from "@/data/questions";
 
 // ── Constants ────────────────────────────────────────────────
 
@@ -24,12 +25,9 @@ const MBTI_GRID: MBTIType[][] = [
   ["ISTP", "ISFP", "ESTP", "ESFP"],
 ];
 
-const MBTI_NAMES: Record<MBTIType, string> = {
-  INTJ: "建築家", INTP: "論理学者", ENTJ: "指揮官",  ENTP: "討論者",
-  INFJ: "提唱者", INFP: "仲介者",   ENFJ: "主人公",  ENFP: "広報運動家",
-  ISTJ: "管理者", ISFJ: "擁護者",   ESTJ: "幹部",    ESFJ: "領事",
-  ISTP: "巨匠",   ISFP: "冒険家",   ESTP: "起業家",  ESFP: "エンタメ人",
-};
+const MBTI_NAMES: Record<MBTIType, string> = Object.fromEntries(
+  Object.entries(mbtiDescriptions).map(([k, v]) => [k, v.shortName])
+) as Record<MBTIType, string>;
 
 const RANK_COLORS: Record<string, string> = {
   S: "#EDEDED",
@@ -182,7 +180,7 @@ function CodeCompatibilityResult({
   onReset: () => void;
 }) {
   const result = calculateFullCompatibility(codeA, codeB);
-  const { total, mbtiScore, charaScore, zodiacScore, comment, strengths, cautions } = result;
+  const { total, mbtiScore, charaScore, gapScore, comment, strengths, cautions } = result;
 
   const rank =
     total >= 90 ? "S" : total >= 80 ? "A" : total >= 65 ? "B" : total >= 50 ? "C" : "D";
@@ -193,24 +191,22 @@ function CodeCompatibilityResult({
       <div className="flex items-center justify-center gap-6">
         <div className="text-center">
           <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-base font-bold mx-auto mb-2"
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-sm font-bold mx-auto mb-2"
             style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))", border: "1px solid rgba(255,255,255,0.4)", color: "rgba(255,255,255,0.55)" }}
           >
-            {codeA.mbti}
+            {codeA.rpgClassName}
           </div>
           <p className="text-xs opacity-40">あなた</p>
-          <p className="text-xs opacity-50 mt-0.5" style={{ color: "rgba(255,255,255,0.55)", fontFamily: "monospace" }}>{codeA.zodiac}</p>
         </div>
         <div className="text-2xl" style={{ color: "#e8a0bf" }}>×</div>
         <div className="text-center">
           <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-base font-bold mx-auto mb-2"
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-sm font-bold mx-auto mb-2"
             style={{ background: "linear-gradient(135deg, rgba(232,160,191,0.2), rgba(232,160,191,0.1))", border: "1px solid rgba(232,160,191,0.4)", color: "#e8a0bf" }}
           >
-            {codeB.mbti}
+            {codeB.rpgClassName}
           </div>
           <p className="text-xs opacity-40">友達</p>
-          <p className="text-xs opacity-50 mt-0.5" style={{ color: "#e8a0bf", fontFamily: "monospace" }}>{codeB.zodiac}</p>
         </div>
       </div>
 
@@ -248,9 +244,9 @@ function CodeCompatibilityResult({
         <p className="text-xs tracking-widest mb-4" style={{ color: "rgba(255,255,255,0.55)", opacity: 0.7 }}>
           ✦ スコア詳細
         </p>
-        <ScoreBar label="性格タイプ相性"   score={mbtiScore}   color="rgba(255,255,255,0.55)" />
-        <ScoreBar label="キャラ相性" score={charaScore}  color="#e8a0bf" />
-        <ScoreBar label="星座相性"   score={zodiacScore} color="#93c5fd" />
+        <ScoreBar label="建前相性"   score={mbtiScore}  color="rgba(255,255,255,0.55)" />
+        <ScoreBar label="本音相性"   score={charaScore} color="#e8a0bf" />
+        <ScoreBar label="ギャップ補完" score={gapScore}   color="#a78bfa" />
       </div>
 
       <div className="card-glow rounded-2xl p-5">
@@ -489,11 +485,11 @@ export default function AiseiPage() {
     const a = parseRevelaCode(myCodeInput.trim());
     const b = parseRevelaCode(friendCodeInput.trim());
     if (!a) {
-      setCodeError("あなたのコードの形式が正しくありません（例: ENFP-FCRO-うお-月）");
+      setCodeError("あなたのコードの形式が正しくありません（例: 海賊王-3）");
       return;
     }
     if (!b) {
-      setCodeError("友達のコードの形式が正しくありません（例: INFJ-LCRO-かに-星）");
+      setCodeError("友達のコードの形式が正しくありません（例: 賢者-12）");
       return;
     }
     setParsedA(a);
@@ -588,32 +584,6 @@ export default function AiseiPage() {
       )}
 
       {/* ── MODE TABS ── */}
-      {!isResultShowing && (
-        <div className="flex gap-2 mb-8">
-          {(["code", "mbti"] as Mode[]).map((m) => {
-            const labels: Record<Mode, string> = {
-              code: "revelaコードで診断",
-              mbti: "性格タイプで診断",
-            };
-            return (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-200"
-                style={{
-                  background: mode === m
-                    ? "linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1))"
-                    : "rgba(255,255,255,0.03)",
-                  border: mode === m ? "1px solid rgba(255,255,255,0.5)" : "1px solid rgba(255,255,255,0.08)",
-                  color: mode === m ? "rgba(255,255,255,0.55)" : "rgba(240,230,211,0.5)",
-                }}
-              >
-                {labels[m]}
-              </button>
-            );
-          })}
-        </div>
-      )}
       {/* Group result */}
 
       {/* ── 2-PERSON CODE MODE ── */}
@@ -631,7 +601,7 @@ export default function AiseiPage() {
                 <label className="block text-xs tracking-widest mb-2 opacity-60">あなたのコード</label>
                 <input
                   type="text"
-                  placeholder="例: ENFP-FCRO-うお-月"
+                  placeholder="例: 海賊王-3"
                   value={myCodeInput}
                   onChange={(e) => setMyCodeInput(e.target.value)}
                   style={inputStyle}
@@ -641,7 +611,7 @@ export default function AiseiPage() {
                 <label className="block text-xs tracking-widest mb-2 opacity-60">友達のコード</label>
                 <input
                   type="text"
-                  placeholder="例: INFJ-LCRO-かに-星"
+                  placeholder="例: 賢者-12"
                   value={friendCodeInput}
                   onChange={(e) => setFriendCodeInput(e.target.value)}
                   style={inputStyle}
@@ -669,7 +639,7 @@ export default function AiseiPage() {
 
           <p className="text-xs opacity-40 text-center leading-relaxed">
             revelaコードはrevela診断の結果ページで確認できます。<br />
-            形式: MBTI-キャラコード-星座
+            形式: RPGクラス名-番号（例: 海賊王-3）
           </p>
         </div>
       )}

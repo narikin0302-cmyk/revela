@@ -23,7 +23,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "建築家",
     primary: "#7c3aed",
     bg: "rgba(124,58,237,0.12)",
-    group: "分析家",
+    group: "戦略型",
     groupColor: "#7c3aed",
     description:
       "戦略的思考と長期ビジョンを持つ稀有な存在。独自の理論を構築し、高い基準で物事を実行します。感情より論理を優先し、目標達成への意志が強い。",
@@ -34,7 +34,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "論理学者",
     primary: "#8b5cf6",
     bg: "rgba(139,92,246,0.12)",
-    group: "分析家",
+    group: "戦略型",
     groupColor: "#7c3aed",
     description:
       "知的好奇心旺盛で、あらゆる問いに論理的な答えを求めます。既存の理論を疑い、独自のフレームワークで世界を理解しようとする革新的な思索者。",
@@ -45,7 +45,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "指揮官",
     primary: "#6d28d9",
     bg: "rgba(109,40,217,0.12)",
-    group: "分析家",
+    group: "戦略型",
     groupColor: "#7c3aed",
     description:
       "生まれながらのリーダー。目標達成のために人々を組織し、効率的に動かす力を持ちます。大きなビジョンを描き、それを現実にする実行力と決断力が際立つ。",
@@ -56,7 +56,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "討論者",
     primary: "#a78bfa",
     bg: "rgba(167,139,250,0.12)",
-    group: "分析家",
+    group: "戦略型",
     groupColor: "#7c3aed",
     description:
       "知的な議論と挑戦を愛する革新者。あらゆる視点から問題を検討し、創造的な解決策を見出します。常識を疑い、新しいアイデアで周囲を刺激します。",
@@ -68,7 +68,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "提唱者",
     primary: "#059669",
     bg: "rgba(5,150,105,0.12)",
-    group: "外交官",
+    group: "共鳴型",
     groupColor: "#059669",
     description:
       "深い洞察力と強い使命感を持つ稀少タイプ。人の本質を見通し、社会の変革に静かに貢献します。理想主義と現実的な実行力を兼ね備えた真のビジョナリー。",
@@ -79,7 +79,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "仲介者",
     primary: "#10b981",
     bg: "rgba(16,185,129,0.12)",
-    group: "外交官",
+    group: "共鳴型",
     groupColor: "#059669",
     description:
       "豊かな内面世界と強い価値観を持つ詩人的な魂。表面的な成功より意味のある仕事を求め、独創的な視点で人の心に届くものを生み出します。",
@@ -90,7 +90,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "主人公",
     primary: "#047857",
     bg: "rgba(4,120,87,0.12)",
-    group: "外交官",
+    group: "共鳴型",
     groupColor: "#059669",
     description:
       "天性のカリスマとリーダーシップで人々を鼓舞します。他者の可能性を最大限引き出すことを喜びとし、チームの調和を保ちながら共通のビジョンへ導く。",
@@ -101,7 +101,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "広報運動家",
     primary: "#34d399",
     bg: "rgba(52,211,153,0.12)",
-    group: "外交官",
+    group: "共鳴型",
     groupColor: "#059669",
     description:
       "情熱とアイデアの泉。常に新しい可能性を見出し、人々を巻き込んで夢を形にします。どんな状況でも熱意と明るさで周囲に活力を与えるチームの太陽。",
@@ -113,7 +113,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "管理者",
     primary: "#1d4ed8",
     bg: "rgba(29,78,216,0.12)",
-    group: "番人",
+    group: "堅実型",
     groupColor: "#1d4ed8",
     description:
       "信頼性と責任感の体現者。ルールと手順を重視し、約束を必ず守ります。組織の根幹として安定した成果を出し続ける「静かな功労者」です。",
@@ -124,7 +124,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "擁護者",
     primary: "#2563eb",
     bg: "rgba(37,99,235,0.12)",
-    group: "番人",
+    group: "堅実型",
     groupColor: "#1d4ed8",
     description:
       "細やかな気配りと強い責任感で周囲を支える守護者。人の痛みに敏感で、縁の下の力持ちとして組織やコミュニティの安定を守ります。",
@@ -135,7 +135,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "幹部",
     primary: "#1e40af",
     bg: "rgba(30,64,175,0.12)",
-    group: "番人",
+    group: "堅実型",
     groupColor: "#1d4ed8",
     description:
       "秩序と伝統を重んじ、実行力で組織を率いるリーダー。明確なルールと効率的な手順で目標を達成し、チームに方向性と安定感をもたらします。",
@@ -146,7 +146,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "領事",
     primary: "#3b82f6",
     bg: "rgba(59,130,246,0.12)",
-    group: "番人",
+    group: "堅実型",
     groupColor: "#1d4ed8",
     description:
       "社交的で思いやり深く、周囲の調和を大切にする存在。他者のニーズを敏感に察知し、コミュニティや組織のつながりを育む天性の協調者。",
@@ -158,7 +158,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "巨匠",
     primary: "#92400e",
     bg: "rgba(146,64,14,0.12)",
-    group: "探検家",
+    group: "感応型",
     groupColor: "#d97706",
     description:
       "冷静な判断力と卓越した技術力を持つ実践者。理論より行動、話すより手を動かすことで結果を出します。危機的状況でも揺るがない「現場のエース」。",
@@ -169,7 +169,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "冒険家",
     primary: "#d97706",
     bg: "rgba(217,119,6,0.12)",
-    group: "探検家",
+    group: "感応型",
     groupColor: "#d97706",
     description:
       "感性豊かで美しいものに強く惹かれるアーティスト気質。自分のペースで深い仕事をし、静かに独自の価値を生み出します。自由と真正性を何より重んじる。",
@@ -180,7 +180,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "起業家",
     primary: "#b45309",
     bg: "rgba(180,83,9,0.12)",
-    group: "探検家",
+    group: "感応型",
     groupColor: "#d97706",
     description:
       "行動と結果の人。考えるより先に動き、現場でチャンスをつかみます。リスクを恐れずスピード感ある判断で周囲を引っ張る「修羅場のスター」です。",
@@ -191,7 +191,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
     nickname: "エンターテイナー",
     primary: "#f59e0b",
     bg: "rgba(245,158,11,0.12)",
-    group: "探検家",
+    group: "感応型",
     groupColor: "#d97706",
     description:
       "いるだけで場が明るくなる存在。人を楽しませることに全力を注ぎ、瞬間瞬間を最高のものにします。柔軟で社交的なエンターテインメントの申し子。",
@@ -199,7 +199,7 @@ const MBTI_TYPES: MbtiTypeData[] = [
   },
 ];
 
-const GROUPS = ["分析家", "外交官", "番人", "探検家"];
+const GROUPS = ["戦略型", "共鳴型", "堅実型", "感応型"];
 
 export default function MbtiPage() {
   return (

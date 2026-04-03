@@ -23,17 +23,17 @@ const MBTI_COLORS: Record<string, string> = {
 };
 
 const GROUP_TYPES: Record<string, string[]> = {
-  分析家: ["INTJ", "INTP", "ENTJ", "ENTP"],
-  外交官: ["INFJ", "INFP", "ENFJ", "ENFP"],
-  番人: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"],
-  探検家: ["ISTP", "ISFP", "ESTP", "ESFP"],
+  戦略型: ["INTJ", "INTP", "ENTJ", "ENTP"],
+  共鳴型: ["INFJ", "INFP", "ENFJ", "ENFP"],
+  堅実型: ["ISTJ", "ISFJ", "ESTJ", "ESFJ"],
+  感応型: ["ISTP", "ISFP", "ESTP", "ESFP"],
 };
 
 const GROUP_COLORS: Record<string, string> = {
-  分析家: "#7c3aed",
-  外交官: "#059669",
-  番人: "#1d4ed8",
-  探検家: "#92400e",
+  戦略型: "#7c3aed",
+  共鳴型: "#059669",
+  堅実型: "#1d4ed8",
+  感応型: "#92400e",
 };
 
 const FAMOUS_DATA: Record<string, string[]> = {
@@ -65,7 +65,7 @@ function getGroupForType(type: string): string {
 export default function FamousPage() {
   const [activeFilter, setActiveFilter] = useState<string>("全員");
 
-  const filters = ["全員", "分析家", "外交官", "番人", "探検家"];
+  const filters = ["全員", "戦略型", "共鳴型", "堅実型", "感応型"];
 
   const visibleTypes = Object.keys(FAMOUS_DATA).filter((type) => {
     if (activeFilter === "全員") return true;
