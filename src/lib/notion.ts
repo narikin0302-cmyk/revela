@@ -26,6 +26,7 @@ export interface NotionArticle {
 export async function getPublishedArticles(): Promise<NotionArticle[]> {
   const res = await notion.databases.query({
     database_id: DB_ID,
+    filter: { property: "published", checkbox: { equals: true } },
     sorts: [{ property: "order", direction: "ascending" }],
   });
 

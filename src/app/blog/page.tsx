@@ -296,7 +296,7 @@ export default function BlogPage() {
   const profileTags: { label: string; tag: string; sub: string }[] = [];
   if (profile.mbti) {
     profileTags.push({ label: profile.mbti, tag: profile.mbti, sub: "性格タイプ" });
-    profileTags.push({ label: "恋愛", tag: "恋愛", sub: "ラブ" });
+    profileTags.push({ label: "恋愛", tag: "恋愛", sub: "本音" });
   }
   if (profile.rpgRole) {
     profileTags.push({ label: profile.rpgRole, tag: profile.rpgRole, sub: "RPG" });
