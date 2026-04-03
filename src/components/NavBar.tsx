@@ -62,6 +62,10 @@ const NAV_ITEMS: NavItem[] = [
     href: "/history",
   },
   {
+    label: "コンセプト",
+    href: "/concept",
+  },
+  {
     label: "ブログ",
     href: "/blog",
   },

@@ -94,9 +94,9 @@ export default function HomePage() {
             className="text-5xl sm:text-7xl md:text-8xl font-light leading-tight mb-6"
             style={{ fontFamily: "var(--font-noto-serif-jp), serif", letterSpacing: "0.04em" }}
           >
-            <span style={{ color: "#EDEDED" }}>深層の本質を、</span>
+            <span style={{ color: "#EDEDED" }}>自分のことは、</span>
             <br />
-            <span style={{ color: "rgba(255,255,255,0.55)" }}>言語化する。</span>
+            <span style={{ color: "rgba(255,255,255,0.55)" }}>自分が一番わからない。</span>
           </h1>
         </div>
 
@@ -108,7 +108,8 @@ export default function HomePage() {
             className="text-sm sm:text-base leading-relaxed mb-2 font-light max-w-sm mx-auto"
             style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}
           >
-            3つの診断軸が交わるとき、<br />あなたの輪郭が浮かび上がる。
+            強みを聞かれても出てこない。やりたいことも答えられない。<br />
+            それは自己分析が足りないんじゃない。<br />言語化する道具がなかっただけ。
           </p>
           <p
             className="font-cinzel text-xs tracking-[0.3em] mb-10"
@@ -249,6 +250,83 @@ export default function HomePage() {
             className="btn-outline-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm"
           >
             今すぐ分析する →
+          </Link>
+        </div>
+      </section>
+
+      {/* ==================== TESTIMONIALS ==================== */}
+      <section className="relative px-4 py-16 max-w-2xl mx-auto">
+        <div className="text-center mb-12">
+          <p className="font-cinzel section-label mb-3">VOICES</p>
+          <h2
+            className="text-2xl sm:text-3xl font-light"
+            style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}
+          >
+            使った人の声
+          </h2>
+          <div className="divider-ornate mt-6">
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>◆</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-4">
+          {testimonials.map((t, i) => (
+            <div
+              key={i}
+              className="rounded-2xl px-6 py-5"
+              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <p className="text-sm leading-relaxed mb-3" style={{ color: "rgba(255,255,255,0.65)", fontFamily: "var(--font-noto-serif-jp), serif" }}>
+                {t.text}
+              </p>
+              <p className="font-cinzel text-xs tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
+                — {t.type}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ==================== AISEI (COMPATIBILITY) ==================== */}
+      <section className="relative px-4 py-16 max-w-2xl mx-auto">
+        <div className="text-center mb-12">
+          <p className="font-cinzel section-label mb-3">COMPATIBILITY</p>
+          <h2
+            className="text-2xl sm:text-3xl font-light mb-4"
+            style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}
+          >
+            あなたを知ったら、<br />次は「相手」を知る。
+          </h2>
+          <p
+            className="text-sm leading-relaxed max-w-sm mx-auto"
+            style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}
+          >
+            建前と本音のギャップは、人それぞれ違う。<br />
+            その違いが「相性」を生む。<br />
+            <br />
+            表面的な好き嫌いじゃなく、<br />
+            お互いの立ち回りのギャップから<br />
+            本質的な相性を可視化する。
+          </p>
+          <div className="divider-ornate mt-6">
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>◆</span>
+          </div>
+        </div>
+        <div
+          className="rounded-2xl p-6 text-center"
+          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <p className="text-xs tracking-widest mb-2 font-cinzel" style={{ color: "rgba(255,255,255,0.25)" }}>
+            FRIENDS · LOVERS · COWORKERS
+          </p>
+          <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-noto-serif-jp), serif" }}>
+            友人・恋人・職場——あらゆる関係に使える
+          </p>
+          <Link
+            href="/shindan/aisei"
+            className="btn-outline-primary inline-flex items-center gap-3 px-8 py-3.5 rounded-full text-sm"
+          >
+            <span>相性を診断する</span>
+            <span style={{ opacity: 0.5 }}>→</span>
           </Link>
         </div>
       </section>

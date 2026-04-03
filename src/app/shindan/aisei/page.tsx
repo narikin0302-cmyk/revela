@@ -559,28 +559,45 @@ export default function AiseiPage() {
 
       {/* ── パーティーバナー ── */}
       {!isResultShowing && (
-        <a
-          href="/party"
-          className="flex items-center gap-4 w-full rounded-2xl p-4 mb-6 transition-all duration-200 hover:opacity-80"
+        <div
+          className="w-full rounded-2xl p-6 mb-6"
           style={{
-            background: "linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05))",
-            border: "1px solid rgba(212,175,55,0.3)",
+            background: "linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03))",
+            border: "1px solid rgba(212,175,55,0.25)",
           }}
         >
-          <div className="text-2xl shrink-0">⚔️</div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold tracking-widest mb-0.5" style={{ color: "#d4af37" }}>
-              PARTY FORMATION
-            </p>
-            <p className="text-sm font-bold" style={{ color: "#EDEDED" }}>
-              3人以上でパーティー診断
-            </p>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
-              小隊・パーティー・討伐隊・巨大ギルド（最大99人）
-            </p>
-          </div>
-          <span className="text-xs shrink-0" style={{ color: "rgba(212,175,55,0.6)" }}>→</span>
-        </a>
+          <p className="text-xs font-bold tracking-widest mb-4" style={{ color: "#d4af37" }}>
+            3人以上の場合はパーティー診断へ
+          </p>
+          <p
+            className="text-sm leading-relaxed mb-3"
+            style={{ color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-noto-serif-jp), serif" }}
+          >
+            相性診断は「2人の間にあるもの」を深く掘り下げる。
+            お互いの立ち回りがどう噛み合うか、どこで補い合えるか——
+            2人だからこそ見える関係性の地図を描く。
+          </p>
+          <p
+            className="text-sm leading-relaxed mb-5"
+            style={{ color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-noto-serif-jp), serif" }}
+          >
+            3人以上なら、見るべきものが変わる。
+            個人同士のギャップではなく、チーム全体のバランス。
+            前衛・後衛・頭脳・自由——それぞれの役割がどう組み合わさるかで、
+            パーティーの強みと弱点が決まる。
+          </p>
+          <a
+            href="/party"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm transition-all duration-200 hover:opacity-80"
+            style={{
+              background: "rgba(212,175,55,0.12)",
+              border: "1px solid rgba(212,175,55,0.4)",
+              color: "#d4af37",
+            }}
+          >
+            <span>⚔️ 3人以上で試す → パーティー診断</span>
+          </a>
+        </div>
       )}
 
       {/* ── MODE TABS ── */}

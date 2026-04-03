@@ -195,6 +195,13 @@ function ResultView() {
             <p style={{ fontSize: "9px", letterSpacing: "0.2em", color: "rgba(255,255,255,0.4)", marginBottom: "6px" }}>職業RPG</p>
             <p className="font-bold" style={{ color: "#a78bfa", fontSize: "15px" }}>{rpg.emoji} {rpg.name}</p>
             <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", marginTop: "4px" }}>{rpg.tagline}</p>
+            <Link
+              href={`/blog/${rpg.id}-guide`}
+              className="inline-flex items-center gap-1 mt-3 text-xs tracking-wider transition-opacity hover:opacity-80"
+              style={{ color: "#a78bfa", borderBottom: "1px solid rgba(167,139,250,0.3)", paddingBottom: "1px" }}
+            >
+              {rpg.name}の自己分析ガイドを読む →
+            </Link>
           </div>
         )}
       </div>

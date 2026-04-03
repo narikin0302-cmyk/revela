@@ -27,16 +27,6 @@ const MBTI_COLORS: Record<string, { primary: string; bg: string; label: string }
   ESFP: { primary: "#f59e0b", bg: "rgba(245,158,11,0.15)", label: "感応型" },
 };
 
-function Chip({ label, color }: { label: string; color: string }) {
-  return (
-    <span
-      className="inline-block px-2 py-0.5 rounded-full text-xs tracking-wide"
-      style={{ background: `${color}18`, border: `1px solid ${color}40`, color }}
-    >
-      {label}
-    </span>
-  );
-}
 
 function ResultSummaryCard({ entry }: { entry: HistoryEntry }) {
   const mbtiColor = entry.mbti
@@ -137,12 +127,6 @@ function HistoryCard({
               {codeCopied ? "✓ コピー済" : revelCode}
             </button>
           )}
-          <div className="flex flex-wrap gap-2">
-            {entry.mbti && <Chip label={entry.mbti} color="rgba(255,255,255,0.6)" />}
-            {entry.loveType && <Chip label={entry.loveType} color="#e8a0bf" />}
-            {entry.zodiac && <Chip label={entry.zodiac} color="#60a5fa" />}
-            {entry.tarot && <Chip label={entry.tarot} color="#34d399" />}
-          </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
