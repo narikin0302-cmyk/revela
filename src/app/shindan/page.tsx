@@ -3056,7 +3056,7 @@ function ResultsPage({
         const grp = loveType.charAt(0);
         const sec = loveType.charAt(1);
         // RPGクラス
-        const rpgCardClass = workType ? getRpgClassByDualCode(workType, loveType) : getRpgClassByCombo(displayMBTI, loveType);
+        const rpgCardClass = getRpgClassByCombo(displayMBTI, loveType);
         const rpgName = rpgCardClass?.name ?? "冒険者";
         const rpgEmoji = rpgCardClass?.emoji ?? loveInfo.emoji;
         const catchphrase = `${mbtiAdjConj(MBTI_ADJ[displayMBTI] ?? "")}${LOVE_ADJ[loveType] ?? ""}${rpgName}`;
@@ -3526,35 +3526,6 @@ function ResultsPage({
         <span className="text-xs opacity-20 tracking-widest">ADVERTISEMENT</span>
       </div>
 
-      {/* キャラクターコード detail */}
-      <div
-        className="rounded-2xl p-5 mb-6"
-        style={{
-          background: "rgba(232,160,191,0.05)",
-          border: "1px solid rgba(232,160,191,0.2)",
-          ...sectionStyle(0.3),
-        }}
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-2xl">{loveInfo.emoji}</span>
-          <div className="flex-1">
-            <div className="text-sm font-medium" style={{ color: "#e8a0bf" }}>
-              {loveType} · {loveInfo.nickname}
-            </div>
-            <div className="text-xs opacity-50 mt-0.5">{loveInfo.subtitle}</div>
-            <div className="text-xs mt-1" style={{ color: "rgba(232,160,191,0.6)", fontStyle: "italic" }}>
-              {loveInfo.motto}
-            </div>
-          </div>
-        </div>
-        <a
-          href="/chara"
-          className="text-xs opacity-60 hover:opacity-90 transition-opacity tracking-wider"
-          style={{ color: "#e8a0bf", textDecoration: "none" }}
-        >
-          あなたの本音についてもっと詳しく →
-        </a>
-      </div>
 
       {/* Action buttons */}
       <div className="space-y-3" style={sectionStyle(0.4)}>
@@ -3870,7 +3841,7 @@ export default function ShindanPage() {
             title="本音の自分"
             titleEn="TRUE SELF"
             subtitle="本音・プライベートなあなたを選んでください"
-            nextLabel="タロットへ →"
+            nextLabel="診断する →"
           />
         )}
 
