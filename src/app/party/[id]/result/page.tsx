@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { RPG_CLASSES } from "@/data/rpgClasses";
 import { CLASS_ROLES, analyzePartySynergy, type RoleType } from "@/data/rpgSynergy";
+import { RPG_GROUPS } from "@/lib/revelaCodes";
 import type { PartyMember } from "@/lib/supabase";
 
 function getGroupScale(count: number) {
@@ -14,6 +15,8 @@ function getGroupScale(count: number) {
 }
 
 type RoleCounts = Record<RoleType, number>;
+type LoveGroup = "前衛" | "自由" | "後衛" | "頭脳";
+type LoveGroupCounts = Record<LoveGroup, number>;
 
 function countRoles(members: PartyMember[]): RoleCounts {
   const counts: RoleCounts = { LEADER: 0, SUPPORT: 0, BRAIN: 0, TRICKSTER: 0 };
@@ -24,11 +27,52 @@ function countRoles(members: PartyMember[]): RoleCounts {
   return counts;
 }
 
-const ROLE_INFO: Record<RoleType, { label: string; color: string }> = {
-  LEADER:    { label: "前衛 (LEADER)",    color: "#f87171" },
-  SUPPORT:   { label: "後衛 (SUPPORT)",   color: "#34d399" },
-  BRAIN:     { label: "頭脳 (BRAIN)",     color: "#818cf8" },
-  TRICKSTER: { label: "自由 (TRICKSTER)", color: "#c084fc" },
+function countLoveGroups(members: PartyMember[]): LoveGroupCounts {
+  const counts: LoveGroupCounts = { 前衛: 0, 自由: 0, 後衛: 0, 頭脳: 0 };
+  for (const m of members) {
+    const lg = RPG_GROUPS[m.rpg_class]?.loveGroup as LoveGroup | undefined;
+    if (lg) counts[lg]++;
+  }
+  return counts;
+}
+
+// 建前グループ ↔ 本音グループ の対応（ギャップ判定用）
+const LOVE_TO_MBTI: Record<LoveGroup, RoleType> = {
+  前衛: "LEADER", 自由: "TRICKSTER", 後衛: "SUPPORT", 頭脳: "BRAIN",
+};
+const MBTI_COMPLEMENT: Record<RoleType, RoleType> = {
+  LEADER: "SUPPORT", SUPPORT: "LEADER", BRAIN: "TRICKSTER", TRICKSTER: "BRAIN",
+};
+
+type GapType = "一致" | "補完" | "逆転";
+function getGapType(rpgClass: string): GapType {
+  const g = RPG_GROUPS[rpgClass];
+  if (!g) return "一致";
+  const mbtiGroup = g.mbtiGroup as RoleType;
+  const loveEquiv = LOVE_TO_MBTI[g.loveGroup as LoveGroup];
+  if (mbtiGroup === loveEquiv) return "一致";
+  if (MBTI_COMPLEMENT[mbtiGroup] === loveEquiv) return "補完";
+  return "逆転";
+}
+
+const GAP_INFO: Record<GapType, { color: string; desc: string }> = {
+  一致: { color: "#34d399", desc: "建前と本音が同じ方向" },
+  補完: { color: "#fbbf24", desc: "建前と本音が補い合う" },
+  逆転: { color: "#f87171", desc: "建前と本音が逆方向" },
+};
+
+const ROLE_INFO: Record<RoleType, { label: string; color: string; short: string }> = {
+  LEADER:    { label: "前衛 (LEADER)",    color: "#f87171", short: "前衛" },
+  SUPPORT:   { label: "後衛 (SUPPORT)",   color: "#34d399", short: "後衛" },
+  BRAIN:     { label: "頭脳 (BRAIN)",     color: "#818cf8", short: "頭脳" },
+  TRICKSTER: { label: "自由 (TRICKSTER)", color: "#c084fc", short: "自由" },
+};
+
+const LOVE_INFO: Record<LoveGroup, { label: string; color: string }> = {
+  前衛: { label: "前衛（承認・存在感）", color: "#f87171" },
+  自由: { label: "自由（自律・信念）",   color: "#c084fc" },
+  後衛: { label: "後衛（貢献・調和）",   color: "#34d399" },
+  頭脳: { label: "頭脳（専門・深さ）",   color: "#818cf8" },
 };
 
 function getClassEmoji(c: string) {
@@ -59,10 +103,11 @@ export default function PartyResultPage() {
     );
   }
 
-  const total   = members.length;
-  const counts  = countRoles(members);
-  const scale   = getGroupScale(total);
-  const synergy = analyzePartySynergy(members.map((m) => m.rpg_class));
+  const total       = members.length;
+  const counts      = countRoles(members);
+  const loveCounts  = countLoveGroups(members);
+  const scale       = getGroupScale(total);
+  const synergy     = analyzePartySynergy(members.map((m) => m.rpg_class));
 
   const shareText = `【${scale.name}シナジー解析】\n${total}人のパーティーは「${synergy.name}」\n「${synergy.title}」\n\n#revela #パーティー診断`;
 
@@ -156,6 +201,85 @@ export default function PartyResultPage() {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* ── 本音バランス ── */}
+      <div
+        className="w-full rounded-2xl p-5 mb-6"
+        style={{ background: "rgba(232,160,191,0.04)", border: "1px solid rgba(232,160,191,0.15)" }}
+      >
+        <p className="text-xs tracking-widest mb-4" style={{ color: "rgba(232,160,191,0.7)" }}>
+          ✦ 本音バランス
+        </p>
+        <div className="space-y-3">
+          {(["前衛", "自由", "後衛", "頭脳"] as LoveGroup[]).map((lg) => {
+            const info = LOVE_INFO[lg];
+            const count = loveCounts[lg];
+            const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+            return (
+              <div key={lg}>
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span style={{ color: info.color }}>{info.label}</span>
+                  <span style={{ color: "rgba(255,255,255,0.4)" }}>{count}人 {pct}%</span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${pct}%`, background: info.color, transition: "width 1s ease" }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── ギャップマップ ── */}
+      <div
+        className="w-full rounded-2xl p-5 mb-6"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}
+      >
+        <p className="text-xs tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+          ⚡ ギャップマップ
+        </p>
+        <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.25)" }}>
+          建前と本音の方向性
+        </p>
+        <div className="space-y-2">
+          {members.map((m) => {
+            const mbtiGroup = CLASS_ROLES[m.rpg_class] as RoleType | undefined;
+            const loveGroup = RPG_GROUPS[m.rpg_class]?.loveGroup as LoveGroup | undefined;
+            if (!mbtiGroup || !loveGroup) return null;
+            const gapType = getGapType(m.rpg_class);
+            const gapInfo = GAP_INFO[gapType];
+            const mbtiInfo = ROLE_INFO[mbtiGroup];
+            const loveInfo = LOVE_INFO[loveGroup];
+            return (
+              <div
+                key={m.id}
+                className="flex items-center gap-2 rounded-xl px-3 py-2.5"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <span className="text-base shrink-0">{getClassEmoji(m.rpg_class)}</span>
+                <span className="text-xs font-medium truncate min-w-0" style={{ color: "#EDEDED", flex: "0 0 4.5rem" }}>{m.name}</span>
+                <span className="text-xs shrink-0" style={{ color: mbtiInfo.color }}>{mbtiInfo.short}</span>
+                <span className="text-xs shrink-0" style={{ color: "rgba(255,255,255,0.3)" }}>→</span>
+                <span className="text-xs shrink-0" style={{ color: loveInfo.color }}>{loveGroup}</span>
+                <span className="ml-auto text-xs px-2 py-0.5 rounded-full shrink-0" style={{ background: `${gapInfo.color}18`, color: gapInfo.color, border: `1px solid ${gapInfo.color}44` }}>
+                  {gapType}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex gap-3 mt-4 flex-wrap">
+          {(["一致", "補完", "逆転"] as GapType[]).map((g) => (
+            <div key={g} className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full" style={{ background: GAP_INFO[g].color }} />
+              <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{g}：{GAP_INFO[g].desc}</span>
+            </div>
+          ))}
         </div>
       </div>
 
