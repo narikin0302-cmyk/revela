@@ -232,9 +232,6 @@ export default function MePage() {
             {/* カード名バー */}
             <div style={{ background: ts.nameBg, border: `1px solid ${ts.frameOuter}88`, borderRadius: 4, padding: "5px 8px", marginBottom: 5, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
               <span style={{ fontSize: 13, fontWeight: 900, color: ts.nameColor, letterSpacing: "0.02em", lineHeight: 1.2, flex: 1 }}>{cardName}</span>
-              <div style={{ borderRadius: 6, background: elemSt.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 8px ${ts.frameOuter}88`, fontSize: 8, fontWeight: 700, color: elemSt.color, padding: "2px 5px", whiteSpace: "nowrap", letterSpacing: "0.02em" }}>
-                {attrDisplay}
-              </div>
             </div>
 
             {/* レベル星 */}
@@ -265,7 +262,7 @@ export default function MePage() {
 
             {/* 星座／タイプ行 */}
             <div style={{ fontSize: 9, color: `${ts.nameColor}cc`, marginBottom: 4, paddingLeft: 2, fontWeight: 600, letterSpacing: "0.05em" }}>
-              {`【${zodiacKanji || "星座不明"}／${rpgName}】`}
+              {`【${rpgName}】`}
             </div>
 
             {/* テキストボックス */}
