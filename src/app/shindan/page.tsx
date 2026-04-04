@@ -21,7 +21,7 @@ import { saveHistoryEntry } from "@/lib/storage";
 import { trackDiagnosisResult, fetchDiagnosisStats } from "@/lib/supabase";
 import { generateRevelaCode, loveTypeToMbti } from "@/lib/revelaCodes";
 import { getMbtiCharaName } from "@/data/charaNames";
-import { getRpgClassByCombo, getRpgClassByDualCode, calcGapScore, getRpgSynergy } from "@/data/rpgClasses";
+import { getRpgClassByCombo, calcGapScore, getRpgSynergy } from "@/data/rpgClasses";
 
 // ============================================================
 // Types
@@ -3401,7 +3401,7 @@ function ResultsPage({
       {/* RPG Career — inline result */}
       {(() => {
         const displayMBTI = trueSelfMbti ?? mbtiType;
-        const rpgClass = workType ? getRpgClassByDualCode(workType, loveType) : getRpgClassByCombo(displayMBTI, loveType);
+        const rpgClass = getRpgClassByCombo(displayMBTI, loveType);
         if (!rpgClass) return null;
         const synergy = zodiacData ? getRpgSynergy(rpgClass.name, zodiacData.element) : null;
         return (
