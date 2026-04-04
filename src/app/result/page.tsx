@@ -148,7 +148,6 @@ function ResultView() {
         <div style={{ width: 260, position: "relative", borderRadius: 10, background: ts.cardBg, boxShadow: `0 16px 60px rgba(0,0,0,0.85), 0 0 30px ${ts.frameOuter}44, inset 0 0 0 3px ${ts.frameOuter}, inset 0 0 0 5px ${ts.frameInner}, inset 0 0 0 7px ${ts.frameOuter}88`, padding: 8 }}>
           <div style={{ background: ts.nameBg, border: `1px solid ${ts.frameOuter}88`, borderRadius: 4, padding: "5px 8px", marginBottom: 5, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
             <span style={{ fontSize: 13, fontWeight: 900, color: ts.nameColor, letterSpacing: "0.02em", lineHeight: 1.2, flex: 1 }}>{catchphrase}</span>
-            <div style={{ borderRadius: 6, background: elemSt.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 8px ${ts.frameOuter}88`, fontSize: 8, fontWeight: 700, color: elemSt.color, padding: "2px 5px", whiteSpace: "nowrap" }}>{attrDisplay}</div>
           </div>
           <div style={{ textAlign: "right", marginBottom: 5, paddingRight: 2 }}>
             {Array.from({ length: stars }).map((_, i) => <span key={i} style={{ color: ts.frameOuter, fontSize: 14, textShadow: `0 0 6px ${ts.frameOuter}` }}>★</span>)}
@@ -165,7 +164,7 @@ function ResultView() {
             <span style={{ fontSize: 72, position: "relative", zIndex: 1, filter: `drop-shadow(0 0 16px ${ts.artAccent})` }}>{rpgEmoji}</span>
             <div style={{ position: "absolute", bottom: 6, right: 6, background: `${ts.artAccent}22`, border: `1px solid ${ts.artAccent}66`, borderRadius: 3, padding: "2px 6px", fontSize: 9, color: ts.artAccent, fontFamily: "monospace", fontWeight: 700, letterSpacing: "0.1em" }}>{mbti} × {love}</div>
           </div>
-          <div style={{ fontSize: 9, color: `${ts.nameColor}cc`, marginBottom: 4, paddingLeft: 2, fontWeight: 600, letterSpacing: "0.05em" }}>{`【${zodiac !== "なし" ? zodiac : "星座不明"}／${rpgName}】`}</div>
+          <div style={{ fontSize: 9, color: `${ts.nameColor}cc`, marginBottom: 4, paddingLeft: 2, fontWeight: 600, letterSpacing: "0.05em" }}>{`【${rpgName}】`}</div>
           <div style={{ background: `${ts.artAccent}0a`, border: `1px solid ${ts.frameOuter}44`, borderRadius: 4, padding: "6px 7px", marginBottom: 8, fontSize: 9, color: "rgba(255,255,255,0.75)", lineHeight: 1.65, minHeight: 52 }}>
             {loveInfo?.subtitle}。{loveInfo?.motto}
             {rpg && <span style={{ display: "block", marginTop: 4, opacity: 0.7, borderTop: `1px solid ${ts.frameOuter}33`, paddingTop: 4 }}>{rpgEmoji}【{rpgName}】{rpg.tagline}</span>}
