@@ -219,11 +219,10 @@ export default function MePage() {
         const stars = Math.max(4, Math.min(9, Math.round(atk / 350)));
         const grp = code.loveType.charAt(0);
         const sec = code.loveType.charAt(1);
-        const cardName = `${mbtiAdjConj(MBTI_ADJ[code.mbti] ?? "")}${LOVE_ADJ[code.loveType] ?? ""}${rpgName}`;
-
         const rpgCardClass = rpgClass;
         const rpgName  = rpgCardClass?.name  ?? "冒険者";
         const rpgEmoji = rpgCardClass?.emoji ?? "⚔️";
+        const cardName = `${mbtiAdjConj(MBTI_ADJ[code.mbti] ?? "")}${LOVE_ADJ[code.loveType] ?? ""}${rpgName}`;
 
         const ELEM_STYLE: Record<string, { bg: string; color: string; symbol: string }> = {
           火: { bg: "linear-gradient(135deg,#ff6030,#cc2200)", color: "#fff",    symbol: "🔥" },
