@@ -10,6 +10,7 @@ import { tarotCards } from "@/data/tarot";
 import { loveTypeDescriptions, mbtiDescriptions } from "@/data/questions";
 import type { LoveType } from "@/data/questions";
 import { getMbtiCharaName } from "@/data/charaNames";
+import { MBTI_PROFILES, LOVE_PROFILES } from "@/data/personalityProfiles";
 
 // ============================================================
 // Yu-Gi-Oh カード用定数
@@ -361,6 +362,32 @@ export default function MePage() {
           )}
         </div>
       </div>
+
+      {/* ── 就活・転職キーワード ── */}
+      {(() => {
+        const mp = MBTI_PROFILES[code.mbti];
+        const lp = LOVE_PROFILES[code.loveType];
+        if (!mp || !lp) return null;
+        return (
+          <div className="afu mb-5 rounded-2xl p-5" style={{ animationDelay: "0.35s", opacity: 0, background: "rgba(251,191,36,0.04)", border: "1px solid rgba(251,191,36,0.2)" }}>
+            <p className="text-xs tracking-widest mb-4 opacity-70" style={{ color: "#fbbf24" }}>💼 就活・転職キーワード</p>
+            <div className="flex flex-col gap-3">
+              {[
+                { label: "強み軸",    value: mp.strength },
+                { label: "本音の動機", value: lp.motivation },
+                { label: "面接の軸",  value: `${mp.selfPR}。${lp.interviewPhrase}。` },
+                { label: "合う環境",  value: mp.environment },
+                { label: "弱みの傾向", value: lp.weakness },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-start gap-3">
+                  <span style={{ fontSize: 10, color: "rgba(251,191,36,0.7)", minWidth: 60, paddingTop: 2, flexShrink: 0 }}>{label}</span>
+                  <span className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.75)" }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── 矛盾・発見 ── */}
       {insights.length > 0 && (

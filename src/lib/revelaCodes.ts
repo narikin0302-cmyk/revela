@@ -170,7 +170,7 @@ export function parseRevelaCode(code: string): ParsedCode | null {
 
 // ============================================================
 // Compatibility calculation — グループベース新ロジック
-// 建前相性 40% + 本音相性 40% + ギャップ補完 20%
+// 建前相性 40% + 本音相性 40% + ギャップ補完 20% + 軸補正
 // ============================================================
 
 export interface FullCompatibilityResult {
@@ -178,10 +178,12 @@ export interface FullCompatibilityResult {
   mbtiScore: number;   // 建前グループ相性
   charaScore: number;  // 本音グループ相性
   gapScore: number;    // ギャップ補完
+  axisBonus: number;   // L/E軸・R/V軸の詳細補正 (0〜5)
   zodiacScore: number; // deprecated: 常に0
   comment: string;
   strengths: string[];
   cautions: string[];
+  axisComment: string; // 軸補正の説明
 }
 
 // 建前グループ相性 ─────────────────────────────────────────────
@@ -304,6 +306,40 @@ function buildCautions(a: ParsedCode, b: ParsedCode): string[] {
   return cautions;
 }
 
+// 軸補正 ───────────────────────────────────────────────────────
+// loveType[1]: L(論理) / E(感情) → 同じ +2
+// loveType[2]: R(現実) / V(ビジョン) → 補完(R+V) +3 / 同じ +1
+function calcAxisBonus(a: ParsedCode, b: ParsedCode): number {
+  const ltA = a.loveType;
+  const ltB = b.loveType;
+  if (ltA.length < 3 || ltB.length < 3) return 0;
+  let bonus = 0;
+  if (ltA[1] === ltB[1]) bonus += 2;         // L/E 共鳴
+  if (ltA[2] !== ltB[2]) bonus += 3;         // R/V 補完
+  else bonus += 1;                            // R/V 同調
+  return bonus; // 0〜5
+}
+
+function buildAxisComment(a: ParsedCode, b: ParsedCode): string {
+  const ltA = a.loveType;
+  const ltB = b.loveType;
+  if (ltA.length < 3 || ltB.length < 3) return "";
+  const parts: string[] = [];
+  if (ltA[1] === ltB[1]) {
+    const style = ltA[1] === "L" ? "論理的な思考スタイル" : "感情・共感ベースの判断スタイル";
+    parts.push(`お互い${style}が共鳴しやすい`);
+  } else {
+    parts.push("論理派と感情派の組み合わせ。視点の違いが補完になる");
+  }
+  if (ltA[2] !== ltB[2]) {
+    parts.push("現実志向×ビジョン志向で、地に足ついた理想を描ける");
+  } else {
+    const ori = ltA[2] === "R" ? "現実的" : "ビジョン志向";
+    parts.push(`ふたりとも${ori}。同じ景色を見やすい`);
+  }
+  return parts.join("。");
+}
+
 // ── Main export ──────────────────────────────────────────────
 export function calculateFullCompatibility(
   codeA: ParsedCode,
@@ -312,12 +348,15 @@ export function calculateFullCompatibility(
   const mbtiScore  = calcMbtiGroupScore(codeA, codeB);
   const charaScore = calcLoveGroupScore(codeA, codeB);
   const gapScore   = calcGapComplementScore(codeA, codeB);
-  const total      = Math.round(mbtiScore * 0.40 + charaScore * 0.40 + gapScore * 0.20);
+  const axisBonus  = calcAxisBonus(codeA, codeB);
+  const base       = Math.round(mbtiScore * 0.40 + charaScore * 0.40 + gapScore * 0.20);
+  const total      = Math.min(99, base + axisBonus);
 
   return {
-    total, mbtiScore, charaScore, gapScore, zodiacScore: 0,
-    comment:   buildComment(codeA, codeB),
-    strengths: buildStrengths(codeA, codeB),
-    cautions:  buildCautions(codeA, codeB),
+    total, mbtiScore, charaScore, gapScore, axisBonus, zodiacScore: 0,
+    comment:     buildComment(codeA, codeB),
+    strengths:   buildStrengths(codeA, codeB),
+    cautions:    buildCautions(codeA, codeB),
+    axisComment: buildAxisComment(codeA, codeB),
   };
 }

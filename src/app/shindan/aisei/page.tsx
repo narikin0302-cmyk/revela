@@ -180,7 +180,7 @@ function CodeCompatibilityResult({
   onReset: () => void;
 }) {
   const result = calculateFullCompatibility(codeA, codeB);
-  const { total, mbtiScore, charaScore, gapScore, comment, strengths, cautions } = result;
+  const { total, mbtiScore, charaScore, gapScore, axisBonus, axisComment, comment, strengths, cautions } = result;
 
   const rank =
     total >= 90 ? "S" : total >= 80 ? "A" : total >= 65 ? "B" : total >= 50 ? "C" : "D";
@@ -247,6 +247,10 @@ function CodeCompatibilityResult({
         <ScoreBar label="建前相性"   score={mbtiScore}  color="rgba(255,255,255,0.55)" />
         <ScoreBar label="本音相性"   score={charaScore} color="#e8a0bf" />
         <ScoreBar label="ギャップ補完" score={gapScore}   color="#a78bfa" />
+        <ScoreBar label="軸の相性"   score={44 + axisBonus * 11} color="#fbbf24" />
+        {axisComment && (
+          <p className="text-xs mt-3 leading-relaxed" style={{ color: "rgba(251,191,36,0.7)" }}>{axisComment}</p>
+        )}
       </div>
 
       <div className="card-glow rounded-2xl p-5">

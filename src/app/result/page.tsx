@@ -13,6 +13,7 @@ import { zodiacInfo } from "@/lib/calculate";
 import { getRpgClassByCombo } from "@/data/rpgClasses";
 import { generateRevelaCode } from "@/lib/revelaCodes";
 import { getMbtiCharaName } from "@/data/charaNames";
+import { MBTI_PROFILES, LOVE_PROFILES } from "@/data/personalityProfiles";
 
 const MBTI_ADJ: Record<string, string> = {
   ENFP: "自由奔放な",  ENFJ: "カリスマ的な",  ENTP: "革新的な",   ENTJ: "指導力あふれる",
@@ -204,6 +205,40 @@ function ResultView() {
           </div>
         )}
       </div>
+
+      {/* 就活・転職キーワード */}
+      {(() => {
+        const mp = MBTI_PROFILES[mbti];
+        const lp = LOVE_PROFILES[love];
+        if (!mp || !lp) return null;
+        return (
+          <div style={{ ...sectionBox, borderColor: "rgba(251,191,36,0.2)", marginBottom: "24px" }}>
+            <p style={{ ...sectionLabel, color: "#fbbf24" }}>就活・転職キーワード</p>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: 11, color: "rgba(251,191,36,0.7)", minWidth: 56, paddingTop: 2 }}>強み軸</span>
+                <span className="text-sm font-medium" style={{ color: "#f0f0f0", letterSpacing: "0.05em" }}>{mp.strength}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: 11, color: "rgba(251,191,36,0.7)", minWidth: 56, paddingTop: 2 }}>本音の動機</span>
+                <span className="text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>{lp.motivation}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: 11, color: "rgba(251,191,36,0.7)", minWidth: 56, paddingTop: 2 }}>面接の軸</span>
+                <span className="text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>{mp.selfPR}。{lp.interviewPhrase}。</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: 11, color: "rgba(251,191,36,0.7)", minWidth: 56, paddingTop: 2 }}>合う環境</span>
+                <span className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>{mp.environment}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span style={{ fontSize: 11, color: "rgba(251,191,36,0.7)", minWidth: 56, paddingTop: 2 }}>弱みの傾向</span>
+                <span className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>{lp.weakness}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* MBTI title */}
       {mbtiInfo && (
