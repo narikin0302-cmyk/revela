@@ -50,6 +50,23 @@ const ELEMENT_COLOR: Record<string, string> = {
   火: "#f87171", 土: "#a78bfa", 風: "#34d399", 水: "#60a5fa",
 };
 
+function mbtiAdjConj(adj: string): string {
+  if (adj.endsWith("な")) return adj.slice(0, -1) + "で";
+  if (adj.endsWith("る")) return adj.slice(0, -1) + "て";
+  return adj;
+}
+
+const LOVE_ADJ: Record<string, string> = {
+  ALRF: "独立心あふれる", ALRP: "冷静沈着な",
+  ALVF: "華やかな",       ALVP: "野心的な",
+  AERF: "英雄志向の",     AERP: "義理堅い",
+  AEVF: "無敵な",         AEVP: "信念に生きる",
+  SLRF: "洞察力鋭い",     SLRP: "謎めいた",
+  SLVF: "個性的な",       SLVP: "真理を求める",
+  SERF: "自然体な",       SERP: "縁の下で支える",
+  SEVF: "自由奔放な",     SEVP: "包容力のある",
+};
+
 // ============================================================
 // 矛盾・発見 生成ロジック（既存ロジック維持）
 // ============================================================
@@ -202,7 +219,7 @@ export default function MePage() {
         const stars = Math.max(4, Math.min(9, Math.round(atk / 350)));
         const grp = code.loveType.charAt(0);
         const sec = code.loveType.charAt(1);
-        const cardName = charaName ?? `${MBTI_ADJ[code.mbti] ?? ""}${loveInfo?.nickname ?? ""}`;
+        const cardName = `${mbtiAdjConj(MBTI_ADJ[code.mbti] ?? "")}${LOVE_ADJ[code.loveType] ?? ""}${rpgName}`;
 
         const rpgCardClass = rpgClass;
         const rpgName  = rpgCardClass?.name  ?? "冒険者";
