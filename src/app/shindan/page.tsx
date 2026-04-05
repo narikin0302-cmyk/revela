@@ -3319,10 +3319,7 @@ function ResultsPage({
           className="text-xl sm:text-2xl font-light text-center mb-3"
           style={{
             fontFamily: "var(--font-noto-serif-jp), serif",
-            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+            color: "rgba(255,255,255,0.9)",
           }}
         >
           {reading.title}
@@ -3440,6 +3437,37 @@ function ResultsPage({
         );
       })()}
 
+      {/* ━━━ NEXT STEP — concept CTA ━━━ */}
+      {(() => {
+        const displayMBTI = trueSelfMbti ?? mbtiType;
+        const rpgClass = getRpgClassByCombo(displayMBTI, loveType);
+        if (!rpgClass) return null;
+        return (
+          <a
+            href="/concept"
+            className="block rounded-2xl p-5 mb-5 transition-all duration-200 hover:scale-[1.01]"
+            style={{
+              background: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(52,211,153,0.05))",
+              border: "1px solid rgba(167,139,250,0.25)",
+              textDecoration: "none",
+            }}
+          >
+            <p className="font-cinzel text-xs tracking-widest mb-3" style={{ color: "#a78bfa" }}>NEXT STEP</p>
+            <p
+              className="text-lg font-light mb-2 leading-snug"
+              style={{ fontFamily: "var(--font-noto-serif-jp), serif", color: "#EDEDED" }}
+            >
+              {rpgClass.name}として、<br />
+              <span style={{ color: "rgba(255,255,255,0.45)" }}>どこで戦えば強いか。</span>
+            </p>
+            <p className="text-xs leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}>
+              診断した、その先へ。自分のクラスを知ることは、戦い方を知ることだ。
+            </p>
+            <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>コンセプトを読む →</span>
+          </a>
+        );
+      })()}
+
       {/* ━━━ 友達と相性診断 section ━━━ */}
       {(() => {
         const finalMBTI = trueSelfMbti ?? mbtiType;
@@ -3529,13 +3557,6 @@ function ResultsPage({
 
       {/* Action buttons */}
       <div className="space-y-3" style={sectionStyle(0.4)}>
-        {/* Share card button */}
-        <button
-          onClick={() => setShowShareCard(true)}
-          className="btn-outline-primary w-full py-4 rounded-full text-sm tracking-widest font-bold"
-        >
-          ✦ シェアカードを見る
-        </button>
         <button
           onClick={handleShare}
           className="w-full py-3.5 rounded-full text-sm tracking-widest font-bold"
@@ -3578,31 +3599,8 @@ function ResultsPage({
           </svg>
           <span>LINEでシェアする</span>
         </button>
-        <button
-          onClick={handleSaveImage}
-          disabled={savingImage}
-          className="w-full py-3.5 rounded-full text-sm tracking-widest font-bold flex items-center justify-center gap-2"
-          style={{
-            background: savingImage ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.10)",
-            color: savingImage ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.6)",
-            border: "1px solid rgba(255,255,255,0.35)",
-            cursor: savingImage ? "default" : "pointer",
-            transition: "all 0.2s ease",
-          }}
-        >
-          <span>{savingImage ? "⏳" : "📸"}</span>
-          <span>{savingImage ? "生成中..." : "結果を画像で保存"}</span>
-        </button>
         <button onClick={onReset} className="btn-outline-gold w-full py-4 rounded-full text-sm tracking-widest">
           ✦ 新しい旅をはじめる
-        </button>
-        <button
-          onClick={handleSave}
-          className="btn-outline-gold w-full py-3 rounded-full text-xs tracking-widest flex items-center justify-center gap-2"
-          style={{ opacity: 0.7 }}
-        >
-          <span>💾</span>
-          <span>診断結果を保存</span>
         </button>
         <a
           href="/shindan/aisei"

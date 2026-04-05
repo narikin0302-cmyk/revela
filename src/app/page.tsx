@@ -21,21 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-const testimonials = [
-  {
-    text: "「自分のことを分かってくれた気がして、読みながら泣いてしまいました。」",
-    type: "予言者",
-  },
-  {
-    text: "「こんなに的確な分析を見たことがない。友達全員に送りました。」",
-    type: "冒険者",
-  },
-  {
-    text: "「曖昧だった自分の軸が、言語化されてすっきりしました。」",
-    type: "賢者",
-  },
-];
-
 const menuItems = [
   {
     icon: "✦",
@@ -219,7 +204,7 @@ export default function HomePage() {
 
           {[
             { step: "01", icon: "✍️", title: "質問に答える", desc: "現在地・本音\n各5〜15問" },
-            { step: "02", icon: "🔍", title: "タイプを確定", desc: "16通りの組み合わせで\nあなたを分類" },
+            { step: "02", icon: "🔍", title: "タイプを確定", desc: "256通りの組み合わせで\nあなたを分類" },
             { step: "03", icon: "📊", title: "結果を受け取る", desc: "あなただけの\n自己分析が完成" },
           ].map((item, i) => (
             <div key={i} className="relative flex-1 flex flex-col items-center text-center px-4">
@@ -244,48 +229,9 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <Link
-            href="/shindan"
-            className="btn-outline-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm"
-          >
-            今すぐ分析する →
-          </Link>
-        </div>
       </section>
 
       {/* ==================== TESTIMONIALS ==================== */}
-      <section className="relative px-4 py-16 max-w-2xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="font-cinzel section-label mb-3">VOICES</p>
-          <h2
-            className="text-2xl sm:text-3xl font-light"
-            style={{ fontFamily: "var(--font-noto-serif-jp), serif" }}
-          >
-            使った人の声
-          </h2>
-          <div className="divider-ornate mt-6">
-            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>◆</span>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          {testimonials.map((t, i) => (
-            <div
-              key={i}
-              className="rounded-2xl px-6 py-5"
-              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              <p className="text-sm leading-relaxed mb-3" style={{ color: "rgba(255,255,255,0.65)", fontFamily: "var(--font-noto-serif-jp), serif" }}>
-                {t.text}
-              </p>
-              <p className="font-cinzel text-xs tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
-                — {t.type}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ==================== AISEI (COMPATIBILITY) ==================== */}
       <section className="relative px-4 py-16 max-w-2xl mx-auto">
         <div className="text-center mb-12">
