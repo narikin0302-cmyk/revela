@@ -3461,9 +3461,9 @@ function ResultsPage({
               <span style={{ color: "rgba(255,255,255,0.45)" }}>どこで戦えば強いか。</span>
             </p>
             <p className="text-xs leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}>
-              診断した、その先へ。自分のクラスを知ることは、戦い方を知ることだ。
+              あなたのクラスが活きる場所を、逆算する。
             </p>
-            <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>コンセプトを読む →</span>
+            <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>活かし方を読む →</span>
           </a>
         );
       })()}
