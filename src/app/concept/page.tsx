@@ -52,7 +52,39 @@ export default function ConceptPage() {
 
       <div className="relative max-w-2xl mx-auto px-4 py-20">
 
-        {/* ── ① 問いかけ ── */}
+        {/* ── ① RPG導入 ── */}
+        <section className="mb-16">
+          <div
+            className="rounded-2xl p-6 sm:p-8"
+            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)" }}
+          >
+            <p
+              className="text-sm sm:text-base leading-loose mb-8"
+              style={{ color: "rgba(255,255,255,0.55)", fontFamily: "var(--font-noto-serif-jp), serif" }}
+            >
+              RPGでは、クラスに合ったポジションがある。<br />
+              魔法使いが前線に立っても、すぐ倒れる。<br />
+              戦士が後衛で回復しようとしても、追いつかない。<br />
+              間違ったポジションでは、どれだけ頑張っても強くなれない。
+            </p>
+            <p
+              className="text-xl sm:text-2xl font-light mb-8"
+              style={{ color: "#EDEDED", fontFamily: "var(--font-noto-serif-jp), serif" }}
+            >
+              現実も、同じだ。
+            </p>
+            <p
+              className="text-sm sm:text-base leading-loose"
+              style={{ color: "rgba(255,255,255,0.4)", fontFamily: "var(--font-noto-serif-jp), serif" }}
+            >
+              「どの役割に徹すればいいか」誰も教えてくれない。<br />
+              頑張っているのに手応えがない。<br />
+              それは、間違ったポジションで戦っているからかもしれない。
+            </p>
+          </div>
+        </section>
+
+        {/* ── ② 問いかけ ── */}
         <section className="text-center mb-24">
           <span
             className="font-cinzel inline-block text-xs tracking-[0.45em] mb-8 px-5 py-1.5 rounded-full"
